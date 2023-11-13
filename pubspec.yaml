@@ -1,7 +1,7 @@
 name: dart_identity_sdk
 description: A new Flutter package project.
-version: 0.0.1
-homepage: https://github.com/user0608/dart_identity_sdk
+version: 1.0.0
+homepage: https://github.com/sfperusacdev/dart_identity_sdk
 
 environment:
   sdk: ">=3.1.5 <4.0.0"
