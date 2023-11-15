@@ -1,6 +1,6 @@
 name: dart_identity_sdk
 description: Just a sdk for identity
-version: 1.0.0
+version: 1.1.0
 homepage: https://github.com/sfperusacdev/dart_identity_sdk
 
 environment:
