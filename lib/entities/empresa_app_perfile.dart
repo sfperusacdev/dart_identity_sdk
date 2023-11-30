@@ -33,6 +33,6 @@ class EmpresaAppPerfil {
       };
   @override
   String toString() {
-    return this.descripcion ?? "";
+    return descripcion ?? "";
   }
 }

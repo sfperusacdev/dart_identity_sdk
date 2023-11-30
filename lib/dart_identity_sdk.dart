@@ -2,8 +2,13 @@ library dart_identity_sdk;
 
 import 'dart:convert';
 
+import 'package:dart_identity_sdk/bases/storage/system_storage_manager.dart';
 import 'package:dart_identity_sdk/entities/entities.dart';
+import 'package:dart_identity_sdk/pages/login/login_page.dart';
+import 'package:dart_identity_sdk/security/selected_sucursal_storage.dart';
 import 'package:dart_identity_sdk/src/storage/session_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart' as intl;
@@ -26,7 +31,6 @@ class SessionManagerSDK {
     _preferences = await SharedPreferences.getInstance();
     if (_preferences == null) return;
     _storage = SessionStorage(_preferences!);
-    if (_storage == null) return;
     _storage!.authsession;
   }
 
@@ -111,7 +115,13 @@ class SessionManagerSDK {
     return _storage?.authsession?.session?.supervisors ?? [];
   }
 
+  Future<void> goOut(BuildContext context) async {
+    await loginOut();
+    if (context.mounted) context.go(LoginPage.path);
+  }
+
   Future<void> loginOut() async {
+    SystemStorageManager().instance<SelectedSucursalStorage>().clean();
     if (_storage == null) return;
     await _storage?.clean();
   }
