@@ -13,3 +13,8 @@
 ## 2.0.0
 
 - Desktop integration with identity
+
+
+## 2.0.1
+
+- update kdialog library

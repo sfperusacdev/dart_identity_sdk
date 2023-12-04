@@ -1,6 +1,6 @@
 name: dart_identity_sdk
 description: Just a sdk for identity
-version: 2.0.0
+version: 2.0.1
 homepage: https://github.com/sfperusacdev/dart_identity_sdk
 
 environment:
@@ -14,7 +14,7 @@ dependencies:
   go_router: ^12.1.1
   http: ^1.1.0
   intl: ^0.18.1
-  kdialogs: ^0.1.2
+  kdialogs: ^0.2.0
   managersdk: ^0.1.6
   package_info_plus: ^5.0.1
   provider: ^6.1.1
