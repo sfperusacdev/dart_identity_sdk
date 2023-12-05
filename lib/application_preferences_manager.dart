@@ -123,7 +123,7 @@ class ApplicationPreferenceManager {
   }
 
   Future<bool> setString(String key, String value) {
-    var results = _preferences.setString(key, value);
+    var results = _preferences.setString(key, jsonEncode(value));
     if (localKeys.contains(key)) return results;
     localKeys.add(key);
     return results;

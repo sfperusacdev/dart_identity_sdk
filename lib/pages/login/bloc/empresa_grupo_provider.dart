@@ -38,6 +38,11 @@ class EmpresaGrupoPrivider extends ChangeNotifier {
     notifyListeners();
   }
 
+  set justSetSelectedPerfil(String perfilID) {
+    _estado[_selectedEmpresa ?? "unknow"] = perfilID;
+    _manager.setString(_key, jsonEncode(_estado));
+  }
+
   set setselectedPerfil(String perfilID) {
     _estado[_selectedEmpresa ?? "unknow"] = perfilID;
     _manager.setString(_key, jsonEncode(_estado));
@@ -89,6 +94,7 @@ class EmpresaGrupoPrivider extends ChangeNotifier {
     final storedSelection = _manager.readString(_empresakey);
     if (_listaEmpresas.where((element) => element.code == storedSelection).isNotEmpty) {
       _selectedEmpresa = storedSelection;
+      notifyListeners();
       return;
     }
     if (_listaEmpresas.isNotEmpty) _selectedEmpresa = _listaEmpresas.first.code;

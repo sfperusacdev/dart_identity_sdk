@@ -5,9 +5,12 @@ import 'package:dart_identity_sdk/bases/exceptions.dart';
 import 'package:dart_identity_sdk/dart_identity_sdk.dart';
 import 'package:http/http.dart' as http;
 
-const tareoServiceID = "com.sfperusac.contratos";
-
 class ApiService {
+  static var _defaultServiceID = "";
+  static void setDefaultServiceID(String id) {
+    _defaultServiceID = id;
+  }
+
   static Uri parseUri(String authority, String path, {Map<String, dynamic>? queryparams}) {
     var uri = Uri.parse(authority);
     if (uri.scheme == "https") {
@@ -18,7 +21,7 @@ class ApiService {
 
   static Uri uri(String path, {Map<String, dynamic>? queryparams, String? serviceID}) {
     final manager = SessionManagerSDK();
-    var location = manager.findServiceLocation(serviceID ?? tareoServiceID);
+    var location = manager.findServiceLocation(serviceID ?? _defaultServiceID);
     if (location == null) {
       throw ServiceLocationNotFoundErr("Servicio `$serviceID` no encontrado 🥺🥺");
     }
@@ -58,8 +61,7 @@ class ApiService {
       }
       return decoded["data"];
     } catch (e) {
-      if (e is SocketException) throw ConnectionRefuted(host: e.address?.host);
-
+      if (e is SocketException) throw ConnectionRefuted(err: e.message);
       if (e is HttpException) {
         throw ApiErrorResponse("Couldn't find the post 😱");
       }
@@ -104,7 +106,7 @@ class ApiService {
       }
       return decoded["data"];
     } catch (e) {
-      if (e is SocketException) throw ConnectionRefuted(host: e.address?.host);
+      if (e is SocketException) throw ConnectionRefuted(err: e.message);
       if (e is HttpException) throw ApiErrorResponse("Couldn't find the post 😱");
       if (e is FormatException) throw RespuestaInvalida();
       rethrow;
@@ -133,7 +135,7 @@ class ApiService {
       }
       return decoded["data"];
     } catch (e) {
-      if (e is SocketException) throw ConnectionRefuted(host: e.address?.host);
+      if (e is SocketException) throw ConnectionRefuted(err: e.message);
       if (e is HttpException) throw ApiErrorResponse("Couldn't find the post 😱");
       if (e is FormatException) throw RespuestaInvalida();
       rethrow;
@@ -162,7 +164,7 @@ class ApiService {
       }
       return decoded["data"];
     } catch (e) {
-      if (e is SocketException) throw ConnectionRefuted(host: e.address?.host);
+      if (e is SocketException) throw ConnectionRefuted(err: e.message);
       if (e is HttpException) throw ApiErrorResponse("Couldn't find the post 😱");
       if (e is FormatException) throw RespuestaInvalida();
       rethrow;

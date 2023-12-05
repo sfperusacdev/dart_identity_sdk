@@ -1,9 +1,9 @@
 class ConnectionRefuted implements Exception {
-  final String? host;
-  ConnectionRefuted({this.host});
+  final String? err;
+  ConnectionRefuted({this.err});
   @override
   String toString() {
-    return "No se pudo establecer connection con $host😑";
+    return "No se pudo establecer connection, Error: $err 😑";
   }
 }
 

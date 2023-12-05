@@ -25,3 +25,9 @@
 ## 2.0.3
 
 - Fix no connection error message
+
+## 2.0.4
+
+- Fix: storage de empresa seleccionada
+- Fix ui scroll
+- Oculta el selector de grupo si solo hay uno

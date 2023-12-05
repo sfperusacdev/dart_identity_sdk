@@ -19,54 +19,59 @@ class _LoginPageState extends State<LoginPage> {
     return ChangeNotifierProvider(
       create: (_) => EmpresaGrupoPrivider(),
       child: Scaffold(
-        body: SafeArea(
-          child: Stack(
-            children: [
-              SingleChildScrollView(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: MediaQuery.of(context).size.height),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Center(
-                      child: SizedBox(
-                        width: (Platform.isAndroid || Platform.isIOS) ? double.infinity : 400.0,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Center(
-                              child: Image(
-                                image: AssetImage('assets/app/logo.png'),
-                                width: 135,
-                                height: 135,
+        body: Stack(
+          children: [
+            SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: MediaQuery.of(context).size.height),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Center(
+                    child: SizedBox(
+                      width: (Platform.isAndroid || Platform.isIOS) ? double.infinity : 400.0,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Center(
+                            child: Builder(builder: (context) {
+                              var isMovile = (Platform.isAndroid || Platform.isIOS);
+                              final size = MediaQuery.of(context).size;
+                              final imageSize = isMovile ? size.width : size.height;
+                              return Image(
+                                image: const AssetImage('assets/app/logo.png'),
+                                width: imageSize * 0.35,
+                                height: imageSize * 0.35,
+                              );
+                            }),
+                          ),
+                          const SizedBox(height: 12.0),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 20, bottom: 20),
+                            child: Text(
+                              'BIENVENIDO',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontFamily: 'roboto-regular',
+                                fontSize: 35,
+                                fontWeight: FontWeight.bold,
+                                fontStyle: FontStyle.normal,
+                                color: Theme.of(context).primaryColor,
                               ),
                             ),
-                            const SizedBox(height: 12.0),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 20, bottom: 20),
-                              child: Text(
-                                'BIENVENIDO',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontFamily: 'roboto-regular',
-                                  fontSize: 35,
-                                  fontWeight: FontWeight.bold,
-                                  fontStyle: FontStyle.normal,
-                                  color: Theme.of(context).primaryColor,
-                                ),
-                              ),
-                            ),
-                            Builder(builder: (context) {
-                              return const LoginFrom();
-                            })
-                          ],
-                        ),
+                          ),
+                          Builder(builder: (context) {
+                            return const LoginFrom();
+                          })
+                        ],
                       ),
                     ),
                   ),
                 ),
               ),
-              Padding(
+            ),
+            SafeArea(
+              child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Align(
                   alignment: Alignment.topRight,
@@ -84,8 +89,8 @@ class _LoginPageState extends State<LoginPage> {
                   }),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

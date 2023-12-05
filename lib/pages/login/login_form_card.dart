@@ -45,54 +45,49 @@ class _LoginFromState extends State<LoginFrom> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 340 + 70,
-      child: Stack(
-        children: [
-          Align(
-            alignment: Alignment.topCenter,
-            child: Card(
-              surfaceTintColor: Colors.white,
-              elevation: 8,
-              child: Container(
-                padding: const EdgeInsets.only(left: 18.0, right: 18.0, top: 8.0),
-                height: 350,
-                child: Form(
-                  key: formKey,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 20.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        _dominioInput(),
-                        _perfilInput(),
-                        _usernameInput(),
-                        _passsworInput(),
-                      ],
-                    ),
+    return Stack(
+      alignment: Alignment.bottomCenter,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 65),
+          child: Card(
+            surfaceTintColor: Colors.white,
+            elevation: 8,
+            child: Container(
+              padding: const EdgeInsets.only(left: 24.0, right: 24.0, top: 8.0, bottom: 65.0),
+              child: Form(
+                key: formKey,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 20.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      _dominioInput(),
+                      _perfilInput(),
+                      _usernameInput(),
+                      _passsworInput(),
+                    ],
                   ),
                 ),
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _submitButton(),
-                _recordar(),
-              ],
-            ),
-          )
-        ],
-      ),
+        ),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _submitButton(),
+            _recordar(),
+          ],
+        )
+      ],
     );
   }
 
   Widget _dominioInput() {
     return Builder(builder: (context) {
       final provider = Provider.of<EmpresaGrupoPrivider>(context);
+      final empresas = provider.empresas;
       return DropdownButtonFormField<String>(
         value: provider.getselectedEmpresa,
         isExpanded: true,
@@ -111,7 +106,7 @@ class _LoginFromState extends State<LoginFrom> {
             ),
           ),
         ),
-        items: provider.empresas.map((item) {
+        items: empresas.map((item) {
           return DropdownMenuItem<String>(
             value: item.code ?? "",
             child: Text(item.description ?? ""),
@@ -128,6 +123,14 @@ class _LoginFromState extends State<LoginFrom> {
   Widget _perfilInput() {
     return Builder(builder: (context) {
       final provider = Provider.of<EmpresaGrupoPrivider>(context);
+      final perfiles = provider.perfiles;
+      if (perfiles.length < 2) {
+        if (perfiles.length == 1) {
+          _perfil = perfiles.first.id ?? "";
+          provider.justSetSelectedPerfil = perfiles.first.id ?? "";
+        }
+        return Container();
+      }
       return DropdownButtonFormField<EmpresaAppPerfil>(
         value: provider.getSelectedPerfil,
         isExpanded: true,
@@ -146,7 +149,7 @@ class _LoginFromState extends State<LoginFrom> {
             ),
           ),
         ),
-        items: provider.perfiles.map((item) {
+        items: perfiles.map((item) {
           return DropdownMenuItem<EmpresaAppPerfil>(
             value: item,
             child: Text(item.descripcion ?? ""),
