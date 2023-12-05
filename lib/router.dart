@@ -7,12 +7,16 @@ abstract class IdentityRoutes {
   List<RouteBase> routes();
 }
 
+GoRouter? _router;
+List<RouteBase>? _last;
+
 class ApplicationRouterManager {
   final IdentityRoutes _routes;
   const ApplicationRouterManager(this._routes);
 
   GoRouter router() {
     final routes = _routes.routes();
+    if (routes == _last && _router != null) return _router!;
     asserts(routes);
     routes.add(
       GoRoute(
