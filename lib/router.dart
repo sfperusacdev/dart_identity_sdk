@@ -30,10 +30,11 @@ class ApplicationRouterManager {
         builder: (context, state) => const ServerSettingsPage(),
       ),
     );
-    return GoRouter(
+    _router = GoRouter(
       initialLocation: getInitialRoute(),
       routes: routes,
     );
+    return _router!;
   }
 
   String getInitialRoute() {

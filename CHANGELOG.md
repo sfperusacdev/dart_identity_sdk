@@ -31,3 +31,7 @@
 - Fix: storage de empresa seleccionada
 - Fix ui scroll
 - Oculta el selector de grupo si solo hay uno
+
+## 2.0.5
+
+- Fix: \_router initialization
