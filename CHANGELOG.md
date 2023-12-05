@@ -14,7 +14,6 @@
 
 - Desktop integration with identity
 
-
 ## 2.0.1
 
 - update kdialog library
@@ -22,3 +21,7 @@
 ## 2.0.2
 
 - Fix hot reload
+
+## 2.0.3
+
+- Fix no connection error message

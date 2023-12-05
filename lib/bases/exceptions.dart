@@ -1,7 +1,9 @@
-class NoInternet implements Exception {
+class ConnectionRefuted implements Exception {
+  final String? host;
+  ConnectionRefuted({this.host});
   @override
   String toString() {
-    return "No hay conexión de internet 😑";
+    return "No se pudo establecer connection con $host😑";
   }
 }
 

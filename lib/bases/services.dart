@@ -58,7 +58,8 @@ class ApiService {
       }
       return decoded["data"];
     } catch (e) {
-      if (e is SocketException) throw NoInternet();
+      if (e is SocketException) throw ConnectionRefuted(host: e.address?.host);
+
       if (e is HttpException) {
         throw ApiErrorResponse("Couldn't find the post 😱");
       }
@@ -103,7 +104,7 @@ class ApiService {
       }
       return decoded["data"];
     } catch (e) {
-      if (e is SocketException) throw NoInternet();
+      if (e is SocketException) throw ConnectionRefuted(host: e.address?.host);
       if (e is HttpException) throw ApiErrorResponse("Couldn't find the post 😱");
       if (e is FormatException) throw RespuestaInvalida();
       rethrow;
@@ -132,7 +133,7 @@ class ApiService {
       }
       return decoded["data"];
     } catch (e) {
-      if (e is SocketException) throw NoInternet();
+      if (e is SocketException) throw ConnectionRefuted(host: e.address?.host);
       if (e is HttpException) throw ApiErrorResponse("Couldn't find the post 😱");
       if (e is FormatException) throw RespuestaInvalida();
       rethrow;
@@ -161,7 +162,7 @@ class ApiService {
       }
       return decoded["data"];
     } catch (e) {
-      if (e is SocketException) throw NoInternet();
+      if (e is SocketException) throw ConnectionRefuted(host: e.address?.host);
       if (e is HttpException) throw ApiErrorResponse("Couldn't find the post 😱");
       if (e is FormatException) throw RespuestaInvalida();
       rethrow;
