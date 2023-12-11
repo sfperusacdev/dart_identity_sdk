@@ -35,3 +35,8 @@
 ## 2.0.5
 
 - Fix: \_router initialization
+
+## 2.1.0
+
+- Fix: integrations
+- Add: name device

@@ -1,4 +1,4 @@
-part of dart_identity_sdk;
+part of './dart_identity_sdk.dart';
 
 class _ApiErrorResponse implements Exception {
   final String _message;

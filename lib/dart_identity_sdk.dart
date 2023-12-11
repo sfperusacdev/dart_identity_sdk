@@ -129,6 +129,7 @@ class SessionManagerSDK {
   Future<void> login({
     required String licence,
     required String deviceid,
+    required String deviceName,
     required String empresa,
     required String username,
     required String password,
@@ -144,6 +145,7 @@ class SessionManagerSDK {
         "username": username,
         "password": password,
         "device_id": deviceid,
+        "device_name": deviceName,
         "licence": licence,
         "app": appID,
         "version": appVersion,

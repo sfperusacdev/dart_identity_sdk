@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="example"
+        android:label="Dart Indentity SDK"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -30,12 +30,8 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
-    
     <queries>
-        <package android:name="com.sfperusac.manager.licences" />
-    </queries>
-    <uses-permission android:name="shared_preferences.permission.WRITE_DATA" />
+        <package android:name="com.sfperusac.manager.manager" />
+    </queries>  
     <uses-permission android:name="shared_preferences.permission.READ_DATA" />
-
-
 </manifest>

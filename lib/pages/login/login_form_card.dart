@@ -309,6 +309,7 @@ class _LoginFromState extends State<LoginFrom> {
         await service.login(
           licence: licence.licenceCode ?? "",
           deviceid: manager.deviceID,
+          deviceName: manager.deviceName,
           empresa: _empresa.trim(),
           username: _username.trim(),
           password: _password.trim(),
