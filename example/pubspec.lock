@@ -55,15 +55,15 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "2.0.5"
+    version: "2.1.1"
   devappsdk:
     dependency: transitive
     description:
       name: devappsdk
-      sha256: "4f49e1bdbb9ea66e43010c7a6dbc5b7a06b034749c618277680e3c5d2e38c610"
+      sha256: "82689ef3e16be75f76049dd4da51b59efae02ce5c2b464b03749ec895e598dab"
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.1"
+    version: "0.2.2"
   fake_async:
     dependency: transitive
     description:
@@ -171,10 +171,10 @@ packages:
     dependency: transitive
     description:
       name: managersdk
-      sha256: af6740d55b6f4d08fd7ad34e40e4aae4b0a28fe0d73206e3d44ee5afea41491b
+      sha256: "68122242aaa9f4da96fb7ab3caec3016e99ff6630d5244cdb4385dbe27639573"
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.2"
+    version: "0.2.3"
   matcher:
     dependency: transitive
     description:

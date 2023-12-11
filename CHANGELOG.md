@@ -40,3 +40,7 @@
 
 - Fix: integrations
 - Add: name device
+
+## 2.1.1
+
+- update packages
