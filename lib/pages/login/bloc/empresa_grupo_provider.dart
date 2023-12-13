@@ -72,9 +72,10 @@ class EmpresaGrupoPrivider extends ChangeNotifier {
 
   Future<void> loadEmpresasProfiles() async {
     final perfilService = AppPerfilService();
-    final manager = DeviceInfoManager();
+    final deviceManager = DeviceLicenceManager();
     final service = EmpresaService();
-    final licenciaCodigos = manager.licences.map((e) => e.licenceCode ?? "!no-empresa").toList();
+    final licensesFound = await deviceManager.readLicences();
+    final licenciaCodigos = licensesFound.map((e) => e.licenceCode ?? "!no-empresa").toList();
     var empresas = await service.getEmpresas(licenciaCodigos);
     final codigos = empresas.map((e) => e.code ?? "!no-empresa").toList();
     var perfiles = await perfilService.findPefiles(codigos);

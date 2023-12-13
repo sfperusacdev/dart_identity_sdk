@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:dart_identity_sdk/bases/storage/storer.dart';
-import 'package:devappsdk/devappsdk.dart';
+import 'package:devappsdk2/devappsdk.dart';
 import 'package:flutter/foundation.dart';
 
 var _identityApp = "";

@@ -50,18 +50,17 @@ class ApiService {
     String? serviceID,
   }) async {
     var client = http.Client();
+    late Uri url;
     try {
-      final response = await client.get(
-        useUri ?? uri(path, queryparams: qparams, serviceID: serviceID),
-        headers: _myHeaders(),
-      );
+      url = useUri ?? uri(path, queryparams: qparams, serviceID: serviceID);
+      final response = await client.get(url, headers: _myHeaders());
       final decoded = json.decode(response.body);
       if ((response.statusCode / 100).truncate() != 2) {
         throw ApiErrorResponse(decoded["message"]);
       }
       return decoded["data"];
     } catch (e) {
-      if (e is SocketException) throw ConnectionRefuted(err: e.message);
+      if (e is SocketException) throw ConnectionRefuted(err: e.message, url: url);
       if (e is HttpException) {
         throw ApiErrorResponse("Couldn't find the post 😱");
       }
@@ -94,19 +93,17 @@ class ApiService {
     String? serviceID,
   }) async {
     var client = http.Client();
+    late Uri url;
     try {
-      final response = await client.post(
-        useUri ?? uri(path, queryparams: qparams, serviceID: serviceID),
-        body: jsonEncode(payload),
-        headers: _myHeaders(),
-      );
+      url = useUri ?? uri(path, queryparams: qparams, serviceID: serviceID);
+      final response = await client.post(url, body: jsonEncode(payload), headers: _myHeaders());
       final decoded = json.decode(response.body);
       if ((response.statusCode / 100).truncate() != 2) {
         throw ApiErrorResponse(decoded["message"]);
       }
       return decoded["data"];
     } catch (e) {
-      if (e is SocketException) throw ConnectionRefuted(err: e.message);
+      if (e is SocketException) throw ConnectionRefuted(err: e.message, url: url);
       if (e is HttpException) throw ApiErrorResponse("Couldn't find the post 😱");
       if (e is FormatException) throw RespuestaInvalida();
       rethrow;
@@ -123,19 +120,17 @@ class ApiService {
     String? serviceID,
   }) async {
     var client = http.Client();
+    late Uri url;
     try {
-      final response = await client.delete(
-        useUri ?? uri(path, queryparams: qparams, serviceID: serviceID),
-        body: jsonEncode(payload),
-        headers: _myHeaders(),
-      );
+      url = useUri ?? uri(path, queryparams: qparams, serviceID: serviceID);
+      final response = await client.delete(url, body: jsonEncode(payload), headers: _myHeaders());
       final decoded = json.decode(response.body);
       if ((response.statusCode / 100).truncate() != 2) {
         throw ApiErrorResponse(decoded["message"]);
       }
       return decoded["data"];
     } catch (e) {
-      if (e is SocketException) throw ConnectionRefuted(err: e.message);
+      if (e is SocketException) throw ConnectionRefuted(err: e.message, url: url);
       if (e is HttpException) throw ApiErrorResponse("Couldn't find the post 😱");
       if (e is FormatException) throw RespuestaInvalida();
       rethrow;
@@ -152,19 +147,17 @@ class ApiService {
     String? serviceID,
   }) async {
     var client = http.Client();
+    late Uri url;
     try {
-      final response = await client.put(
-        useUri ?? uri(path, queryparams: qparams, serviceID: serviceID),
-        body: jsonEncode(payload),
-        headers: _myHeaders(),
-      );
+      url = useUri ?? uri(path, queryparams: qparams, serviceID: serviceID);
+      final response = await client.put(url, body: jsonEncode(payload), headers: _myHeaders());
       final decoded = json.decode(response.body);
       if ((response.statusCode / 100).truncate() != 2) {
         throw ApiErrorResponse(decoded["message"]);
       }
       return decoded["data"];
     } catch (e) {
-      if (e is SocketException) throw ConnectionRefuted(err: e.message);
+      if (e is SocketException) throw ConnectionRefuted(err: e.message, url: url);
       if (e is HttpException) throw ApiErrorResponse("Couldn't find the post 😱");
       if (e is FormatException) throw RespuestaInvalida();
       rethrow;

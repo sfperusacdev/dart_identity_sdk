@@ -5,6 +5,7 @@ import 'package:dart_identity_sdk/security/settings/server_sertting_storage.dart
 
 class EmpresaService {
   Future<List<Empresa>> getEmpresas(List<String> licencias) async {
+    if (licencias.isEmpty) return [];
     var settings = SystemStorageManager().instance<ServerSettingsSorage>().getValue();
     if (settings == null) throw Exception("invalid settings");
     final uri = ApiService.parseUri(await settings.recoveryIndentityServiceAddress(), "/v1/get-licence-empresa");

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:dart_identity_sdk/application_preferences_manager.dart';
 import 'package:dart_identity_sdk/bases/sound_service.dart';
 import 'package:dart_identity_sdk/bases/storage/system_storage_manager.dart';
@@ -8,25 +7,34 @@ import 'package:dart_identity_sdk/security/selected_sucursal_storage.dart';
 import 'package:dart_identity_sdk/security/settings/login_fields.dart';
 import 'package:dart_identity_sdk/security/settings/server_sertting_storage.dart';
 import 'package:dart_identity_sdk/utils/device_info.dart';
-import 'package:dart_identity_sdk/utils/device_info_manager.dart';
 import 'package:flutter/services.dart';
 
-Future<void> initializeIdentity(String appid) async {
-  setApplicationID(appid);
+bool _managerInited = false;
+bool _soundInited = false;
+bool _appInfoInited = false;
+Future<bool> initializeIdentityDependencies({required String appID}) async {
+  setApplicationID(appID);
   try {
     final ca = await PlatformAssetBundle().load('assets/certs/rootCA.pem');
     SecurityContext.defaultContext.setTrustedCertificatesBytes(ca.buffer.asInt8List());
   } catch (err) {
     LOG.printError([err]);
   }
-  await ApplicationInfo().init();
-  var manager = SystemStorageManager();
-  manager.setPreferencias(await ApplicationPreferenceManager().load());
-  manager.addprovide((preferences) => ServerSettingsSorage(preferences));
-  manager.addprovide((preferences) => LoginFielsStorage(preferences));
-  manager.addprovide((preferences) => SelectedSucursalStorage(preferences));
-  await SoundService().init();
-  final infoManager = DeviceInfoManager();
-  await infoManager.init();
-  if (infoManager.licences.isEmpty) throw "No hay ninguna licencia asociada con este dispositivo";
+  if (!_appInfoInited) {
+    await ApplicationInfo().init();
+    _appInfoInited = true;
+  }
+  if (!_managerInited) {
+    var manager = SystemStorageManager();
+    manager.setPreferencias(await ApplicationPreferenceManager().load());
+    manager.addprovide((preferences) => ServerSettingsSorage(preferences));
+    manager.addprovide((preferences) => LoginFielsStorage(preferences));
+    manager.addprovide((preferences) => SelectedSucursalStorage(preferences));
+    _managerInited = true;
+  }
+  if (!_soundInited) {
+    await SoundService().init();
+    _soundInited = true;
+  }
+  return true;
 }

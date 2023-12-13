@@ -1,26 +1,40 @@
-import 'package:managersdk/managersdk.dart';
-import 'package:managersdk/licence.dart';
+import 'dart:async';
 
-class DeviceInfoManager {
-  static final DeviceInfoManager _singleton = DeviceInfoManager._internal();
-  factory DeviceInfoManager() => _singleton;
-  DeviceInfoManager._internal();
+import 'package:dart_identity_sdk/logs/log.dart';
+import 'package:dart_identity_sdk/manager/licence.dart';
+import 'package:dart_identity_sdk/manager/managersdk.dart';
 
-  String _deviceID = "";
-  String _deviceName = "";
-  List<Licence> _licencias = [];
+const _tag = "DeviceLicenceManager";
 
-  String get deviceID => _deviceID;
-  String get deviceName => _deviceName;
-  List<Licence> get licences => _licencias;
+class DeviceLicenceManager {
+  static final DeviceLicenceManager _singleton = DeviceLicenceManager._internal();
+  factory DeviceLicenceManager() => _singleton;
+  DeviceLicenceManager._internal();
 
-  Future<(List<Licence>, String)> init() async {
-    final deviceid = await ManagerSDKF().deviceID();
-    final devicename = await ManagerSDKF().deviceName();
-    final licences = await ManagerSDKF().readLicences();
-    _deviceID = deviceid;
-    _licencias = licences;
-    _deviceName = devicename;
-    return (licences, deviceid);
+  Future<String> deviceID() async {
+    try {
+      return await ManagerSDKF().deviceID();
+    } catch (e) {
+      LOG.printError([_tag, e.toString()]);
+      throw "No fue posible leer la identificación del dispositivo";
+    }
+  }
+
+  Future<String> deviceName() async {
+    try {
+      return await ManagerSDKF().deviceName();
+    } catch (e) {
+      LOG.printError([_tag, e.toString()]);
+      throw "No fue posible leer la informacion del dispositivo";
+    }
+  }
+
+  Future<List<Licence>> readLicences() async {
+    try {
+      return await ManagerSDKF().readLicences();
+    } catch (e) {
+      LOG.printError([_tag, e.toString()]);
+      throw "No se pudo cargar las licencias asociadas a este dispositivo";
+    }
   }
 }

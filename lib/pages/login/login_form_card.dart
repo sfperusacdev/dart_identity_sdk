@@ -301,15 +301,16 @@ class _LoginFromState extends State<LoginFrom> {
       context,
       doProcess: () async {
         final selectedEmpresa = _empresa.trim();
-        final manager = DeviceInfoManager();
-        final index = manager.licences.indexWhere((element) => element.companyCode == selectedEmpresa);
+        final manager = DeviceLicenceManager();
+        final licences = await manager.readLicences();
+        final index = licences.indexWhere((element) => element.companyCode == selectedEmpresa);
         if (index == -1) throw "no se econtro licencia para $selectedEmpresa";
-        final licence = manager.licences[index];
+        final licence = licences[index];
         final service = LoginService();
         await service.login(
           licence: licence.licenceCode ?? "",
-          deviceid: manager.deviceID,
-          deviceName: manager.deviceName,
+          deviceid: await manager.deviceID(),
+          deviceName: await manager.deviceName(),
           empresa: _empresa.trim(),
           username: _username.trim(),
           password: _password.trim(),
