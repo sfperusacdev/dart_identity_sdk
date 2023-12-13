@@ -44,3 +44,8 @@
 ## 2.1.1
 
 - update packages
+
+## 3.0.0
+
+- cambia la forma de iniciar el servicio
+- Inclusión de managersdk

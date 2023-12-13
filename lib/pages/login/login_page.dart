@@ -16,6 +16,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return ChangeNotifierProvider(
       create: (_) => EmpresaGrupoPrivider(),
       child: Scaffold(
@@ -33,36 +34,10 @@ class _LoginPageState extends State<LoginPage> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Center(
-                            child: Builder(builder: (context) {
-                              var isMovile = (Platform.isAndroid || Platform.isIOS);
-                              final size = MediaQuery.of(context).size;
-                              final imageSize = isMovile ? size.width : size.height;
-                              return Image(
-                                image: const AssetImage('assets/app/logo.png'),
-                                width: imageSize * 0.35,
-                                height: imageSize * 0.35,
-                              );
-                            }),
-                          ),
+                          if ((Platform.isAndroid || Platform.isIOS) && size.height > size.width) _logoImage(),
                           const SizedBox(height: 12.0),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 20, bottom: 20),
-                            child: Text(
-                              'BIENVENIDO',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontFamily: 'roboto-regular',
-                                fontSize: 35,
-                                fontWeight: FontWeight.bold,
-                                fontStyle: FontStyle.normal,
-                                color: Theme.of(context).primaryColor,
-                              ),
-                            ),
-                          ),
-                          Builder(builder: (context) {
-                            return const LoginFrom();
-                          })
+                          _binvenidoMessage(context),
+                          const LoginFrom(),
                         ],
                       ),
                     ),
@@ -93,6 +68,38 @@ class _LoginPageState extends State<LoginPage> {
           ],
         ),
       ),
+    );
+  }
+
+  Padding _binvenidoMessage(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 20, bottom: 20),
+      child: Text(
+        'BIENVENIDO',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontFamily: 'roboto-regular',
+          fontSize: 35,
+          fontWeight: FontWeight.bold,
+          fontStyle: FontStyle.normal,
+          color: Theme.of(context).primaryColor,
+        ),
+      ),
+    );
+  }
+
+  Center _logoImage() {
+    return Center(
+      child: Builder(builder: (context) {
+        var isMovile = (Platform.isAndroid || Platform.isIOS);
+        final size = MediaQuery.of(context).size;
+        final imageSize = isMovile ? size.width : size.height;
+        return Image(
+          image: const AssetImage('assets/app/logo.png'),
+          width: imageSize * 0.35,
+          height: imageSize * 0.35,
+        );
+      }),
     );
   }
 }
