@@ -1,4 +1,4 @@
-import 'package:dart_identity_sdk/entities/entities.dart';
+import 'package:dart_identity_sdk/src/entities/entities.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SessionStorage {

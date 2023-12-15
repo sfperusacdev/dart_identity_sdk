@@ -49,3 +49,8 @@
 
 - cambia la forma de iniciar el servicio
 - Inclusión de managersdk
+
+## 4.0.0
+
+- refactory libary
+- add refresh preferences option

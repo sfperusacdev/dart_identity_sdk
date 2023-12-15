@@ -1,157 +1,69 @@
 library dart_identity_sdk;
 
-import 'dart:convert';
+export 'src/entities/empresa_app_perfile.dart';
+export 'src/entities/entities.dart';
+export 'src/entities/preferencia.dart';
 
-import 'package:dart_identity_sdk/bases/storage/system_storage_manager.dart';
-import 'package:dart_identity_sdk/entities/entities.dart';
-import 'package:dart_identity_sdk/pages/login/login_page.dart';
-import 'package:dart_identity_sdk/security/selected_sucursal_storage.dart';
-import 'package:dart_identity_sdk/src/storage/session_storage.dart';
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:intl/intl.dart' as intl;
+export 'src/storage/session_storage.dart';
 
-part 'login_post.dart';
+export 'src/bases/exceptions.dart';
+export 'src/bases/services.dart';
+export 'src/bases/sound_service.dart';
+export 'src/bases/storage/storer.dart';
+export 'src/bases/storage/system_storage_manager.dart';
 
-class SessionManagerSDK {
-  SessionManagerSDK._privateConstructor();
-  static final SessionManagerSDK _instance = SessionManagerSDK._privateConstructor();
-  factory SessionManagerSDK() => _instance;
+export 'src/managers/session_manager.dart';
+export 'src/managers/application_preferences_manager.dart';
+export 'src/managers/licence_manager.dart';
+export 'src/managers/device_info_manager.dart';
 
-  SharedPreferences? _preferences;
-  SharedPreferences? get preferences => _preferences;
+export 'src/services/empresa.dart';
+export 'src/services/login.dart';
+export 'src/services/pb_perfiles.dart';
 
-  SessionStorage? _storage;
+export 'src/logs/log.dart';
+export 'src/router.dart';
+export 'src/device_info.dart';
 
-  String? _identityURL;
+import 'dart:io';
+import 'package:dart_identity_sdk/dart_identity_sdk.dart';
+import 'package:dart_identity_sdk/src/security/selected_sucursal_storage.dart';
+import 'package:dart_identity_sdk/src/security/settings/login_fields.dart';
+import 'package:dart_identity_sdk/src/security/settings/server_sertting_storage.dart';
+import 'package:flutter/services.dart';
 
-  Future<void> init() async {
-    _preferences = await SharedPreferences.getInstance();
-    if (_preferences == null) return;
-    _storage = SessionStorage(_preferences!);
-    _storage!.authsession;
+bool _managerInited = false;
+bool _soundInited = false;
+bool _appInfoInited = false;
+Future<bool> initializeIdentityDependencies({required String appID, String? defaultServiceID}) async {
+  if (defaultServiceID != null) ApiService.setDefaultServiceID(defaultServiceID);
+  setApplicationID(appID);
+  try {
+    final ca = await PlatformAssetBundle().load('assets/certs/rootCA.pem');
+    SecurityContext.defaultContext.setTrustedCertificatesBytes(ca.buffer.asInt8List());
+  } catch (err) {
+    LOG.printError([err]);
   }
-
-  void setIdentityServerURL(String url) {
-    _identityURL = url;
+  if (!_appInfoInited) {
+    await ApplicationInfo().init();
+    _appInfoInited = true;
   }
-
-  String? findServiceLocation(String serviceID) {
-    final locations = _storage?.authsession?.locations ?? [];
-    final index = locations.indexWhere((element) => element.codigo == serviceID);
-    if (index == -1) return null;
-    return locations[index].location;
+  if (!_managerInited) {
+    var manager = SystemStorageManager();
+    manager.setPreferencias(await ApplicationPreferenceManager().load());
+    manager.addprovide((preferences) => ServerSettingsSorage(preferences));
+    manager.addprovide((preferences) => LoginFielsStorage(preferences));
+    manager.addprovide((preferences) => SelectedSucursalStorage(preferences));
+    _managerInited = true;
   }
-
-  List<String> findCompanyBranchs() {
-    final sucursales = _storage?.authsession?.sucursales ?? [];
-    return sucursales.map((s) => s.code ?? "").toList();
+  if (!_soundInited) {
+    await SoundService().init();
+    _soundInited = true;
   }
-
-  (List<String>, bool) checkDependencies(List<String> dependencies) {
-    final locations = _storage?.authsession?.locations ?? [];
-    var notfound = <String>[];
-    for (var service in dependencies) {
-      var index = locations.indexWhere((elm) => elm.codigo == service);
-      if (index == -1) {
-        notfound.add(service);
-      } else if (locations[index].location == null) {
-        notfound.add(service);
-      } else if (locations[index].location == "") {
-        notfound.add(service);
-      }
-    }
-    return (notfound, notfound.isEmpty);
+  try {
+    await LicenceManagerSDK().init(); //es probable que falle en versiones 8.1 de android
+  } catch (e) {
+    LOG.printError(e.toString());
   }
-
-  String? getToken() => _storage?.authsession?.token;
-  String? getCompanyCode() => _storage?.authsession?.session?.company ?? "";
-  String? getUsername() => _storage?.authsession?.usuario?.username;
-  String? getReferenceCode() => _storage?.authsession?.usuario?.referenceCode;
-
-  DateTime? lastLoginDate() => _storage?.authsession?.date;
-
-  bool isLoginActive() {
-    if (_storage?.authsession == null) return false;
-    if (_storage?.authsession?.timeStamp == null) return false;
-    if (_storage?.authsession?.date == null) return false;
-    final now = intl.DateFormat('yyyy-MM-dd').format(DateTime.now());
-    final last = intl.DateFormat('yyyy-MM-dd').format(lastLoginDate()!);
-    return now == last;
-  }
-
-  bool hasPerm(String permission) {
-    final authsession = _storage?.authsession;
-    if (authsession == null) return false;
-    final permissions = authsession.session?.permissions ?? [];
-    for (var p in permissions) {
-      if (p.id == permission) return true;
-    }
-    return false;
-  }
-
-  bool hasPermOnBranch(String permission, String branch) {
-    final authsession = _storage?.authsession;
-    if (authsession == null) return false;
-    final permissions = authsession.session?.permissions ?? [];
-    for (var p in permissions) {
-      if (p.id == permission) {
-        final branchs = p.companyBrances ?? [];
-        for (var b in branchs) {
-          if (b == branch) return true;
-        }
-      }
-    }
-    return false;
-  }
-
-  List<String> getSubordinates() {
-    return _storage?.authsession?.session?.subordinates ?? [];
-  }
-
-  List<String> getSupervisors() {
-    return _storage?.authsession?.session?.supervisors ?? [];
-  }
-
-  Future<void> goOut(BuildContext context) async {
-    await loginOut();
-    if (context.mounted) context.go(LoginPage.path);
-  }
-
-  Future<void> loginOut() async {
-    SystemStorageManager().instance<SelectedSucursalStorage>().clean();
-    if (_storage == null) return;
-    await _storage?.clean();
-  }
-
-  Future<void> login({
-    required String licence,
-    required String deviceid,
-    required String deviceName,
-    required String empresa,
-    required String username,
-    required String password,
-    required String appID,
-    required String appVersion,
-  }) async {
-    final uri = Uri.tryParse(_identityURL ?? "");
-    if (uri == null) throw Exception("($_identityURL), no es una url valida");
-    final response = await _postlogin(
-      uri: uri,
-      payload: {
-        "empresa": empresa,
-        "username": username,
-        "password": password,
-        "device_id": deviceid,
-        "device_name": deviceName,
-        "licence": licence,
-        "app": appID,
-        "version": appVersion,
-      },
-    );
-    final session = IdentitySessionResponse.fromMap(response);
-    _storage?.setValue(session);
-  }
+  return true;
 }
