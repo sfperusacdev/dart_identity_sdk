@@ -1,14 +1,72 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
-import 'package:dart_identity_sdk/dart_identity_sdk.dart';
+
 import 'package:flutter/material.dart';
 import 'package:kdialogs/kdialogs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:dart_identity_sdk/dart_identity_sdk.dart';
+
 const _localPreferencesUniqueKey = "application_preference_manager";
+
+//_P intenta abstraer la gestión de preferencias locales
+class _P {
+  final SharedPreferences _preferences;
+  final bool Function(String key) _containsKey;
+  final Future<void> Function(String key) _addkey;
+  _P(
+    this._preferences, {
+    required bool Function(String key) containsKey,
+    required Future<void> Function(String key) addkey,
+  })  : _containsKey = containsKey,
+        _addkey = addkey;
+
+  SharedPreferences get preferences => _preferences;
+
+  Future<bool> write(String key, Map<String, dynamic> value) {
+    return _preferences.setString(key, jsonEncode(value));
+  }
+
+  int? getInt(String key) => _preferences.getInt(key);
+  bool? getBool(String key) => _preferences.getBool(key);
+  double? getDouble(String key) => _preferences.getDouble(key);
+  String? getString(String key) => _preferences.getString(key);
+
+  Future<bool> setInt(String key, int value) {
+    var results = _preferences.setInt(key, value);
+    if (_containsKey(key)) return results;
+    _addkey(key);
+    return results;
+  }
+
+  Future<bool> setString(String key, String value) {
+    var results = _preferences.setString(key, jsonEncode(value));
+    if (_containsKey(key)) return results;
+    _addkey(key);
+    return results;
+  }
+
+  Future<bool> setDouble(String key, double value) {
+    var results = _preferences.setDouble(key, value);
+    if (_containsKey(key)) return results;
+    _addkey(key);
+    return results;
+  }
+
+  Future<bool> setBool(String key, bool value) {
+    var results = _preferences.setBool(key, value);
+    if (_containsKey(key)) return results;
+    _addkey(key);
+    return results;
+  }
+}
 
 class ApplicationPreferenceManager {
   static final _instance = ApplicationPreferenceManager._private();
   late SharedPreferences _preferences;
+  // ignore: library_private_types_in_public_api
+  late _P P;
+
   ApplicationPreferenceManager._private();
   factory ApplicationPreferenceManager() => _instance;
 
@@ -21,13 +79,18 @@ class ApplicationPreferenceManager {
     localKeys.clear();
     final keys = _preferences.getStringList(_localPreferencesUniqueKey);
     localKeys.addAll(keys ?? []);
+    P = _P(
+      _preferences,
+      addkey: (value) async {
+        localKeys.add(value);
+      },
+      containsKey: (value) => localKeys.contains(value),
+    );
     return _preferences;
   }
 
-  SharedPreferences get prefrences => _preferences;
-
   Map<String, dynamic> read(String key) {
-    var value = prefrences.getString(key);
+    var value = P.preferences.getString(key);
     if (value == null) return {};
     var decoded = <String, dynamic>{};
     try {
@@ -38,10 +101,8 @@ class ApplicationPreferenceManager {
     return decoded;
   }
 
-  Future<bool> write(String key, Map<String, dynamic> value) => _preferences.setString(key, jsonEncode(value));
-
   List<Map<String, dynamic>> readList(String key) {
-    var value = prefrences.getString(key);
+    var value = P.preferences.getString(key);
     if (value == null) return [];
     var decoded = <Map<String, dynamic>>[];
     try {
@@ -53,7 +114,7 @@ class ApplicationPreferenceManager {
   }
 
   dynamic justRead(String key) {
-    var value = prefrences.getString(key);
+    var value = P.preferences.getString(key);
     if (value == null) return null;
     try {
       return jsonDecode(value);
@@ -62,13 +123,8 @@ class ApplicationPreferenceManager {
     }
   }
 
-  int? getInt(String key) => _preferences.getInt(key);
-  bool? getBool(String key) => _preferences.getBool(key);
-  double? getDouble(String key) => _preferences.getDouble(key);
-  String? getString(String key) => _preferences.getString(key);
-
   int? readInt(String key) {
-    final value = getString(key);
+    final value = P.getString(key);
     if (value == null) return null;
     int? num;
     try {
@@ -80,7 +136,7 @@ class ApplicationPreferenceManager {
   }
 
   bool? readBool(String key) {
-    final value = getString(key);
+    final value = P.getString(key);
     if (value == null) return null;
     bool? flag;
     try {
@@ -92,7 +148,7 @@ class ApplicationPreferenceManager {
   }
 
   double? readDouble(String key) {
-    final value = getString(key);
+    final value = P.getString(key);
     if (value == null) return null;
     double? number;
     try {
@@ -104,7 +160,7 @@ class ApplicationPreferenceManager {
   }
 
   String? readString(String key) {
-    final value = getString(key);
+    final value = P.getString(key);
     if (value == null) return null;
     String? str;
     try {
@@ -115,39 +171,10 @@ class ApplicationPreferenceManager {
     return str;
   }
 
-  ////
-  Future<bool> setInt(String key, int value) {
-    var results = _preferences.setInt(key, value);
-    if (localKeys.contains(key)) return results;
-    localKeys.add(key);
-    return results;
-  }
-
-  Future<bool> setString(String key, String value) {
-    var results = _preferences.setString(key, jsonEncode(value));
-    if (localKeys.contains(key)) return results;
-    localKeys.add(key);
-    return results;
-  }
-
-  Future<bool> setDouble(String key, double value) {
-    var results = _preferences.setDouble(key, value);
-    if (localKeys.contains(key)) return results;
-    localKeys.add(key);
-    return results;
-  }
-
-  Future<bool> setBool(String key, bool value) {
-    var results = _preferences.setBool(key, value);
-    if (localKeys.contains(key)) return results;
-    localKeys.add(key);
-    return results;
-  }
-
-  Future<bool> setFromMap(Map<String, dynamic> map) async {
+  Future<bool> _setFromMap(Map<String, dynamic> map) async {
     final futures = <Future<bool>>[];
     for (var key in map.keys) {
-      futures.add(prefrences.setString(key, jsonEncode(map[key])));
+      futures.add(P.preferences.setString(key, jsonEncode(map[key])));
     }
     var results = await Future.wait(futures);
     for (var r in results) {
@@ -178,7 +205,7 @@ class ApplicationPreferenceManager {
       map[preff.identiticador!.trim()] = preff.valor;
     }
     final handle = ApplicationPreferenceManager();
-    final result = await handle.setFromMap(map);
+    final result = await handle._setFromMap(map);
     LOG.printInfo(["SYNC-PREFERENCES:", result]);
     return result;
   }

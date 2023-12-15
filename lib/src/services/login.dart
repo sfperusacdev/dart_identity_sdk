@@ -27,16 +27,8 @@ class LoginService {
       appVersion: ApplicationInfo().getAppVersion(),
       profileID: profileID,
     );
-    final perfilService = AppPerfilService();
-    final preferencias = await perfilService.findPreferencias(profileID);
-    final map = <String, dynamic>{};
-    for (int i = 0; i < preferencias.length; i++) {
-      final preff = preferencias[i];
-      preff.identiticador ??= "unknow";
-      map[preff.identiticador!.trim()] = preff.valor;
-    }
     final handle = ApplicationPreferenceManager();
-    await handle.setFromMap(map);
+    await handle.syncPreferences();
     LOG.printInfo(["LOGIN", "DeviceID:", "$deviceid,", "DeviceName:", "$deviceName,"]);
   }
 }

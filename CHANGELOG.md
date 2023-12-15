@@ -62,3 +62,7 @@
 ## 4.1.1
 
 - add some delay on sync preferences
+
+## 4.2.0
+
+- refactor preferences manager

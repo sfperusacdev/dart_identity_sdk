@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:dart_identity_sdk/dart_identity_sdk.dart';
 import 'package:dart_identity_sdk/src/security/empresa.dart';
-import 'package:dart_identity_sdk/src/managers/device_info_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 
@@ -31,18 +30,18 @@ class EmpresaGrupoPrivider extends ChangeNotifier {
 
   set setselectedEmpresa(String empresa) {
     _selectedEmpresa = empresa;
-    _manager.setString(_empresakey, empresa);
+    _manager.P.setString(_empresakey, empresa);
     notifyListeners();
   }
 
   set justSetSelectedPerfil(String perfilID) {
     _estado[_selectedEmpresa ?? "unknow"] = perfilID;
-    _manager.setString(_key, jsonEncode(_estado));
+    _manager.P.setString(_key, jsonEncode(_estado));
   }
 
   set setselectedPerfil(String perfilID) {
     _estado[_selectedEmpresa ?? "unknow"] = perfilID;
-    _manager.setString(_key, jsonEncode(_estado));
+    _manager.P.setString(_key, jsonEncode(_estado));
     notifyListeners();
   }
 

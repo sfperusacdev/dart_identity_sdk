@@ -151,7 +151,7 @@ class SessionManagerSDK {
       },
     );
     final session = IdentitySessionResponse.fromMap(response);
-    _storage?.setValue(session.copyWith(profileID: profileID));
+    await _storage?.setValue(session.copyWith(profileID: profileID));
   }
 }
 
