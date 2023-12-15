@@ -157,7 +157,12 @@ class ApplicationPreferenceManager {
   }
 
   Future<bool?> syncPreferencesWithLoaderIndicator(BuildContext context) async {
-    return showAsyncProgressKDialog<bool>(context, doProcess: () async => await syncPreferences());
+    return showAsyncProgressKDialog<bool>(context, doProcess: () async {
+      final wait = syncPreferences();
+      final delay = Future.delayed(const Duration(seconds: 1));
+      await Future.wait([wait, delay]);
+      return await wait;
+    });
   }
 
   Future<bool> syncPreferences() async {

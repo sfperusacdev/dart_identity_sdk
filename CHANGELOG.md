@@ -58,3 +58,7 @@
 ## 4.1.0
 
 - Establecer y obtener la sucursal de la empresa seleccionada
+
+## 4.1.1
+
+- add some delay on sync preferences
