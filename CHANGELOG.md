@@ -54,3 +54,7 @@
 
 - refactory libary
 - add refresh preferences option
+
+## 4.1.0
+
+- Establecer y obtener la sucursal de la empresa seleccionada
