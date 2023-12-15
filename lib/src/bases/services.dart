@@ -1,7 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
-import 'package:dart_identity_sdk/src/bases/exceptions.dart';
 import 'package:dart_identity_sdk/dart_identity_sdk.dart';
 import 'package:http/http.dart' as http;
 
