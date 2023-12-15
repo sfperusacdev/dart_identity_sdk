@@ -13,10 +13,11 @@ class SoundService {
   Future init() async {
     if (Platform.isLinux || Platform.isWindows) return;
     _pool = Soundpool.fromOptions();
-    _soundId = await rootBundle.load("assets/sounds/qr.mp3").then((ByteData soundData) {
+    _soundId = await rootBundle.load("packages/dart_identity_sdk/assets/sounds/qr.mp3").then((ByteData soundData) {
       return _pool!.load(soundData);
     });
-    _errorSoundID = await rootBundle.load("assets/sounds/error.mp3").then((ByteData soundData) {
+    _errorSoundID =
+        await rootBundle.load("packages/dart_identity_sdk/assets/sounds/error.mp3").then((ByteData soundData) {
       return _pool!.load(soundData);
     });
   }

@@ -66,3 +66,7 @@
 ## 4.2.0
 
 - refactor preferences manager
+
+## 4.2.1
+
+- embebed assets

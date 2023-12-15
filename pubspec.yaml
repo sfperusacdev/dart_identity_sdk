@@ -1,6 +1,6 @@
 name: dart_identity_sdk
 description: Just a sdk for identity
-version: 4.2.0
+version: 4.2.1
 homepage: https://github.com/sfperusacdev/dart_identity_sdk
 
 environment:
@@ -29,11 +29,12 @@ dev_dependencies:
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 # The following section is specific to Flutter packages.
-flutter: null
-# To add assets to your package, add an assets section, like this:
-# assets:
-#   - images/a_dot_burr.jpeg
-#   - images/a_dot_ham.jpeg
+flutter:
+  # To add assets to your package, add an assets section, like this:
+  assets:
+    - assets/sounds/qr.mp3
+    - assets/sounds/error.mp3
+    - assets/certs/rootCA.pem
 #
 # For details regarding assets in packages, see
 # https://flutter.dev/assets-and-images/#from-packages
