@@ -35,6 +35,7 @@ import 'package:flutter/services.dart';
 bool _managerInited = false;
 bool _soundInited = false;
 bool _appInfoInited = false;
+
 Future<bool> initializeIdentityDependencies({required String appID, String? defaultServiceID}) async {
   if (defaultServiceID != null) ApiService.setDefaultServiceID(defaultServiceID);
   setApplicationID(appID);
@@ -61,9 +62,19 @@ Future<bool> initializeIdentityDependencies({required String appID, String? defa
     _soundInited = true;
   }
   try {
-    await LicenceManagerSDK().init(); //es probable que falle en versiones 8.1 de android
+    await LicenceManagerSDK().init(); // es probable que falle en versiones 8.1 de android
   } catch (e) {
     LOG.printError(e.toString());
   }
   return true;
+}
+
+String? getSelectedCompanyBranch() {
+  final manager = SystemStorageManager();
+  return manager.instance<SelectedSucursalStorage>().getValue();
+}
+
+Future<void> setSelectedCompanyBranch(String value) async {
+  final manager = SystemStorageManager();
+  await manager.instance<SelectedSucursalStorage>().setValue(value);
 }

@@ -9,8 +9,8 @@ class SelectedSucursalStorage extends PreferenceStorer<String> {
   }
 
   @override
-  void setValue(String value) {
-    super.preferences.setString(_key, value);
+  Future<void> setValue(String value) async {
+    await super.preferences.setString(_key, value);
   }
 
   @override
