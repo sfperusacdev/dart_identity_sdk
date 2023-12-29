@@ -30,7 +30,11 @@ class _P {
   int? getInt(String key) => _preferences.getInt(key);
   bool? getBool(String key) => _preferences.getBool(key);
   double? getDouble(String key) => _preferences.getDouble(key);
-  String? getString(String key) => _preferences.getString(key);
+  String? getString(String key) {
+    final value = _preferences.getString(key);
+    if (value == null) return value;
+    return jsonDecode(value);
+  }
 
   Future<bool> setInt(String key, int value) {
     var results = _preferences.setInt(key, value);
