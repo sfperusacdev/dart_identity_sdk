@@ -40,8 +40,10 @@ Future<bool> initializeIdentityDependencies({required String appID, String? defa
   if (defaultServiceID != null) ApiService.setDefaultServiceID(defaultServiceID);
   setApplicationID(appID);
   try {
-    final ca = await PlatformAssetBundle().load('assets/certs/rootCA.pem');
-    SecurityContext.defaultContext.setTrustedCertificatesBytes(ca.buffer.asInt8List());
+    if (Platform.isAndroid || Platform.isIOS) {
+      final ca = await PlatformAssetBundle().load('assets/certs/rootCA.pem');
+      SecurityContext.defaultContext.setTrustedCertificatesBytes(ca.buffer.asInt8List());
+    }
   } catch (err) {
     LOG.printError([err]);
   }

@@ -43,9 +43,14 @@ class _SharedPreferences implements ReadeProvider {
 }
 
 class _LocalServer implements ReadeProvider {
+  String getURL() {
+    if (kDebugMode || kProfileMode) return "https://local.identity.sfperu.local:7443";
+    return "https://local.identity.sfperu.local";
+  }
+
   @override
   Future<String> deviceName() async {
-    final url = Uri.parse("https://local.identity.sfperu.local:7443/v1/devicename");
+    final url = Uri.parse("${getURL()}/v1/devicename");
     final response = await http.get(url);
     if (response.statusCode != 200) {
       final decoded = jsonDecode(response.body);
@@ -57,7 +62,7 @@ class _LocalServer implements ReadeProvider {
 
   @override
   Future<String> deviceID() async {
-    final url = Uri.parse("https://local.identity.sfperu.local:7443/v1/deviceid");
+    final url = Uri.parse("${getURL()}/v1/deviceid");
     final response = await http.get(url);
     if (response.statusCode != 200) {
       final decoded = jsonDecode(response.body);
@@ -69,7 +74,7 @@ class _LocalServer implements ReadeProvider {
 
   @override
   Future<List<Licence>> licences() async {
-    final url = Uri.parse("https://local.identity.sfperu.local:7443/v1/device_licences");
+    final url = Uri.parse("${getURL()}/v1/device_licences");
     final response = await http.get(url);
     if (response.statusCode != 200) {
       final decoded = jsonDecode(response.body);
