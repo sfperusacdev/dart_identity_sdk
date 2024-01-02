@@ -76,4 +76,9 @@
 - fix certs
 
 ## 4.2.3
+
 - fix getString on application preferences
+
+## 4.2.4
+
+- fix certs
