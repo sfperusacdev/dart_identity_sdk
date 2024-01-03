@@ -7,7 +7,7 @@ import 'package:flutter/foundation.dart';
 const _key = "login_EmpresaGrupoBloc_";
 const _empresakey = "empresa_$_key";
 Map<String, String> _init(ApplicationPreferenceManager manager) {
-  var foundValue = manager.readString(_key);
+  var foundValue = manager.P.getString(_key);
   foundValue ??= "{}";
   var mapa = <String, String>{};
   final decoded = jsonDecode(foundValue);

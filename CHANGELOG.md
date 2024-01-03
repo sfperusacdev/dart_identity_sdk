@@ -82,3 +82,6 @@
 ## 4.2.4
 
 - fix certs
+
+## 4.2.5
+- fix getString and readString on application preferences manager

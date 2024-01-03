@@ -33,7 +33,14 @@ class _P {
   String? getString(String key) {
     final value = _preferences.getString(key);
     if (value == null) return value;
-    return jsonDecode(value);
+    try {
+      final decoded = jsonDecode(value);
+      if (decoded is String) return decoded;
+      return value;
+    } catch (err) {
+      LOG.printWarn(["application_preferences_manager", err.toString()]);
+      return value;
+    }
   }
 
   Future<bool> setInt(String key, int value) {
@@ -168,7 +175,9 @@ class ApplicationPreferenceManager {
     if (value == null) return null;
     String? str;
     try {
-      str = jsonDecode(value);
+      final decoded = jsonDecode(value);
+      if (decoded is String) return decoded;
+      return value;
     } catch (err) {
       debugPrint(err.toString());
     }
