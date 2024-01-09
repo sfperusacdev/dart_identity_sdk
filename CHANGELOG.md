@@ -91,3 +91,7 @@
 
 - add custom criteria on session validation
 - fix session date time zone
+
+## 5.0.1
+
+- use timestamp on session
