@@ -68,14 +68,16 @@ class SessionManagerSDK {
   String? getUsername() => _storage?.authsession?.usuario?.username;
   String? getReferenceCode() => _storage?.authsession?.usuario?.referenceCode;
 
-  DateTime? lastLoginDate() => _storage?.authsession?.date;
+  DateTime? lastLoginDate() => DateTime.tryParse("${_storage?.authsession?.date}T00:00:00Z");
 
-  bool isLoginActive() {
+  bool hasValidSession({bool Function(DateTime? loginDate)? criteria}) {
     if (_storage?.authsession == null) return false;
     if (_storage?.authsession?.timeStamp == null) return false;
     if (_storage?.authsession?.date == null) return false;
-    final now = intl.DateFormat('yyyy-MM-dd').format(DateTime.now());
+    var lastLogin = lastLoginDate();
+    if (criteria != null) return criteria(lastLogin);
     final last = intl.DateFormat('yyyy-MM-dd').format(lastLoginDate()!);
+    final now = intl.DateFormat('yyyy-MM-dd').format(DateTime.now().toUtc());
     return now == last;
   }
 

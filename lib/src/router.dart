@@ -12,12 +12,13 @@ List<RouteBase>? _last;
 
 class ApplicationRouterManager {
   final IdentityRoutes _routes;
-  const ApplicationRouterManager(this._routes);
+  final bool Function(DateTime? sessionDate)? sessionValidationCriteria;
+  const ApplicationRouterManager(this._routes, {this.sessionValidationCriteria});
 
   GoRouter router() {
     final routes = _routes.routes();
     if (routes == _last && _router != null) return _router!;
-    asserts(routes);
+    _asserts(routes);
     routes.add(
       GoRoute(
         path: LoginPage.path,
@@ -31,19 +32,19 @@ class ApplicationRouterManager {
       ),
     );
     _router = GoRouter(
-      initialLocation: getInitialRoute(),
+      initialLocation: _getInitialRoute(),
       routes: routes,
     );
     return _router!;
   }
 
-  String getInitialRoute() {
+  String _getInitialRoute() {
     final manager = SessionManagerSDK();
-    if (manager.isLoginActive()) return "/home";
+    if (manager.hasValidSession(criteria: sessionValidationCriteria)) return "/home";
     return LoginPage.path;
   }
 
-  void asserts(List<RouteBase> routes) {
+  void _asserts(List<RouteBase> routes) {
     assert(() {
       for (var r in routes) {
         if (r is GoRoute && r.path == LoginPage.path) return false;

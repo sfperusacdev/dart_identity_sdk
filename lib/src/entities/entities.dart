@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class IdentitySessionResponse {
-  DateTime? date;
+  String? date;
   int? timeStamp;
   String? token;
   String? profileID;
@@ -26,7 +26,7 @@ class IdentitySessionResponse {
   });
 
   IdentitySessionResponse copyWith({
-    DateTime? date,
+    String? date,
     int? timeStamp,
     String? token,
     String? profileID,
@@ -55,7 +55,7 @@ class IdentitySessionResponse {
   String toJson() => json.encode(toMap());
 
   factory IdentitySessionResponse.fromMap(Map<String, dynamic> json) => IdentitySessionResponse(
-        date: json["date"] == null ? null : DateTime.parse(json["date"]),
+        date: json["date"],
         timeStamp: json["time_stamp"],
         token: json["token"],
         profileID: json["profile_id"],
@@ -71,8 +71,7 @@ class IdentitySessionResponse {
       );
 
   Map<String, dynamic> toMap() => {
-        "date":
-            "${date!.year.toString().padLeft(4, '0')}-${date!.month.toString().padLeft(2, '0')}-${date!.day.toString().padLeft(2, '0')}",
+        "date": date,
         "time_stamp": timeStamp,
         "token": token,
         "profile_id": profileID,
