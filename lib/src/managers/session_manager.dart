@@ -63,6 +63,7 @@ class SessionManagerSDK {
   }
 
   String? getToken() => _storage?.authsession?.token;
+  String? licenceCode() => _storage?.authsession?.device?.companyLicenceCode ?? "";
   String? profileID() => _storage?.authsession?.profileID;
   String? getCompanyCode() => _storage?.authsession?.session?.company ?? "";
   String? getUsername() => _storage?.authsession?.usuario?.username;

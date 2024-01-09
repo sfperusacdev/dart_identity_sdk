@@ -99,3 +99,7 @@
 ## 5.0.2
 
 - fix timestamp parse
+
+## 5.1.0
+
+- add getLicenceCode
