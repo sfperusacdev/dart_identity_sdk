@@ -95,3 +95,7 @@
 ## 5.0.1
 
 - use timestamp on session
+
+## 5.0.2
+
+- fix timestamp parse

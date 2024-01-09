@@ -68,10 +68,13 @@ class SessionManagerSDK {
   String? getUsername() => _storage?.authsession?.usuario?.username;
   String? getReferenceCode() => _storage?.authsession?.usuario?.referenceCode;
 
-  DateTime? lastLoginDate() => DateTime.fromMillisecondsSinceEpoch(
-        _storage?.authsession?.timeStamp ?? 0,
-        isUtc: true,
-      );
+  DateTime? lastLoginDate() {
+    if (_storage?.authsession?.timeStamp == null) return null;
+    return DateTime.fromMillisecondsSinceEpoch(
+      _storage?.authsession?.timeStamp ?? 0,
+      isUtc: true,
+    );
+  }
 
   bool hasValidSession({bool Function(DateTime? loginDate)? criteria}) {
     if (_storage?.authsession == null) return false;
