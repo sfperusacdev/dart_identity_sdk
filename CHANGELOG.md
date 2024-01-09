@@ -84,4 +84,10 @@
 - fix certs
 
 ## 4.2.5
+
 - fix getString and readString on application preferences manager
+
+## 5.0.0
+
+- add custom criteria on session validation
+- fix session date time zone
