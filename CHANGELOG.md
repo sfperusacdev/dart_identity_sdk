@@ -107,3 +107,7 @@
 ## 5.2.0
 
 - Refresh session operation
+
+## 5.2.1
+
+- fix intl packages `intl: ">=0.17.0 <0.19.0"`
