@@ -103,3 +103,7 @@
 ## 5.1.0
 
 - add getLicenceCode
+
+## 5.2.0
+
+- Refresh session operation

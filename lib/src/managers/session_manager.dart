@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dart_identity_sdk/src/bases/storage/system_storage_manager.dart';
 import 'package:dart_identity_sdk/src/entities/entities.dart';
+import 'package:dart_identity_sdk/src/entities/refresh_token_response.dart';
 import 'package:dart_identity_sdk/src/pages/login/login_page.dart';
 import 'package:dart_identity_sdk/src/security/selected_sucursal_storage.dart';
 import 'package:dart_identity_sdk/src/storage/session_storage.dart';
@@ -161,6 +162,21 @@ class SessionManagerSDK {
     final session = IdentitySessionResponse.fromMap(response);
     await _storage?.setValue(session.copyWith(profileID: profileID));
   }
+
+  Future<void> refreshToken() async {
+    final currentSession = _storage?.authsession;
+    if (currentSession == null) return;
+    if (!hasValidSession()) return;
+    final uri = Uri.tryParse("$_identityURL/refresh-token");
+    if (uri == null) throw Exception("($_identityURL/refresh-token), no es una url valida");
+    final response = await _refreshToken(uri: uri, currentToken: currentSession.token ?? "");
+    final newSession = currentSession.copyWith(
+      token: response.token,
+      date: response.date,
+      timeStamp: response.timeStamp,
+    );
+    await _storage?.setValue(newSession);
+  }
 }
 
 class _ApiErrorResponse implements Exception {
@@ -168,6 +184,38 @@ class _ApiErrorResponse implements Exception {
   _ApiErrorResponse(this._message);
   @override
   String toString() => _message;
+}
+
+Future<RefreshTokenResponse> _refreshToken({
+  required Uri uri,
+  required String currentToken,
+}) async {
+  var client = http.Client();
+  try {
+    final response = await client.get(
+      uri,
+      headers: {"Content-Type": "application/json", 'Authorization': currentToken},
+    );
+    final decoded = json.decode(response.body);
+    if ((response.statusCode / 100).truncate() != 2) {
+      throw _ApiErrorResponse(decoded["message"] ?? 'Error desconocido en la API.');
+    }
+    client.close();
+    return RefreshTokenResponse.fromMap(decoded["data"]);
+  } catch (e) {
+    if (e is _ApiErrorResponse) rethrow;
+    if (e.toString().contains('SocketException')) {
+      throw Exception('Error de conexión a Internet o con el servicio. Verifica tu conexión.');
+    } else if (e.toString().contains('HttpException')) {
+      throw Exception('Error en la solicitud HTTP. Comprueba la URL.');
+    } else if (e.toString().contains('FormatException')) {
+      throw Exception('Error de formato. La respuesta no es un JSON válido.');
+    } else {
+      throw Exception('Otro tipo de error. Comunícate con el soporte técnico.');
+    }
+  } finally {
+    client.close();
+  }
 }
 
 Future _postlogin({
@@ -185,6 +233,7 @@ Future _postlogin({
     if ((response.statusCode / 100).truncate() != 2) {
       throw _ApiErrorResponse(decoded["message"] ?? 'Error desconocido en la API.');
     }
+    client.close();
     return decoded["data"];
   } catch (e) {
     if (e is _ApiErrorResponse) rethrow;

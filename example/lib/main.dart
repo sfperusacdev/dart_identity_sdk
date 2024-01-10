@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dart_identity_sdk/dart_identity_sdk.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -32,8 +34,26 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final manager = SessionManagerSDK();
+
+  String claims() {
+    final token = manager.getToken() ?? "";
+    const encoder = JsonEncoder.withIndent("  ");
+    final parts = token.split(".");
+    if (parts.length != 3) return "";
+    final claimsData = parts[1];
+    return encoder.convert(
+      jsonDecode(utf8.decode(base64Url.decode(claimsData))),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,14 +62,25 @@ class HomePage extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text("Hola como estas"),
+            Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Text(claims()),
+            ),
             const SizedBox(height: 20.0),
             FilledButton(
-                onPressed: () async {
-                  final manager = SessionManagerSDK();
-                  await manager.goOut(context);
-                },
-                child: const Text("Go Out")),
+              onPressed: () async {
+                await manager.goOut(context);
+              },
+              child: const Text("Go Out"),
+            ),
+            const SizedBox(height: 20),
+            FilledButton(
+              onPressed: () async {
+                await manager.refreshToken();
+                setState(() {});
+              },
+              child: const Text("Refresh Session"),
+            ),
           ],
         ),
       ),

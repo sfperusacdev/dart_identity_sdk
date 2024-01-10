@@ -34,4 +34,5 @@
         <package android:name="com.sfperusac.manager.manager" />
         <package android:name="com.ksaucedo.devapp.devapp" />
     </queries>
+    <uses-permission android:name="shared_preferences.permission.READ_DATA" />
 </manifest>
