@@ -111,3 +111,6 @@
 ## 5.2.1
 
 - fix intl packages `intl: ">=0.17.0 <0.19.0"`
+
+## 5.2.2
+- fix error message

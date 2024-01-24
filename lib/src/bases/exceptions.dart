@@ -1,10 +1,15 @@
+import 'package:flutter/foundation.dart';
+
 class ConnectionRefuted implements Exception {
   final Uri url;
   final String? err;
   ConnectionRefuted({this.err, required this.url});
   @override
   String toString() {
-    return "No se pudo establecer connection, Error: $err 😑 Host: ${url.scheme}://${url.authority}";
+    if (kDebugMode || kProfileMode) {
+      return "No se pudo establecer connection, Error: $err 😑 Host: ${url.scheme}://${url.authority}";
+    }
+    return "No se pudo establecert connection";
   }
 }
 
