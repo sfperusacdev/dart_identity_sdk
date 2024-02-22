@@ -113,7 +113,13 @@
 - fix intl packages `intl: ">=0.17.0 <0.19.0"`
 
 ## 5.2.2
+
 - fix error message
 
 ## version: 5.2.3
+
 - fix domain stored value, login form
+
+## version: 5.2.4
+
+- Removed 'created' and 'updated' fields from preferences records for better data management.
