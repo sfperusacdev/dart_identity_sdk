@@ -88,7 +88,7 @@ class EmpresaGrupoPrivider extends ChangeNotifier {
     }
     _listaEmpresas.clear();
     _listaEmpresas.addAll(filteredEmpresas);
-    final storedSelection = _manager.readString(_empresakey);
+    final storedSelection = _manager.P.getString(_empresakey);
     if (_listaEmpresas.where((element) => element.code == storedSelection).isNotEmpty) {
       _selectedEmpresa = storedSelection;
       notifyListeners();

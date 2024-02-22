@@ -114,3 +114,6 @@
 
 ## 5.2.2
 - fix error message
+
+## version: 5.2.3
+- fix domain stored value, login form
