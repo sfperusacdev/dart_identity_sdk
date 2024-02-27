@@ -123,3 +123,6 @@
 ## version: 5.2.4
 
 - Removed 'created' and 'updated' fields from preferences records for better data management.
+
+## version: 5.2.5
+-  Add firstOpen flag to SessionManagerSDK, true after login

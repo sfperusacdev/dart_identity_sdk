@@ -124,6 +124,7 @@ class SessionManagerSDK {
   Future<void> goOut(BuildContext context) async {
     await loginOut();
     if (context.mounted) context.go(LoginPage.path);
+    _firstOpen = false;
   }
 
   Future<void> loginOut() async {
@@ -132,6 +133,7 @@ class SessionManagerSDK {
     await _storage?.clean();
   }
 
+  bool _firstOpen = false;
   Future<void> login({
     required String licence,
     required String deviceid,
@@ -160,8 +162,11 @@ class SessionManagerSDK {
       },
     );
     final session = IdentitySessionResponse.fromMap(response);
+    _firstOpen = true;
     await _storage?.setValue(session.copyWith(profileID: profileID));
   }
+
+  bool get ifFirstOpen => _firstOpen;
 
   Future<void> refreshToken() async {
     final currentSession = _storage?.authsession;
