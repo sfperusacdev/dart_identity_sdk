@@ -43,14 +43,31 @@ class _SharedPreferences implements ReadeProvider {
 }
 
 class _LocalServer implements ReadeProvider {
-  String getURL() {
-    if (kDebugMode || kProfileMode) return "https://local.identity.sfperu.local:7443";
-    return "https://local.identity.sfperu.local";
+  Future<String?> getFunctionalUrl(List<String> urls) async {
+    for (String url in urls) {
+      try {
+        final request = await HttpClient().getUrl(Uri.parse(url)).timeout(const Duration(seconds: 2));
+        final response = await request.close().timeout(const Duration(seconds: 2));
+        if (response.statusCode == 200) return url;
+      } catch (e) {
+        continue;
+      }
+    }
+    return null;
+  }
+
+  Future<String?> getURL() async {
+    final envValue = Platform.environment["LOCAL_IDENTITY_ADDRESS"];
+    if (envValue != null) {
+      return envValue;
+    }
+    const defaultUrls = ["https://localhost:10206", "https://local.identity.sfperusac.com:10206"];
+    return await getFunctionalUrl(defaultUrls);
   }
 
   @override
   Future<String> deviceName() async {
-    final url = Uri.parse("${getURL()}/v1/devicename");
+    final url = Uri.parse("${await getURL()}/v1/devicename");
     final response = await http.get(url);
     if (response.statusCode != 200) {
       final decoded = jsonDecode(response.body);
@@ -62,7 +79,7 @@ class _LocalServer implements ReadeProvider {
 
   @override
   Future<String> deviceID() async {
-    final url = Uri.parse("${getURL()}/v1/deviceid");
+    final url = Uri.parse("${await getURL()}/v1/deviceid");
     final response = await http.get(url);
     if (response.statusCode != 200) {
       final decoded = jsonDecode(response.body);
@@ -74,7 +91,7 @@ class _LocalServer implements ReadeProvider {
 
   @override
   Future<List<Licence>> licences() async {
-    final url = Uri.parse("${getURL()}/v1/device_licences");
+    final url = Uri.parse("${await getURL()}/v1/device_licences");
     final response = await http.get(url);
     if (response.statusCode != 200) {
       final decoded = jsonDecode(response.body);

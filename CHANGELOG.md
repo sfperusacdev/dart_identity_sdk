@@ -125,4 +125,10 @@
 - Removed 'created' and 'updated' fields from preferences records for better data management.
 
 ## version: 5.2.5
--  Add firstOpen flag to SessionManagerSDK, true after login
+
+- Add firstOpen flag to SessionManagerSDK, true after login
+
+## version: 5.3.0
+
+- Env variable: LOCAL_IDENTITY_ADDRESS
+- Defaults :  ["https://localhost:10206", "https://local.identity.sfperusac.com:10206"];
