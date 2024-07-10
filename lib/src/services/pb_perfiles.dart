@@ -30,7 +30,7 @@ class AppPerfilService {
       await settings.recoveryPreferenciaServiceAddress(),
       "/v1/api/perfil/$perfilid/preferencias",
     );
-    var result = await ApiService.getWithUri(uri);
+    var result = await ApiService.getWithUri(uri, timeout: const Duration(seconds: 5));
     var grupos = <GrupoPreferencia>[];
     for (var r in result) {
       grupos.add(GrupoPreferencia.fromMap(r));

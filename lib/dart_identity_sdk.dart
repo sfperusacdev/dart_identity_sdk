@@ -64,7 +64,9 @@ Future<bool> initializeIdentityDependencies({required String appID, String? defa
     _soundInited = true;
   }
   try {
-    await LicenceManagerSDK().init(); // es probable que falle en versiones 8.1 de android
+    await LicenceManagerSDK().init(
+      SystemStorageManager().prefrences,
+    ); // es probable que falle en versiones 8.1 de android
   } catch (e) {
     LOG.printError(e.toString());
   }

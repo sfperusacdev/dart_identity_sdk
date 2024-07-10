@@ -38,20 +38,27 @@ class ApiService {
     Uri useUri, {
     Map<String, dynamic> qparams = const {},
     String? serviceID,
+    Duration? timeout,
   }) =>
-      get("", qparams: qparams, useUri: useUri, serviceID: serviceID);
+      get("", qparams: qparams, useUri: useUri, serviceID: serviceID, timeout: timeout);
 
   static Future get(
     String path, {
     Map<String, dynamic> qparams = const {},
     Uri? useUri,
     String? serviceID,
+    Duration? timeout,
   }) async {
     var client = http.Client();
     late Uri url;
     try {
       url = useUri ?? uri(path, queryparams: qparams, serviceID: serviceID);
-      final response = await client.get(url, headers: _myHeaders());
+      http.Response response;
+      if (timeout == null) {
+        response = await client.get(url, headers: _myHeaders());
+      } else {
+        response = await client.get(url, headers: _myHeaders()).timeout(timeout);
+      }
       final decoded = json.decode(response.body);
       if ((response.statusCode / 100).truncate() != 2) {
         throw ApiErrorResponse(decoded["message"]);

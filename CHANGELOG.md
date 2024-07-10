@@ -132,3 +132,8 @@
 
 - Env variable: LOCAL_IDENTITY_ADDRESS
 - Defaults :  ["https://localhost:10206", "https://local.identity.sfperusac.com:10206"];
+
+## version: 5.4.0
+
+- Identity store data
+- Sync preferencias

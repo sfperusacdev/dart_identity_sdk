@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:dart_identity_sdk/src/logs/log.dart';
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_content_provider/shared_preferences_content_provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -111,9 +113,12 @@ class LicenceManagerSDK {
   LicenceManagerSDK._internal();
   late ReadeProvider reader;
   bool _wastInited = false;
-  Future<void> init() async {
+  late SharedPreferences _preferences;
+
+  Future<void> init(SharedPreferences preferences) async {
     if (_wastInited) return;
     if (Platform.isIOS) throw "IOS is not soported";
+    _preferences = preferences;
     reader = (Platform.isAndroid) ? _SharedPreferences() : _LocalServer();
     try {
       await reader.init();
@@ -126,18 +131,45 @@ class LicenceManagerSDK {
   }
 
   Future<List<Licence>> readLicences() async {
-    await init();
-    return await reader.licences();
+    if (!_wastInited) throw "LicenceManagerSDK was not initialized";
+    try {
+      final result = await reader.licences();
+      _preferences.setString("IDENTITY_LICENCES", licenceToJson(result));
+      return result;
+    } catch (err) {
+      LOG.printWarn("Device Licenses read from SharedPreferences");
+      final stored = _preferences.getString("IDENTITY_LICENCES");
+      if (stored == null) rethrow;
+      return licenceFromJson(stored);
+    }
   }
 
   Future<String> deviceID() async {
-    await init();
-    return reader.deviceID();
+    if (!_wastInited) throw "LicenceManagerSDK was not initialized";
+    try {
+      final result = await reader.deviceID();
+      _preferences.setString("IDENTITY_DEVICE_ID", result);
+      return result;
+    } catch (err) {
+      LOG.printWarn("Device ID read from SharedPreferences");
+      final stored = _preferences.getString("IDENTITY_DEVICE_ID");
+      if (stored == null) rethrow;
+      return stored;
+    }
   }
 
   Future<String> deviceName() async {
-    await init();
-    return reader.deviceName();
+    if (!_wastInited) throw "LicenceManagerSDK was not initialized";
+    try {
+      final result = await reader.deviceName();
+      _preferences.setString("IDENTITY_DEVICE_NAME", result);
+      return result;
+    } catch (err) {
+      LOG.printWarn("Device name read from SharedPreferences");
+      final stored = _preferences.getString("IDENTITY_DEVICE_NAME");
+      if (stored == null) rethrow;
+      return stored;
+    }
   }
 }
 

@@ -201,25 +201,32 @@ class ApplicationPreferenceManager {
       final wait = syncPreferences();
       final delay = Future.delayed(const Duration(seconds: 1));
       await Future.wait([wait, delay]);
-      return await wait;
+      final value = await wait;
+      if (value) return value;
+      throw "Hubo un error al momento de sincronizar las preferencias";
     });
   }
 
   Future<bool> syncPreferences() async {
-    final sessionManager = SessionManagerSDK();
-    final profileID = sessionManager.profileID();
-    if (profileID == null || profileID.isEmpty) return false;
-    final perfilService = AppPerfilService();
-    final preferencias = await perfilService.findPreferencias(profileID);
-    final map = <String, dynamic>{};
-    for (int i = 0; i < preferencias.length; i++) {
-      final preff = preferencias[i];
-      preff.identiticador ??= "unknow";
-      map[preff.identiticador!.trim()] = preff.valor;
+    try {
+      final sessionManager = SessionManagerSDK();
+      final profileID = sessionManager.profileID();
+      if (profileID == null || profileID.isEmpty) return false;
+      final perfilService = AppPerfilService();
+      final preferencias = await perfilService.findPreferencias(profileID);
+      final map = <String, dynamic>{};
+      for (int i = 0; i < preferencias.length; i++) {
+        final preff = preferencias[i];
+        preff.identiticador ??= "unknow";
+        map[preff.identiticador!.trim()] = preff.valor;
+      }
+      final handle = ApplicationPreferenceManager();
+      final result = await handle._setFromMap(map);
+      LOG.printInfo(["SYNC-PREFERENCES:", result]);
+      return result;
+    } catch (err) {
+      LOG.printError(["syncPreferences:", err.toString()]);
+      return false;
     }
-    final handle = ApplicationPreferenceManager();
-    final result = await handle._setFromMap(map);
-    LOG.printInfo(["SYNC-PREFERENCES:", result]);
-    return result;
   }
 }
