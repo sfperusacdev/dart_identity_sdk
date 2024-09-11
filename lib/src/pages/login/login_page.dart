@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:dart_identity_sdk/src/pages/login/bloc/empresa_grupo_provider.dart';
 import 'package:dart_identity_sdk/src/pages/login/login_form_card.dart';
+import 'package:dart_identity_sdk/src/pages/login/proxy_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
@@ -62,6 +64,29 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ));
                   }),
+                ),
+              ),
+            ),
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Align(
+                  alignment: Alignment.bottomRight,
+                  child: Builder(
+                    builder: (context) {
+                      return InkWell(
+                        borderRadius: BorderRadius.circular(20),
+                        onTap: () => context.push(ProxySettingsPage.path),
+                        child: Ink(
+                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Icon(Icons.connect_without_contact, color: Colors.grey),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ),

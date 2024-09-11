@@ -11,13 +11,17 @@ const _globalPreferencesServerAddress = "https://api.pb.sfperusac.com";
 void setApplicationID(String id) => _identityApp = id;
 
 class ServerSettings {
+  String? proxyURL;
+
   String? identityServiceAddress;
   String? preferenciasServiceAddress;
 
-  ServerSettings({identityServiceAddress, preferenciasServiceAddress});
+  ServerSettings({this.identityServiceAddress, this.preferenciasServiceAddress, this.proxyURL});
+
   ServerSettings.fromJson(Map<String, dynamic> json) {
     identityServiceAddress = json['service_address'];
     preferenciasServiceAddress = json['preferencia_address'];
+    proxyURL = json['proxy_url'];
   }
 
   ServerSettings.zero()
@@ -28,6 +32,7 @@ class ServerSettings {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['service_address'] = identityServiceAddress;
     data['preferencia_address'] = preferenciasServiceAddress;
+    data['proxy_url'] = proxyURL;
     return data;
   }
 
@@ -35,9 +40,12 @@ class ServerSettings {
     return ServerSettings(
       identityServiceAddress: _globalIdentityServerAddress,
       preferenciasServiceAddress: _globalPreferencesServerAddress,
+      proxyURL: null,
     );
   }
   Future<String> recoveryIndentityServiceAddress() async {
+    if (proxyURL != null && proxyURL != "") return proxyURL ?? "";
+
     var valueToReturn = identityServiceAddress ?? _globalIdentityServerAddress;
     if (kDebugMode | kProfileMode) {
       var message = 'la variable `$_identityApp` no está definida';
@@ -50,6 +58,8 @@ class ServerSettings {
   }
 
   Future<String> recoveryPreferenciaServiceAddress() async {
+    if (proxyURL != null && proxyURL != "") return proxyURL ?? "";
+
     var valueToReturn = preferenciasServiceAddress ?? _globalPreferencesServerAddress;
     if (kDebugMode | kProfileMode) {
       const message = 'la variable `preferencias.server` no está definida';
@@ -64,11 +74,14 @@ class ServerSettings {
   ServerSettings copyWith({
     String? identityServiceAddress,
     String? preferenciasServiceAddress,
+    String? proxyURL,
   }) {
-    return ServerSettings(
-      identityServiceAddress: identityServiceAddress ?? identityServiceAddress,
-      preferenciasServiceAddress: preferenciasServiceAddress ?? preferenciasServiceAddress,
+    final newObj = ServerSettings(
+      identityServiceAddress: identityServiceAddress ?? this.identityServiceAddress,
+      preferenciasServiceAddress: preferenciasServiceAddress ?? this.preferenciasServiceAddress,
+      proxyURL: proxyURL ?? this.proxyURL,
     );
+    return newObj;
   }
 
   String get appID => _identityApp;

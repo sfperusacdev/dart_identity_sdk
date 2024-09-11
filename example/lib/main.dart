@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await initializeIdentityDependencies(appID: "usuario.app");
+  await initializeIdentityDependencies(appID: "asistencia.app");
   runApp(const MyApp());
 }
 

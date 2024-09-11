@@ -1,5 +1,6 @@
 import 'package:dart_identity_sdk/dart_identity_sdk.dart';
 import 'package:dart_identity_sdk/src/pages/login/login_page.dart';
+import 'package:dart_identity_sdk/src/pages/login/proxy_settings.dart';
 import 'package:dart_identity_sdk/src/pages/settings/server_settings_page.dart';
 import 'package:go_router/go_router.dart';
 
@@ -31,6 +32,12 @@ class ApplicationRouterManager {
         builder: (context, state) => const ServerSettingsPage(),
       ),
     );
+    routes.add(
+      GoRoute(
+        path: ProxySettingsPage.path,
+        builder: (context, state) => ProxySettingsPage(),
+      ),
+    );
     _router = GoRouter(
       initialLocation: _getInitialRoute(),
       routes: routes,
@@ -57,6 +64,12 @@ class ApplicationRouterManager {
       }
       return true;
     }(), "the path ${ServerSettingsPage.path} are reserved");
+    assert(() {
+      for (var r in routes) {
+        if (r is GoRoute && r.path == ProxySettingsPage.path) return false;
+      }
+      return true;
+    }(), "the path ${ProxySettingsPage.path} are reserved");
     assert(() {
       var homefound = false;
       for (var r in routes) {
