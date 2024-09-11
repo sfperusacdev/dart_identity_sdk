@@ -161,6 +161,7 @@ class SessionManagerSDK {
         "profile_id": profileID,
       },
     );
+    
     final session = IdentitySessionResponse.fromMap(response);
     _firstOpen = true;
     await _storage?.setValue(session.copyWith(profileID: profileID));

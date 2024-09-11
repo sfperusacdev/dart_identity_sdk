@@ -137,3 +137,7 @@
 
 - Identity store data
 - Sync preferencias
+
+## version: 5.5.0
+
+- Sistencia proxy
