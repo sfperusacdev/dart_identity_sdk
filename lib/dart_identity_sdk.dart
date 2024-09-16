@@ -37,6 +37,7 @@ bool _soundInited = false;
 bool _appInfoInited = false;
 
 Future<bool> initializeIdentityDependencies({required String appID, String? defaultServiceID}) async {
+  await LOG.init();
   if (defaultServiceID != null) ApiService.setDefaultServiceID(defaultServiceID);
   setApplicationID(appID);
   try {

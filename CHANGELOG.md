@@ -131,7 +131,7 @@
 ## version: 5.3.0
 
 - Env variable: LOCAL_IDENTITY_ADDRESS
-- Defaults :  ["https://localhost:10206", "https://local.identity.sfperusac.com:10206"];
+- Defaults : ["https://localhost:10206", "https://local.identity.sfperusac.com:10206"];
 
 ## version: 5.4.0
 
@@ -141,3 +141,7 @@
 ## version: 5.5.0
 
 - Sistencia proxy
+
+## version: 5.6.0
+
+- Servidor de logs http://localhost:30069

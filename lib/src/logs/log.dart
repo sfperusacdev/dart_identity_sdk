@@ -1,15 +1,78 @@
+import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:sqflite/sqflite.dart' as sqflite;
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:shelf/shelf.dart';
+import 'package:shelf/shelf_io.dart' as shelf_io;
+
+String _dosDigitos(int numero) {
+  return numero.toString().padLeft(2, '0');
+}
+
+String obtenerFechaActual() {
+  final DateTime ahora = DateTime.now();
+  String fechaFormateada = '${ahora.year}/${_dosDigitos(ahora.month)}/${_dosDigitos(ahora.day)} '
+      '${_dosDigitos(ahora.hour)}:${_dosDigitos(ahora.minute)}:${_dosDigitos(ahora.second)}';
+  return fechaFormateada;
+}
 
 class LOG {
-  static void _print(String tag, Object object) {
-    if (!kDebugMode) return;
-    if (object is List<Object>) {
-      if (kDebugMode) {
-        print("$tag: ${object.join(" ")}\n");
+  static late sqflite.Database _connecion;
+  static bool _isopenDB = false;
+
+  static Future<void> init() async {
+    try {
+      if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+        sqfliteFfiInit();
+        sqflite.databaseFactory = databaseFactoryFfi;
       }
+      _connecion = await sqflite.openDatabase(
+        ":memory:",
+        version: 1,
+        onCreate: (db, _) async {
+          await db.execute("create table logs(value text)");
+        },
+      );
+      _isopenDB = true;
+      final server = await shelf_io.serve(_handle, "0.0.0.0", 30069);
+      debugPrint('Serving at http://${server.address.host}:${server.port}');
       return;
+    } catch (err) {
+      debugPrint(err.toString());
     }
-    if (kDebugMode) print("$tag: $object\n");
+  }
+
+  static Future<Response> _handle(Request request) async {
+    var response = "";
+    final lines = await _listLogLines();
+    for (var line in lines) {
+      response += "$line\n";
+    }
+    return Response.ok(response);
+  }
+
+  static Future<List<String>> _listLogLines() async {
+    if (!_isopenDB) return [];
+    const qry = "select value from logs";
+    final result = await _connecion.rawQuery(qry);
+    return result.map((e) => e["value"] as String).toList();
+  }
+
+  static void _print(String tag, Object object) {
+    var line = "";
+    if (object is List<Object>) {
+      line = "${obtenerFechaActual()} $tag ${object.join(" ")}";
+      if (kDebugMode) {
+        print("${obtenerFechaActual()} $tag ${object.join(" ")}\n");
+      }
+    } else {
+      line = "${obtenerFechaActual()} ${tag.toUpperCase()} $object";
+      if (kDebugMode) print("$tag: $object\n");
+    }
+    if (_isopenDB) {
+      final qry = "insert into logs(value) values ('$line')";
+      _connecion.execute(qry);
+    }
   }
 
   static void printInfo(Object object) {
