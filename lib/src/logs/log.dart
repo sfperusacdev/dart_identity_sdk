@@ -20,7 +20,7 @@ class LOG {
   static late sqflite.Database _connecion;
   static bool _isopenDB = false;
 
-  static Future<void> init() async {
+  static Future<void> init({int logPort = 30069}) async {
     try {
       if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
         sqfliteFfiInit();
@@ -34,7 +34,7 @@ class LOG {
         },
       );
       _isopenDB = true;
-      final server = await shelf_io.serve(_handle, "0.0.0.0", 30069);
+      final server = await shelf_io.serve(_handle, "0.0.0.0", logPort);
       debugPrint('Serving at http://${server.address.host}:${server.port}');
       return;
     } catch (err) {

@@ -36,8 +36,12 @@ bool _managerInited = false;
 bool _soundInited = false;
 bool _appInfoInited = false;
 
-Future<bool> initializeIdentityDependencies({required String appID, String? defaultServiceID}) async {
-  await LOG.init();
+Future<bool> initializeIdentityDependencies({
+  required String appID,
+  String? defaultServiceID,
+  int logPort = 30069,
+}) async {
+  await LOG.init(logPort: logPort);
   if (defaultServiceID != null) ApiService.setDefaultServiceID(defaultServiceID);
   setApplicationID(appID);
   try {
