@@ -148,3 +148,6 @@
 
 ## version: 5.6.1
 - fix: sqflite default factory warning
+
+## version: 5.6.2
+- fix: fix log server content type

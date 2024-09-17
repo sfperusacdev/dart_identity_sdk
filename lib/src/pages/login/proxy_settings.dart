@@ -73,7 +73,7 @@ class _ProxySettingsPageState extends State<ProxySettingsPage> {
                 if (ip.isNotEmpty && port.isNotEmpty) {
                   var newObj = values.copyWith(proxyURL: "http://$ip:$port");
                   settings.setValue(newObj);
-                } else {
+                } else if (ip.isEmpty && port.isEmpty) {
                   var newObj = values.copyWith(proxyURL: null);
                   settings.setValue(newObj);
                 }

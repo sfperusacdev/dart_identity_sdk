@@ -50,7 +50,7 @@ class LOG {
     for (var line in lines) {
       response += "$line\n";
     }
-    return Response.ok(response);
+    return Response.ok(response, headers: {"Content-Type": "text/plain; charset=UTF-8"});
   }
 
   static Future<List<String>> _listLogLines() async {
