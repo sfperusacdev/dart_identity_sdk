@@ -24,15 +24,17 @@ class LOG {
     try {
       if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
         sqfliteFfiInit();
-        sqflite.databaseFactory = databaseFactoryFfi;
+        _connecion = await databaseFactoryFfi.openDatabase(":memory:");
+        await _connecion.execute("create table logs(value text)");
+      } else {
+        _connecion = await sqflite.openDatabase(
+          ":memory:",
+          version: 1,
+          onCreate: (db, _) async {
+            await db.execute("create table logs(value text)");
+          },
+        );
       }
-      _connecion = await sqflite.openDatabase(
-        ":memory:",
-        version: 1,
-        onCreate: (db, _) async {
-          await db.execute("create table logs(value text)");
-        },
-      );
       _isopenDB = true;
       final server = await shelf_io.serve(_handle, "0.0.0.0", logPort);
       debugPrint('Serving at http://${server.address.host}:${server.port}');

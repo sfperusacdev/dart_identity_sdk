@@ -145,3 +145,6 @@
 ## version: 5.6.0
 
 - Servidor de logs http://localhost:30069
+
+## version: 5.6.1
+- fix: sqflite default factory warning
