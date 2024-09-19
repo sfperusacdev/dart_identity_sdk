@@ -147,10 +147,17 @@
 - Servidor de logs http://localhost:30069
 
 ## version: 5.6.1
+
 - fix: sqflite default factory warning
 
 ## version: 5.6.2
+
 - fix: fix log server content type
 
 ## version: 5.6.3
+
 - fix: fix log init
+
+## version: 5.6.4
+
+- fix: fix insert log

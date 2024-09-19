@@ -73,8 +73,13 @@ class LOG {
       if (kDebugMode) print("$tag: $object\n");
     }
     if (_isopenDB) {
-      final qry = "insert into logs(value) values ('$line')";
-      _connecion.execute(qry);
+      try {
+        const qry = "insert into logs(value) values (?)";
+        _connecion.rawInsert(qry, [line]);
+      } catch (err) {
+        final qry = "insert into logs(value) values ('${err.toString()}')";
+        _connecion.execute(qry);
+      }
     }
   }
 
