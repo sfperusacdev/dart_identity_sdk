@@ -151,3 +151,6 @@
 
 ## version: 5.6.2
 - fix: fix log server content type
+
+## version: 5.6.3
+- fix: fix log init

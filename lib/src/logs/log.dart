@@ -21,6 +21,7 @@ class LOG {
   static bool _isopenDB = false;
 
   static Future<void> init({int logPort = 30069}) async {
+    if (_isopenDB) return;
     try {
       if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
         sqfliteFfiInit();
