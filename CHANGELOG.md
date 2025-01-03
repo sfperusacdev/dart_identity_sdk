@@ -161,3 +161,7 @@
 ## version: 5.6.4
 
 - fix: fix insert log
+
+## version: 5.6.
+
+- fix: update devapp2
