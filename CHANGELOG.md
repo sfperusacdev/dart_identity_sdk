@@ -162,6 +162,10 @@
 
 - fix: fix insert log
 
-## version: 5.6.
+## version: 5.6.6
+
+- fix: update devapp2
+
+## version: 5.6.7
 
 - fix: update devapp2
