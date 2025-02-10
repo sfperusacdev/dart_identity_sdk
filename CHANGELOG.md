@@ -169,3 +169,7 @@
 ## version: 5.6.7
 
 - fix: update devapp2
+
+## version: 5.6.8
+
+- fix: update libraries
