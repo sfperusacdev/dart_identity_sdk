@@ -6,14 +6,15 @@ import 'package:dart_identity_sdk/src/security/settings/server_sertting_storage.
 
 class AppPerfilService {
   Future<List<EmpresaAppPerfil>> findPefiles(List<String> empresas) async {
-    var settings = SystemStorageManager().instance<ServerSettingsSorage>().getValue();
+    var settings =
+        SystemStorageManager().instance<ServerSettingsSorage>().getValue();
     if (settings == null) throw Exception("invalid settings");
-    final uri = ApiService.parseUri(
+    final uri = ApiService.buildUri(
       await settings.recoveryPreferenciaServiceAddress(),
       "/v1/api/perfiles",
     );
-    var result = await ApiService.postWithUri(
-      uri,
+    var result = await ApiService.post(
+      withUri: uri,
       payload: {"empresa": empresas, "servicio": settings.appID},
     );
     var perfiles = <EmpresaAppPerfil>[];
@@ -24,13 +25,17 @@ class AppPerfilService {
   }
 
   Future<List<Preferencia>> findPreferencias(String perfilid) async {
-    var settings = SystemStorageManager().instance<ServerSettingsSorage>().getValue();
+    var settings =
+        SystemStorageManager().instance<ServerSettingsSorage>().getValue();
     if (settings == null) throw Exception("invalid settings");
-    final uri = ApiService.parseUri(
+    final uri = ApiService.buildUri(
       await settings.recoveryPreferenciaServiceAddress(),
       "/v1/api/perfil/$perfilid/preferencias",
     );
-    var result = await ApiService.getWithUri(uri, timeout: const Duration(seconds: 5));
+    var result = await ApiService.get(
+      timeout: const Duration(seconds: 5),
+      withUri: uri,
+    );
     var grupos = <GrupoPreferencia>[];
     for (var r in result) {
       grupos.add(GrupoPreferencia.fromMap(r));

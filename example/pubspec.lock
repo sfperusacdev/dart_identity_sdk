@@ -55,7 +55,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "5.6.7"
+    version: "5.7.0"
   devappsdk2:
     dependency: transitive
     description:
@@ -147,10 +147,10 @@ packages:
     dependency: transitive
     description:
       name: kdialogs
-      sha256: d29bc5fa9e95d4e111ad3256a654af1fabebc5891b0353f6fb3e56b72c1a58f6
+      sha256: bf1c5a3628a77fce2a912f57e752e2c78ac8ec026a1e511cb4ea41532508347e
       url: "https://pub.dev"
     source: hosted
-    version: "0.4.1"
+    version: "0.5.0"
   leak_tracker:
     dependency: transitive
     description:

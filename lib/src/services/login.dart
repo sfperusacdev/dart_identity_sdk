@@ -11,9 +11,13 @@ class LoginService {
     required String password,
     required String profileID,
   }) async {
-    var settings = SystemStorageManager().instance<ServerSettingsSorage>().getValue();
+    var settings =
+        SystemStorageManager().instance<ServerSettingsSorage>().getValue();
     if (settings == null) throw Exception("invalid settings");
-    final uri = ApiService.parseUri(await settings.recoveryIndentityServiceAddress(), "/v1/login");
+    final uri = ApiService.buildUri(
+      await settings.recoveryIndentityServiceAddress(),
+      "/v1/login",
+    );
     final manager = SessionManagerSDK();
     manager.setIdentityServerURL(uri.toString());
     await manager.login(
@@ -29,6 +33,7 @@ class LoginService {
     );
     final handle = ApplicationPreferenceManager();
     await handle.syncPreferences();
-    LOG.printInfo(["LOGIN", "DeviceID:", "$deviceid,", "DeviceName:", "$deviceName,"]);
+    LOG.printInfo(
+        ["LOGIN", "DeviceID:", "$deviceid,", "DeviceName:", "$deviceName,"]);
   }
 }
