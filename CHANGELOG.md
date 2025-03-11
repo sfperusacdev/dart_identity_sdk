@@ -177,3 +177,8 @@
 ## version: 5.7.0
 
 - refactor: service
+
+
+## version: 5.7.0
+
+- fix soundpool

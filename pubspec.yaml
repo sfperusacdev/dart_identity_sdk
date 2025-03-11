@@ -1,6 +1,6 @@
 name: dart_identity_sdk
 description: Just a sdk for identity
-version: 5.7.0
+version: 5.7.1
 homepage: https://github.com/sfperusacdev/dart_identity_sdk
 
 environment:
@@ -20,7 +20,7 @@ dependencies:
   shared_preferences: ^2.5.2
   shared_preferences_content_provider: ^0.0.5
   shelf: ^1.4.1
-  soundpool: ^2.4.1
+  soundpool: ^2.3.0
   sqflite: ^2.4.1
   sqflite_common_ffi: ^2.3.4+4
 
