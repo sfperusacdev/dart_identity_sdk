@@ -182,3 +182,7 @@
 ## version: 5.7.0
 
 - fix soundpool
+
+## version: 5.7.2
+
+- replace soundpool to audioplayers

@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await initializeIdentityDependencies(appID: "asistencia.app");
+  await initializeIdentityDependencies(appID: "tareo.app");
   runApp(const MyApp());
 }
 
@@ -49,7 +49,14 @@ class _HomePageState extends State<HomePage> {
     const encoder = JsonEncoder.withIndent("  ");
     final parts = token.split(".");
     if (parts.length != 3) return "";
-    final claimsData = parts[1];
+
+    String claimsData = parts[1];
+
+    // Normalizar padding para que la longitud sea múltiplo de 4
+    while (claimsData.length % 4 != 0) {
+      claimsData += "=";
+    }
+
     return encoder.convert(
       jsonDecode(utf8.decode(base64Url.decode(claimsData))),
     );
@@ -58,7 +65,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+      body: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -74,6 +81,18 @@ class _HomePageState extends State<HomePage> {
               child: const Text("Go Out"),
             ),
             const SizedBox(height: 20),
+            FilledButton(
+              onPressed: () async {
+                SoundService.cameraSound();
+              },
+              child: const Text("Sonido QR"),
+            ),
+            FilledButton(
+              onPressed: () async {
+                SoundService.errorSound();
+              },
+              child: const Text("Sonido Error"),
+            ),
             FilledButton(
               onPressed: () async {
                 await manager.refreshToken();

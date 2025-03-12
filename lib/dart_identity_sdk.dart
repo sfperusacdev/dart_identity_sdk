@@ -42,12 +42,15 @@ Future<bool> initializeIdentityDependencies({
   int logPort = 30069,
 }) async {
   await LOG.init(logPort: logPort);
-  if (defaultServiceID != null) ApiService.setDefaultServiceID(defaultServiceID);
+  if (defaultServiceID != null) {
+    ApiService.setDefaultServiceID(defaultServiceID);
+  }
   setApplicationID(appID);
   try {
     if (Platform.isAndroid || Platform.isIOS) {
       final ca = await PlatformAssetBundle().load('assets/certs/rootCA.pem');
-      SecurityContext.defaultContext.setTrustedCertificatesBytes(ca.buffer.asInt8List());
+      SecurityContext.defaultContext
+          .setTrustedCertificatesBytes(ca.buffer.asInt8List());
     }
   } catch (err) {
     LOG.printError([err]);
@@ -65,7 +68,7 @@ Future<bool> initializeIdentityDependencies({
     _managerInited = true;
   }
   if (!_soundInited) {
-    await SoundService().init();
+    await SoundService.init();
     _soundInited = true;
   }
   try {

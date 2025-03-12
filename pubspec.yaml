@@ -1,6 +1,6 @@
 name: dart_identity_sdk
 description: Just a sdk for identity
-version: 5.7.1
+version: 5.7.2
 homepage: https://github.com/sfperusacdev/dart_identity_sdk
 
 environment:
@@ -8,6 +8,7 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
+  audioplayers: ^6.4.0
   devappsdk2: ^1.0.2
   flutter:
     sdk: flutter
@@ -20,7 +21,6 @@ dependencies:
   shared_preferences: ^2.5.2
   shared_preferences_content_provider: ^0.0.5
   shelf: ^1.4.1
-  soundpool: ^2.3.0
   sqflite: ^2.4.1
   sqflite_common_ffi: ^2.3.4+4
 
@@ -35,6 +35,7 @@ dev_dependencies:
 flutter:
   # To add assets to your package, add an assets section, like this:
   assets:
+    - assets/sounds/
     - assets/sounds/qr.mp3
     - assets/sounds/error.mp3
 #
