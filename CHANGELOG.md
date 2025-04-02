@@ -186,3 +186,7 @@
 ## version: 5.7.2
 
 - replace soundpool to audioplayers
+
+## version: 5.7.3
+
+- Change preferencias server 

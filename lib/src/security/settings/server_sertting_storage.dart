@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 var _identityApp = "";
 const _preferenciasService = "preferencias.server";
 const _globalIdentityServerAddress = "https://api.identity2.sfperusac.com";
-const _globalPreferencesServerAddress = "https://api.pb.sfperusac.com";
+const _globalPreferencesServerAddress = "https://console.sfperusac.com";
 
 void setApplicationID(String id) => _identityApp = id;
 
