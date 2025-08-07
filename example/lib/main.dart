@@ -19,7 +19,7 @@ class AppRoutes extends IdentityRoutes {
         builder: (context, state) {
           return const HomePage();
         },
-      )
+      ),
     ];
   }
 }
@@ -69,10 +69,7 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Text(claims()),
-            ),
+            Padding(padding: const EdgeInsets.all(24.0), child: Text(claims())),
             const SizedBox(height: 20.0),
             FilledButton(
               onPressed: () async {

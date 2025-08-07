@@ -6,11 +6,7 @@ import 'package:dart_identity_sdk/src/managers/licence_manager.dart';
 const _tag = "DeviceLicenceManager";
 
 class DeviceLicenceManager {
-  static final DeviceLicenceManager _singleton = DeviceLicenceManager._internal();
-  factory DeviceLicenceManager() => _singleton;
-  DeviceLicenceManager._internal();
-
-  Future<String> deviceID() async {
+  static Future<String> deviceID() async {
     try {
       return await LicenceManagerSDK().deviceID();
     } catch (e) {
@@ -19,7 +15,7 @@ class DeviceLicenceManager {
     }
   }
 
-  Future<String> deviceName() async {
+  static Future<String> deviceName() async {
     try {
       return await LicenceManagerSDK().deviceName();
     } catch (e) {
@@ -28,7 +24,7 @@ class DeviceLicenceManager {
     }
   }
 
-  Future<List<Licence>> readLicences() async {
+  static Future<List<Licence>> readLicences() async {
     try {
       return await LicenceManagerSDK().readLicences();
     } catch (e) {

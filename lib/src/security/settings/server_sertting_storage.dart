@@ -1,10 +1,9 @@
 import 'dart:convert';
 import 'package:dart_identity_sdk/src/bases/storage/storer.dart';
-import 'package:devappsdk2/devappsdk.dart';
+import 'package:dart_identity_sdk/src/env/env.dart';
 import 'package:flutter/foundation.dart';
 
 var _identityApp = "";
-const _preferenciasService = "preferencias.server";
 const _globalIdentityServerAddress = "https://api.identity2.sfperusac.com";
 const _globalPreferencesServerAddress = "https://console.sfperusac.com";
 
@@ -16,7 +15,10 @@ class ServerSettings {
   String? identityServiceAddress;
   String? preferenciasServiceAddress;
 
-  ServerSettings({this.identityServiceAddress, this.preferenciasServiceAddress, this.proxyURL});
+  ServerSettings(
+      {this.identityServiceAddress,
+      this.preferenciasServiceAddress,
+      this.proxyURL});
 
   ServerSettings.fromJson(Map<String, dynamic> json) {
     identityServiceAddress = json['service_address'];
@@ -48,11 +50,8 @@ class ServerSettings {
 
     var valueToReturn = identityServiceAddress ?? _globalIdentityServerAddress;
     if (kDebugMode | kProfileMode) {
-      var message = 'la variable `$_identityApp` no está definida';
-      final devapp = DevAppManager();
-      final value = await devapp.readValue(_identityApp);
-      if (value == null) throw Exception(message);
-      valueToReturn = value;
+      final identityUrl = EnvConfig.identityServerUrl();
+      valueToReturn = identityUrl ?? _globalIdentityServerAddress;
     }
     return valueToReturn;
   }
@@ -60,13 +59,11 @@ class ServerSettings {
   Future<String> recoveryPreferenciaServiceAddress() async {
     if (proxyURL != null && proxyURL != "") return proxyURL ?? "";
 
-    var valueToReturn = preferenciasServiceAddress ?? _globalPreferencesServerAddress;
+    var valueToReturn =
+        preferenciasServiceAddress ?? _globalPreferencesServerAddress;
     if (kDebugMode | kProfileMode) {
-      const message = 'la variable `preferencias.server` no está definida';
-      final devapp = DevAppManager();
-      final value = await devapp.readValue(_preferenciasService);
-      if (value == null) throw Exception(message);
-      valueToReturn = value;
+      final preferencesUrl = EnvConfig.preferencesServerUrl();
+      valueToReturn = preferencesUrl ?? _globalPreferencesServerAddress;
     }
     return valueToReturn;
   }
@@ -77,8 +74,10 @@ class ServerSettings {
     String? proxyURL,
   }) {
     final newObj = ServerSettings(
-      identityServiceAddress: identityServiceAddress ?? this.identityServiceAddress,
-      preferenciasServiceAddress: preferenciasServiceAddress ?? this.preferenciasServiceAddress,
+      identityServiceAddress:
+          identityServiceAddress ?? this.identityServiceAddress,
+      preferenciasServiceAddress:
+          preferenciasServiceAddress ?? this.preferenciasServiceAddress,
       proxyURL: proxyURL ?? this.proxyURL,
     );
     return newObj;

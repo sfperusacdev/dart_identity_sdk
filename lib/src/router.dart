@@ -1,4 +1,5 @@
 import 'package:dart_identity_sdk/dart_identity_sdk.dart';
+import 'package:dart_identity_sdk/src/managers/application_preferences.dart';
 import 'package:dart_identity_sdk/src/pages/login/login_page.dart';
 import 'package:dart_identity_sdk/src/pages/login/proxy_settings.dart';
 import 'package:dart_identity_sdk/src/pages/settings/server_settings_page.dart';
@@ -14,7 +15,8 @@ List<RouteBase>? _last;
 class ApplicationRouterManager {
   final IdentityRoutes _routes;
   final bool Function(DateTime? sessionDate)? sessionValidationCriteria;
-  const ApplicationRouterManager(this._routes, {this.sessionValidationCriteria});
+  const ApplicationRouterManager(this._routes,
+      {this.sessionValidationCriteria});
 
   GoRouter router() {
     final routes = _routes.routes();
@@ -35,7 +37,7 @@ class ApplicationRouterManager {
     routes.add(
       GoRoute(
         path: ProxySettingsPage.path,
-        builder: (context, state) => ProxySettingsPage(),
+        builder: (context, state) => const ProxySettingsPage(),
       ),
     );
     _router = GoRouter(
@@ -47,7 +49,13 @@ class ApplicationRouterManager {
 
   String _getInitialRoute() {
     final manager = SessionManagerSDK();
-    if (manager.hasValidSession(criteria: sessionValidationCriteria)) return "/home";
+    if (manager.hasValidSession(criteria: sessionValidationCriteria)) {
+      final empresa = manager.getCompanyCode();
+      if (empresa != null) {
+        AppPreferences.setUpDomain(empresa);
+      }
+      return "/home";
+    }
     return LoginPage.path;
   }
 

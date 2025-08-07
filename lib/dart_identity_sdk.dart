@@ -13,7 +13,7 @@ export 'src/bases/storage/storer.dart';
 export 'src/bases/storage/system_storage_manager.dart';
 
 export 'src/managers/session_manager.dart';
-export 'src/managers/application_preferences_manager.dart';
+export 'src/managers/application_preferences.dart';
 export 'src/managers/licence_manager.dart';
 export 'src/managers/device_info_manager.dart';
 
@@ -27,10 +27,12 @@ export 'src/device_info.dart';
 
 import 'dart:io';
 import 'package:dart_identity_sdk/dart_identity_sdk.dart';
+import 'package:dart_identity_sdk/src/managers/application_preferences.dart';
 import 'package:dart_identity_sdk/src/security/selected_sucursal_storage.dart';
 import 'package:dart_identity_sdk/src/security/settings/login_fields.dart';
 import 'package:dart_identity_sdk/src/security/settings/server_sertting_storage.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 bool _managerInited = false;
 bool _soundInited = false;
@@ -40,8 +42,14 @@ Future<bool> initializeIdentityDependencies({
   required String appID,
   String? defaultServiceID,
   int logPort = 30069,
+  String envFileName = '.env', // asset
 }) async {
   await LOG.init(logPort: logPort);
+  try {
+    await dotenv.load(fileName: ".env");
+  } catch (e) {
+    LOG.printError(["ERROR cargando las variables de entorno:", e.toString()]);
+  }
   if (defaultServiceID != null) {
     ApiService.setDefaultServiceID(defaultServiceID);
   }
@@ -61,7 +69,8 @@ Future<bool> initializeIdentityDependencies({
   }
   if (!_managerInited) {
     var manager = SystemStorageManager();
-    manager.setPreferencias(await ApplicationPreferenceManager().load());
+    await AppPreferences.initialize();
+    manager.setPreferencias(AppPreferences.global);
     manager.addprovide((preferences) => ServerSettingsSorage(preferences));
     manager.addprovide((preferences) => LoginFielsStorage(preferences));
     manager.addprovide((preferences) => SelectedSucursalStorage(preferences));

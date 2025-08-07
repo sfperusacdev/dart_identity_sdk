@@ -1,4 +1,5 @@
 import 'package:dart_identity_sdk/dart_identity_sdk.dart';
+import 'package:dart_identity_sdk/src/managers/application_preferences.dart';
 import 'package:dart_identity_sdk/src/security/settings/server_sertting_storage.dart';
 
 class LoginService {
@@ -31,8 +32,8 @@ class LoginService {
       appVersion: ApplicationInfo().getAppVersion(),
       profileID: profileID,
     );
-    final handle = ApplicationPreferenceManager();
-    await handle.syncPreferences();
+    AppPreferences.setUpDomain(empresa);
+    await AppPreferences.syncPreferences();
     LOG.printInfo(
         ["LOGIN", "DeviceID:", "$deviceid,", "DeviceName:", "$deviceName,"]);
   }

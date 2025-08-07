@@ -51,7 +51,8 @@ class _LoginFromState extends State<LoginFrom> {
             surfaceTintColor: Colors.white,
             elevation: 8,
             child: Container(
-              padding: const EdgeInsets.only(left: 24.0, right: 24.0, top: 8.0, bottom: 65.0),
+              padding: const EdgeInsets.only(
+                  left: 24.0, right: 24.0, top: 8.0, bottom: 65.0),
               child: Form(
                 key: formKey,
                 child: Padding(
@@ -165,7 +166,8 @@ class _LoginFromState extends State<LoginFrom> {
     return TextFormField(
       initialValue: _username,
       onSaved: (newValue) => _username = newValue ?? '',
-      validator: (value) => value?.isEmpty ?? false ? 'no puede quedar vacío' : null,
+      validator: (value) =>
+          value?.isEmpty ?? false ? 'no puede quedar vacío' : null,
       cursorColor: Theme.of(context).primaryColor,
       decoration: InputDecoration(
         border: const UnderlineInputBorder(borderSide: BorderSide()),
@@ -193,7 +195,8 @@ class _LoginFromState extends State<LoginFrom> {
       autocorrect: false,
       enableSuggestions: false,
       cursorColor: Theme.of(context).primaryColor,
-      validator: ((value) => value?.isEmpty ?? false ? 'no puede quedar vacío' : null),
+      validator: ((value) =>
+          value?.isEmpty ?? false ? 'no puede quedar vacío' : null),
       onSaved: (newValue) => _password = newValue ?? '',
       decoration: InputDecoration(
           border: const UnderlineInputBorder(borderSide: BorderSide()),
@@ -239,7 +242,9 @@ class _LoginFromState extends State<LoginFrom> {
               children: [
                 const SizedBox(
                   width: double.infinity,
-                  child: Text('Iniciar sesión', textAlign: TextAlign.center, style: TextStyle(color: Colors.white)),
+                  child: Text('Iniciar sesión',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.white)),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -288,7 +293,8 @@ class _LoginFromState extends State<LoginFrom> {
       Navigator.of(context).pushNamed("/settings");
       return;
     }
-    var request = RequestLogin(empresa: _empresa, username: _username, password: _password);
+    var request = RequestLogin(
+        empresa: _empresa, username: _username, password: _password);
     if (_memorize) {
       loginMemory.setValue(request);
     } else {
@@ -298,16 +304,16 @@ class _LoginFromState extends State<LoginFrom> {
       context,
       doProcess: () async {
         final selectedEmpresa = _empresa.trim();
-        final manager = DeviceLicenceManager();
-        final licences = await manager.readLicences();
-        final index = licences.indexWhere((element) => element.companyCode == selectedEmpresa);
+        final licences = await DeviceLicenceManager.readLicences();
+        final index = licences
+            .indexWhere((element) => element.companyCode == selectedEmpresa);
         if (index == -1) throw "no se econtro licencia para $selectedEmpresa";
         final licence = licences[index];
         final service = LoginService();
         await service.login(
           licence: licence.licenceCode ?? "",
-          deviceid: await manager.deviceID(),
-          deviceName: await manager.deviceName(),
+          deviceid: await DeviceLicenceManager.deviceID(),
+          deviceName: await DeviceLicenceManager.deviceName(),
           empresa: _empresa.trim(),
           username: _username.trim(),
           password: _password.trim(),
