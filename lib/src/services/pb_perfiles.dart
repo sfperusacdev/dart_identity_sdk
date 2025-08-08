@@ -1,21 +1,17 @@
 import 'package:dart_identity_sdk/src/bases/services.dart';
-import 'package:dart_identity_sdk/src/bases/storage/system_storage_manager.dart';
 import 'package:dart_identity_sdk/src/entities/empresa_app_perfile.dart';
 import 'package:dart_identity_sdk/src/entities/preferencia.dart';
-import 'package:dart_identity_sdk/src/security/settings/server_sertting_storage.dart';
+import 'package:dart_identity_sdk/src/env/env.dart';
 
 class AppPerfilService {
   Future<List<EmpresaAppPerfil>> findPefiles(List<String> empresas) async {
-    var settings =
-        SystemStorageManager().instance<ServerSettingsSorage>().getValue();
-    if (settings == null) throw Exception("invalid settings");
     final uri = ApiService.buildUri(
-      await settings.recoveryPreferenciaServiceAddress(),
+      EnvConfig.preferencesServerUrl(),
       "/v1/api/perfiles",
     );
     var result = await ApiService.post(
       withUri: uri,
-      payload: {"empresa": empresas, "servicio": settings.appID},
+      payload: {"empresa": empresas, "servicio": EnvConfig.appID},
     );
     var perfiles = <EmpresaAppPerfil>[];
     for (var r in result) {
@@ -25,11 +21,8 @@ class AppPerfilService {
   }
 
   Future<List<Preferencia>> findPreferencias(String perfilid) async {
-    var settings =
-        SystemStorageManager().instance<ServerSettingsSorage>().getValue();
-    if (settings == null) throw Exception("invalid settings");
     final uri = ApiService.buildUri(
-      await settings.recoveryPreferenciaServiceAddress(),
+      EnvConfig.preferencesServerUrl(),
       "/v1/api/perfil/$perfilid/preferencias",
     );
     var result = await ApiService.get(

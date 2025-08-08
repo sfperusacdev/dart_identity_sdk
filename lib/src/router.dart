@@ -1,8 +1,5 @@
 import 'package:dart_identity_sdk/dart_identity_sdk.dart';
-import 'package:dart_identity_sdk/src/managers/application_preferences.dart';
 import 'package:dart_identity_sdk/src/pages/login/login_page.dart';
-import 'package:dart_identity_sdk/src/pages/login/proxy_settings.dart';
-import 'package:dart_identity_sdk/src/pages/settings/server_settings_page.dart';
 import 'package:go_router/go_router.dart';
 
 abstract class IdentityRoutes {
@@ -28,18 +25,6 @@ class ApplicationRouterManager {
         builder: (context, state) => const LoginPage(),
       ),
     );
-    routes.add(
-      GoRoute(
-        path: ServerSettingsPage.path,
-        builder: (context, state) => const ServerSettingsPage(),
-      ),
-    );
-    routes.add(
-      GoRoute(
-        path: ProxySettingsPage.path,
-        builder: (context, state) => const ProxySettingsPage(),
-      ),
-    );
     _router = GoRouter(
       initialLocation: _getInitialRoute(),
       routes: routes,
@@ -48,12 +33,11 @@ class ApplicationRouterManager {
   }
 
   String _getInitialRoute() {
-    final manager = SessionManagerSDK();
-    if (manager.hasValidSession(criteria: sessionValidationCriteria)) {
-      final empresa = manager.getCompanyCode();
-      if (empresa != null) {
-        AppPreferences.setUpDomain(empresa);
-      }
+    final hasValidSession =
+        SessionManagerSDK.hasValidSession(criteria: sessionValidationCriteria);
+    if (hasValidSession) {
+      final empresa = SessionManagerSDK.getCompanyCode();
+      AppPreferences.setUpDomain(empresa);
       return "/home";
     }
     return LoginPage.path;
@@ -66,18 +50,6 @@ class ApplicationRouterManager {
       }
       return true;
     }(), "the path ${LoginPage.path} are reserved");
-    assert(() {
-      for (var r in routes) {
-        if (r is GoRoute && r.path == ServerSettingsPage.path) return false;
-      }
-      return true;
-    }(), "the path ${ServerSettingsPage.path} are reserved");
-    assert(() {
-      for (var r in routes) {
-        if (r is GoRoute && r.path == ProxySettingsPage.path) return false;
-      }
-      return true;
-    }(), "the path ${ProxySettingsPage.path} are reserved");
     assert(() {
       var homefound = false;
       for (var r in routes) {

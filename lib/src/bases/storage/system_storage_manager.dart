@@ -14,7 +14,8 @@ class SystemStorageManager {
   SharedPreferences get prefrences => _preferences!;
 
   final Map<Type, Object> _storedinstances = <Type, Object>{};
-  addprovide<T extends Storer>(T Function(SharedPreferences preferences) creator) {
+  addprovide<T extends Storer>(
+      T Function(SharedPreferences preferences) creator) {
     _storedinstances[T] = creator(_preferences!);
   }
 

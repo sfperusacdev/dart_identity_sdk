@@ -4,8 +4,6 @@ export 'src/entities/empresa_app_perfile.dart';
 export 'src/entities/entities.dart';
 export 'src/entities/preferencia.dart';
 
-export 'src/storage/session_storage.dart';
-
 export 'src/bases/exceptions.dart';
 export 'src/bases/services.dart';
 export 'src/bases/sound_service.dart';
@@ -27,10 +25,8 @@ export 'src/device_info.dart';
 
 import 'dart:io';
 import 'package:dart_identity_sdk/dart_identity_sdk.dart';
-import 'package:dart_identity_sdk/src/managers/application_preferences.dart';
-import 'package:dart_identity_sdk/src/security/selected_sucursal_storage.dart';
-import 'package:dart_identity_sdk/src/security/settings/login_fields.dart';
-import 'package:dart_identity_sdk/src/security/settings/server_sertting_storage.dart';
+import 'package:dart_identity_sdk/kdialogs.dart';
+import 'package:dart_identity_sdk/src/env/env.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -44,16 +40,17 @@ Future<bool> initializeIdentityDependencies({
   int logPort = 30069,
   String envFileName = '.env', // asset
 }) async {
+  initKDialogStrings();
   await LOG.init(logPort: logPort);
   try {
-    await dotenv.load(fileName: ".env");
+    await dotenv.load(fileName: envFileName);
   } catch (e) {
     LOG.printError(["ERROR cargando las variables de entorno:", e.toString()]);
   }
   if (defaultServiceID != null) {
     ApiService.setDefaultServiceID(defaultServiceID);
   }
-  setApplicationID(appID);
+  EnvConfig.setApplicationID(appID);
   try {
     if (Platform.isAndroid || Platform.isIOS) {
       final ca = await PlatformAssetBundle().load('assets/certs/rootCA.pem');
@@ -71,9 +68,6 @@ Future<bool> initializeIdentityDependencies({
     var manager = SystemStorageManager();
     await AppPreferences.initialize();
     manager.setPreferencias(AppPreferences.global);
-    manager.addprovide((preferences) => ServerSettingsSorage(preferences));
-    manager.addprovide((preferences) => LoginFielsStorage(preferences));
-    manager.addprovide((preferences) => SelectedSucursalStorage(preferences));
     _managerInited = true;
   }
   if (!_soundInited) {
@@ -81,7 +75,7 @@ Future<bool> initializeIdentityDependencies({
     _soundInited = true;
   }
   try {
-    await LicenceManagerSDK().init(
+    await LicenceManagerSDK.init(
       SystemStorageManager().prefrences,
     ); // es probable que falle en versiones 8.1 de android
   } catch (e) {
@@ -90,12 +84,12 @@ Future<bool> initializeIdentityDependencies({
   return true;
 }
 
-String? getSelectedCompanyBranch() {
-  final manager = SystemStorageManager();
-  return manager.instance<SelectedSucursalStorage>().getValue();
+const _selectedBranchKey = "x_selected_branch";
+
+String? getSelectedBranch() {
+  return AppPreferences.private.getString(_selectedBranchKey);
 }
 
-Future<void> setSelectedCompanyBranch(String value) async {
-  final manager = SystemStorageManager();
-  await manager.instance<SelectedSucursalStorage>().setValue(value);
+Future<void> setSelectedBranch(String value) async {
+  await AppPreferences.private.setString(_selectedBranchKey, value);
 }

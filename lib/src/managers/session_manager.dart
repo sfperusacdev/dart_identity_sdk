@@ -1,140 +1,117 @@
 import 'dart:convert';
-
-import 'package:dart_identity_sdk/src/bases/storage/system_storage_manager.dart';
-import 'package:dart_identity_sdk/src/entities/entities.dart';
+import 'package:dart_identity_sdk/dart_identity_sdk.dart';
 import 'package:dart_identity_sdk/src/entities/refresh_token_response.dart';
 import 'package:dart_identity_sdk/src/pages/login/login_page.dart';
-import 'package:dart_identity_sdk/src/security/selected_sucursal_storage.dart';
-import 'package:dart_identity_sdk/src/storage/session_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart' as intl;
 
+const _sessionStorageKey = "dart_identity_sdk_session_storage";
+
 class SessionManagerSDK {
-  SessionManagerSDK._privateConstructor();
-  static final SessionManagerSDK _instance = SessionManagerSDK._privateConstructor();
-  factory SessionManagerSDK() => _instance;
+  static IdentitySessionResponse? _session;
+  static String? _identityURL;
 
-  SharedPreferences? _preferences;
-  SharedPreferences? get preferences => _preferences;
+  static bool _firstOpen = false;
 
-  SessionStorage? _storage;
-
-  String? _identityURL;
-
-  Future<void> init() async {
-    _preferences = await SharedPreferences.getInstance();
-    if (_preferences == null) return;
-    _storage = SessionStorage(_preferences!);
-    _storage!.authsession;
+  static IdentitySessionResponse? getCurrentSession() {
+    if (_session != null) return _session;
+    var raw = AppPreferences.global.getString(_sessionStorageKey);
+    if (raw == null || raw.isEmpty) return null;
+    _session = IdentitySessionResponse.fromJson(raw);
+    return _session;
   }
 
-  void setIdentityServerURL(String url) {
+  static void setIdentityServerURL(String url) {
     _identityURL = url;
   }
 
-  String? findServiceLocation(String serviceID) {
-    final locations = _storage?.authsession?.locations ?? [];
-    final index = locations.indexWhere((element) => element.codigo == serviceID);
+  static String? findServiceLocation(String serviceID) {
+    final session = getCurrentSession();
+    final locations = session?.locations ?? [];
+    final index =
+        locations.indexWhere((element) => element.codigo == serviceID);
     if (index == -1) return null;
     return locations[index].location;
   }
 
-  List<String> findCompanyBranchs() {
-    final sucursales = _storage?.authsession?.sucursales ?? [];
+  static List<String> findCompanyBranchs() {
+    final session = getCurrentSession();
+    final sucursales = session?.sucursales ?? [];
     return sucursales.map((s) => s.code ?? "").toList();
   }
 
-  (List<String>, bool) checkDependencies(List<String> dependencies) {
-    final locations = _storage?.authsession?.locations ?? [];
-    var notfound = <String>[];
+  static (List<String>, bool) checkDependencies(List<String> dependencies) {
+    final session = getCurrentSession();
+    final locations = session?.locations ?? [];
+    var missing = <String>[];
     for (var service in dependencies) {
-      var index = locations.indexWhere((elm) => elm.codigo == service);
-      if (index == -1) {
-        notfound.add(service);
-      } else if (locations[index].location == null) {
-        notfound.add(service);
-      } else if (locations[index].location == "") {
-        notfound.add(service);
+      final index = locations.indexWhere((l) => l.codigo == service);
+      if (index == -1 ||
+          locations[index].location == null ||
+          locations[index].location!.isEmpty) {
+        missing.add(service);
       }
     }
-    return (notfound, notfound.isEmpty);
+    return (missing, missing.isEmpty);
   }
 
-  String? getToken() => _storage?.authsession?.token;
-  String? licenceCode() => _storage?.authsession?.device?.companyLicenceCode ?? "";
-  String? profileID() => _storage?.authsession?.profileID;
-  String? getCompanyCode() => _storage?.authsession?.session?.company ?? "";
-  String? getUsername() => _storage?.authsession?.usuario?.username;
-  String? getReferenceCode() => _storage?.authsession?.usuario?.referenceCode;
+  static String? getToken() => _session?.token;
 
-  DateTime? lastLoginDate() {
-    if (_storage?.authsession?.timeStamp == null) return null;
-    return DateTime.fromMillisecondsSinceEpoch(
-      _storage?.authsession?.timeStamp ?? 0,
-      isUtc: true,
-    );
+  static String getLicenceCode() => _session?.device?.companyLicenceCode ?? "";
+
+  static String? getProfileID() => _session?.profileID;
+
+  static String getCompanyCode() => _session?.session?.company ?? "";
+
+  static String? getUsername() => _session?.usuario?.username;
+
+  static String? getReferenceCode() => _session?.usuario?.referenceCode;
+
+  static DateTime? getLastLoginDate() {
+    final timestamp = _session?.timeStamp;
+    return (timestamp != null)
+        ? DateTime.fromMillisecondsSinceEpoch(timestamp, isUtc: true)
+        : null;
   }
 
-  bool hasValidSession({bool Function(DateTime? loginDate)? criteria}) {
-    if (_storage?.authsession == null) return false;
-    if (_storage?.authsession?.timeStamp == null) return false;
-    var lastLogin = lastLoginDate();
+  static bool hasValidSession({bool Function(DateTime? loginDate)? criteria}) {
+    if (getCurrentSession()?.timeStamp == null) return false;
+    final lastLogin = getLastLoginDate();
     if (criteria != null) return criteria(lastLogin);
     final last = intl.DateFormat('yyyy-MM-dd').format(lastLogin!.toLocal());
-    final now = intl.DateFormat('yyyy-MM-dd').format(DateTime.now());
+    final now = intl.DateFormat('yyyy-MM-dd').format(DateTime.now().toLocal());
     return now == last;
   }
 
-  bool hasPerm(String permission) {
-    final authsession = _storage?.authsession;
-    if (authsession == null) return false;
-    final permissions = authsession.session?.permissions ?? [];
-    for (var p in permissions) {
-      if (p.id == permission) return true;
-    }
-    return false;
+  static bool hasPerm(String permission) {
+    final permissions = getCurrentSession()?.session?.permissions ?? [];
+    return permissions.any((p) => p.id == permission);
   }
 
-  bool hasPermOnBranch(String permission, String branch) {
-    final authsession = _storage?.authsession;
-    if (authsession == null) return false;
-    final permissions = authsession.session?.permissions ?? [];
-    for (var p in permissions) {
-      if (p.id == permission) {
-        final branchs = p.companyBrances ?? [];
-        for (var b in branchs) {
-          if (b == branch) return true;
-        }
-      }
-    }
-    return false;
+  static bool hasPermOnBranch(String permission, String branch) {
+    final permissions = getCurrentSession()?.session?.permissions ?? [];
+    return permissions.any(
+        (p) => p.id == permission && (p.companyBrances ?? []).contains(branch));
   }
 
-  List<String> getSubordinates() {
-    return _storage?.authsession?.session?.subordinates ?? [];
+  static List<String> getSubordinates() {
+    return getCurrentSession()?.session?.subordinates ?? [];
   }
 
-  List<String> getSupervisors() {
-    return _storage?.authsession?.session?.supervisors ?? [];
+  static List<String> getSupervisors() {
+    return getCurrentSession()?.session?.supervisors ?? [];
   }
 
-  Future<void> goOut(BuildContext context) async {
-    await loginOut();
+  static Future<void> logout(BuildContext context) async {
+    _session = null;
+    await AppPreferences.global.remove(_sessionStorageKey);
     if (context.mounted) context.go(LoginPage.path);
     _firstOpen = false;
   }
 
-  Future<void> loginOut() async {
-    SystemStorageManager().instance<SelectedSucursalStorage>().clean();
-    if (_storage == null) return;
-    await _storage?.clean();
-  }
-
-  bool _firstOpen = false;
-  Future<void> login({
+  static Future<void> login({
     required String licence,
     required String deviceid,
     required String deviceName,
@@ -147,7 +124,7 @@ class SessionManagerSDK {
   }) async {
     final uri = Uri.tryParse(_identityURL ?? "");
     if (uri == null) throw Exception("($_identityURL), no es una url valida");
-    final response = await _postlogin(
+    final response = await _postLoginRequest(
       uri: uri,
       payload: {
         "empresa": empresa,
@@ -161,27 +138,38 @@ class SessionManagerSDK {
         "profile_id": profileID,
       },
     );
-    
     final session = IdentitySessionResponse.fromMap(response);
     _firstOpen = true;
-    await _storage?.setValue(session.copyWith(profileID: profileID));
+    await _persistSession(session.copyWith(profileID: profileID));
   }
 
-  bool get ifFirstOpen => _firstOpen;
+  static bool get ifFirstOpen => _firstOpen;
 
-  Future<void> refreshToken() async {
-    final currentSession = _storage?.authsession;
-    if (currentSession == null) return;
-    if (!hasValidSession()) return;
+  static Future<void> refreshToken() async {
+    final currentSession = getCurrentSession();
+    if (currentSession == null || !hasValidSession()) return;
     final uri = Uri.tryParse("$_identityURL/refresh-token");
-    if (uri == null) throw Exception("($_identityURL/refresh-token), no es una url valida");
-    final response = await _refreshToken(uri: uri, currentToken: currentSession.token ?? "");
-    final newSession = currentSession.copyWith(
+    if (uri == null) {
+      throw Exception("($_identityURL/refresh-token), no es una url valida");
+    }
+
+    final response = await _refreshTokenRequest(
+      uri: uri,
+      currentToken: currentSession.token ?? "",
+    );
+
+    final updated = currentSession.copyWith(
       token: response.token,
       date: response.date,
       timeStamp: response.timeStamp,
     );
-    await _storage?.setValue(newSession);
+
+    await _persistSession(updated);
+  }
+
+  static Future<void> _persistSession(IdentitySessionResponse session) async {
+    await AppPreferences.global.setString(_sessionStorageKey, session.toJson());
+    _session = session;
   }
 }
 
@@ -192,26 +180,30 @@ class _ApiErrorResponse implements Exception {
   String toString() => _message;
 }
 
-Future<RefreshTokenResponse> _refreshToken({
+Future<RefreshTokenResponse> _refreshTokenRequest({
   required Uri uri,
   required String currentToken,
 }) async {
-  var client = http.Client();
+  final client = http.Client();
   try {
     final response = await client.get(
       uri,
-      headers: {"Content-Type": "application/json", 'Authorization': currentToken},
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': currentToken
+      },
     );
     final decoded = json.decode(response.body);
     if ((response.statusCode / 100).truncate() != 2) {
-      throw _ApiErrorResponse(decoded["message"] ?? 'Error desconocido en la API.');
+      throw _ApiErrorResponse(
+          decoded["message"] ?? 'Error desconocido en la API.');
     }
-    client.close();
     return RefreshTokenResponse.fromMap(decoded["data"]);
   } catch (e) {
     if (e is _ApiErrorResponse) rethrow;
     if (e.toString().contains('SocketException')) {
-      throw Exception('Error de conexión a Internet o con el servicio. Verifica tu conexión.');
+      throw Exception(
+          'Error de conexión a Internet o con el servicio. Verifica tu conexión.');
     } else if (e.toString().contains('HttpException')) {
       throw Exception('Error en la solicitud HTTP. Comprueba la URL.');
     } else if (e.toString().contains('FormatException')) {
@@ -224,11 +216,11 @@ Future<RefreshTokenResponse> _refreshToken({
   }
 }
 
-Future _postlogin({
+Future _postLoginRequest({
   required Uri uri,
   Object? payload = const {},
 }) async {
-  var client = http.Client();
+  final client = http.Client();
   try {
     final response = await client.post(
       uri,
@@ -237,14 +229,15 @@ Future _postlogin({
     );
     final decoded = json.decode(response.body);
     if ((response.statusCode / 100).truncate() != 2) {
-      throw _ApiErrorResponse(decoded["message"] ?? 'Error desconocido en la API.');
+      throw _ApiErrorResponse(
+          decoded["message"] ?? 'Error desconocido en la API.');
     }
-    client.close();
     return decoded["data"];
   } catch (e) {
     if (e is _ApiErrorResponse) rethrow;
     if (e.toString().contains('SocketException')) {
-      throw Exception('Error de conexión a Internet o con el servicio. Verifica tu conexión.');
+      throw Exception(
+          'Error de conexión a Internet o con el servicio. Verifica tu conexión.');
     } else if (e.toString().contains('HttpException')) {
       throw Exception('Error en la solicitud HTTP. Comprueba la URL.');
     } else if (e.toString().contains('FormatException')) {

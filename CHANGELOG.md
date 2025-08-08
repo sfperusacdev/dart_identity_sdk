@@ -190,3 +190,7 @@
 ## version: 5.7.3
 
 - Change preferencias server 
+
+## version:  5.8.0
+
+- Refactorizacion

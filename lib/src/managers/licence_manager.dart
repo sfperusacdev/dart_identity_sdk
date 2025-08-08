@@ -39,7 +39,9 @@ class _SharedPreferences implements ReadeProvider {
   @override
   Future<List<Licence>> licences() async {
     final value = await SharedPreferencesContentProvider.get("licences");
-    if (value is String && value.trim().isNotEmpty) return licenceFromJson(value.trim());
+    if (value is String && value.trim().isNotEmpty) {
+      return licenceFromJson(value.trim());
+    }
     return [];
   }
 }
@@ -48,8 +50,11 @@ class _LocalServer implements ReadeProvider {
   Future<String?> getFunctionalUrl(List<String> urls) async {
     for (String url in urls) {
       try {
-        final request = await HttpClient().getUrl(Uri.parse(url)).timeout(const Duration(seconds: 2));
-        final response = await request.close().timeout(const Duration(seconds: 2));
+        final request = await HttpClient()
+            .getUrl(Uri.parse(url))
+            .timeout(const Duration(seconds: 2));
+        final response =
+            await request.close().timeout(const Duration(seconds: 2));
         if (response.statusCode == 200) return url;
       } catch (e) {
         continue;
@@ -63,7 +68,10 @@ class _LocalServer implements ReadeProvider {
     if (envValue != null) {
       return envValue;
     }
-    const defaultUrls = ["https://localhost:10206", "https://local.identity.sfperusac.com:10206"];
+    const defaultUrls = [
+      "https://localhost:10206",
+      "https://local.identity.sfperusac.com:10206"
+    ];
     return await getFunctionalUrl(defaultUrls);
   }
 
@@ -108,32 +116,29 @@ class _LocalServer implements ReadeProvider {
 }
 
 class LicenceManagerSDK {
-  static final LicenceManagerSDK _singleton = LicenceManagerSDK._internal();
-  factory LicenceManagerSDK() => _singleton;
-  LicenceManagerSDK._internal();
-  late ReadeProvider reader;
-  bool _wastInited = false;
-  late SharedPreferences _preferences;
+  static late ReadeProvider _reader;
+  static bool _wasInited = false;
+  static late SharedPreferences _preferences;
 
-  Future<void> init(SharedPreferences preferences) async {
-    if (_wastInited) return;
-    if (Platform.isIOS) throw "IOS is not soported";
+  static Future<void> init(SharedPreferences preferences) async {
+    if (_wasInited) return;
+    if (Platform.isIOS) throw "IOS is not supported";
     _preferences = preferences;
-    reader = (Platform.isAndroid) ? _SharedPreferences() : _LocalServer();
+    _reader = (Platform.isAndroid) ? _SharedPreferences() : _LocalServer();
     try {
-      await reader.init();
+      await _reader.init();
       await Future.delayed(const Duration(seconds: 1));
-      _wastInited = true;
+      _wasInited = true;
     } catch (err) {
-      if (kDebugMode) print("LicenceManagerSDK.init EROR: ${err.toString()}");
+      if (kDebugMode) print("LicenceManagerSDK.init ERROR: ${err.toString()}");
       throw '''Servicio de autentificación no encontrado''';
     }
   }
 
-  Future<List<Licence>> readLicences() async {
-    if (!_wastInited) throw "LicenceManagerSDK was not initialized";
+  static Future<List<Licence>> readLicences() async {
+    if (!_wasInited) throw "LicenceManagerSDK was not initialized";
     try {
-      final result = await reader.licences();
+      final result = await _reader.licences();
       _preferences.setString("IDENTITY_LICENCES", licenceToJson(result));
       return result;
     } catch (err) {
@@ -144,10 +149,10 @@ class LicenceManagerSDK {
     }
   }
 
-  Future<String> deviceID() async {
-    if (!_wastInited) throw "LicenceManagerSDK was not initialized";
+  static Future<String> deviceID() async {
+    if (!_wasInited) throw "LicenceManagerSDK was not initialized";
     try {
-      final result = await reader.deviceID();
+      final result = await _reader.deviceID();
       _preferences.setString("IDENTITY_DEVICE_ID", result);
       return result;
     } catch (err) {
@@ -158,10 +163,10 @@ class LicenceManagerSDK {
     }
   }
 
-  Future<String> deviceName() async {
-    if (!_wastInited) throw "LicenceManagerSDK was not initialized";
+  static Future<String> deviceName() async {
+    if (!_wasInited) throw "LicenceManagerSDK was not initialized";
     try {
-      final result = await reader.deviceName();
+      final result = await _reader.deviceName();
       _preferences.setString("IDENTITY_DEVICE_NAME", result);
       return result;
     } catch (err) {
@@ -173,9 +178,11 @@ class LicenceManagerSDK {
   }
 }
 
-List<Licence> licenceFromJson(String str) => List<Licence>.from(json.decode(str).map((x) => Licence.fromMap(x)));
+List<Licence> licenceFromJson(String str) =>
+    List<Licence>.from(json.decode(str).map((x) => Licence.fromMap(x)));
 
-String licenceToJson(List<Licence> data) => json.encode(List<dynamic>.from(data.map((x) => x.toMap())));
+String licenceToJson(List<Licence> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toMap())));
 
 class Licence {
   String? licenceCode;

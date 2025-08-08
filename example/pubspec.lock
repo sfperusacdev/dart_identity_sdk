@@ -65,6 +65,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.2.1"
+  bloc:
+    dependency: transitive
+    description:
+      name: bloc
+      sha256: "52c10575f4445c61dd9e0cafcc6356fdd827c4c64dd7945ef3c4105f6b6ac189"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.0.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -119,7 +127,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "5.7.3"
+    version: "5.8.0"
   fake_async:
     dependency: transitive
     description:
@@ -157,6 +165,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_bloc:
+    dependency: transitive
+    description:
+      name: flutter_bloc
+      sha256: cf51747952201a455a1c840f8171d273be009b932c75093020f9af64f2123e38
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.1.1"
   flutter_dotenv:
     dependency: transitive
     description:
@@ -287,6 +303,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.16.0"
+  mobile_scanner:
+    dependency: transitive
+    description:
+      name: mobile_scanner
+      sha256: "54005bdea7052d792d35b4fef0f84ec5ddc3a844b250ecd48dc192fb9b4ebc95"
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.0.1"
   nested:
     dependency: transitive
     description:
@@ -646,4 +670,4 @@ packages:
     version: "1.1.0"
 sdks:
   dart: ">=3.8.1 <4.0.0"
-  flutter: ">=3.27.0"
+  flutter: ">=3.29.0"

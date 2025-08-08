@@ -105,8 +105,7 @@ class AppPreferences {
 
   static Future<bool> syncPreferences() async {
     try {
-      final sessionManager = SessionManagerSDK();
-      final profileId = sessionManager.profileID();
+      final profileId = SessionManagerSDK.getProfileID();
       if (profileId == null || profileId.isEmpty) return false;
 
       final perfilService = AppPerfilService();

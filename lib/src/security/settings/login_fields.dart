@@ -1,7 +1,3 @@
-import 'dart:convert';
-
-import 'package:dart_identity_sdk/src/bases/storage/storer.dart';
-
 class RequestLogin {
   String? empresa;
   String? username;
@@ -9,7 +5,12 @@ class RequestLogin {
   String? deviceId;
   String? licence;
 
-  RequestLogin({this.empresa, this.username, this.password, this.deviceId, this.licence});
+  RequestLogin(
+      {this.empresa,
+      this.username,
+      this.password,
+      this.deviceId,
+      this.licence});
 
   RequestLogin.fromJson(Map<String, dynamic> json) {
     empresa = json['empresa'];
@@ -28,23 +29,4 @@ class RequestLogin {
     data['licence'] = licence;
     return data;
   }
-}
-
-class LoginFielsStorage extends PreferenceStorer<RequestLogin> {
-  final String _key = "LoginFilesStorage";
-  LoginFielsStorage(super.preferences);
-  @override
-  RequestLogin? getValue() {
-    var json = super.preferences.getString(_key);
-    if (json == null) return null;
-    return RequestLogin.fromJson(jsonDecode(json));
-  }
-
-  @override
-  void setValue(RequestLogin value) {
-    super.preferences.setString(_key, jsonEncode(value.toJson()));
-  }
-
-  @override
-  void clean() => super.preferences.remove(_key);
 }

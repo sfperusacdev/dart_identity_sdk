@@ -8,7 +8,7 @@ const _tag = "DeviceLicenceManager";
 class DeviceLicenceManager {
   static Future<String> deviceID() async {
     try {
-      return await LicenceManagerSDK().deviceID();
+      return await LicenceManagerSDK.deviceID();
     } catch (e) {
       LOG.printError([_tag, e.toString()]);
       throw "No fue posible leer la identificación del dispositivo";
@@ -17,7 +17,7 @@ class DeviceLicenceManager {
 
   static Future<String> deviceName() async {
     try {
-      return await LicenceManagerSDK().deviceName();
+      return await LicenceManagerSDK.deviceName();
     } catch (e) {
       LOG.printError([_tag, e.toString()]);
       throw "No fue posible leer la informacion del dispositivo";
@@ -26,7 +26,7 @@ class DeviceLicenceManager {
 
   static Future<List<Licence>> readLicences() async {
     try {
-      return await LicenceManagerSDK().readLicences();
+      return await LicenceManagerSDK.readLicences();
     } catch (e) {
       LOG.printError([_tag, e.toString()]);
       throw "No se pudo cargar las licencias asociadas a este dispositivo";

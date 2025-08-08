@@ -1,6 +1,9 @@
 import 'dart:convert';
 
 import 'package:dart_identity_sdk/dart_identity_sdk.dart';
+import 'package:dart_identity_sdk/info/preferences_dialog.dart';
+import 'package:example/configs/theme.dart';
+import 'package:example/inputs.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -20,17 +23,23 @@ class AppRoutes extends IdentityRoutes {
           return const HomePage();
         },
       ),
+      GoRoute(
+        path: "/inputs",
+        builder: (context, state) {
+          return const InputsPage();
+        },
+      ),
     ];
   }
 }
+
+final routes = ApplicationRouterManager(AppRoutes()).router();
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: ApplicationRouterManager(AppRoutes()).router(),
-    );
+    return MaterialApp.router(routerConfig: routes, theme: appTheme);
   }
 }
 
@@ -42,10 +51,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final manager = SessionManagerSDK();
-
   String claims() {
-    final token = manager.getToken() ?? "";
+    final token = SessionManagerSDK.getToken() ?? "";
     const encoder = JsonEncoder.withIndent("  ");
     final parts = token.split(".");
     if (parts.length != 3) return "";
@@ -69,12 +76,11 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            Text(getSelectedBranch() ?? "no-ne"),
             Padding(padding: const EdgeInsets.all(24.0), child: Text(claims())),
             const SizedBox(height: 20.0),
             FilledButton(
-              onPressed: () async {
-                await manager.goOut(context);
-              },
+              onPressed: () async => await SessionManagerSDK.logout(context),
               child: const Text("Go Out"),
             ),
             const SizedBox(height: 20),
@@ -92,10 +98,24 @@ class _HomePageState extends State<HomePage> {
             ),
             FilledButton(
               onPressed: () async {
-                await manager.refreshToken();
+                await SessionManagerSDK.refreshToken();
                 setState(() {});
               },
               child: const Text("Refresh Session"),
+            ),
+            FilledButton.icon(
+              onPressed: () async {
+                await showDomainPreferencesDialog(context);
+              },
+              icon: Icon(Icons.settings),
+              label: Text("Preferences"),
+            ),
+            FilledButton.icon(
+              onPressed: () async {
+                await context.push("/inputs");
+              },
+              icon: Icon(Icons.input),
+              label: Text("Inputs"),
             ),
           ],
         ),

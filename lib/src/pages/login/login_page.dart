@@ -1,10 +1,9 @@
 import 'dart:io';
-
+import 'package:dart_identity_sdk/src/env/env.dart';
 import 'package:dart_identity_sdk/src/pages/login/bloc/empresa_grupo_provider.dart';
 import 'package:dart_identity_sdk/src/pages/login/login_form_card.dart';
-import 'package:dart_identity_sdk/src/pages/login/proxy_settings.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:kdialogs/kdialogs.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
@@ -26,17 +25,22 @@ class _LoginPageState extends State<LoginPage> {
           children: [
             SingleChildScrollView(
               child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: MediaQuery.of(context).size.height),
+                constraints: BoxConstraints(
+                    minHeight: MediaQuery.of(context).size.height),
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Center(
                     child: SizedBox(
-                      width: (Platform.isAndroid || Platform.isIOS) ? double.infinity : 400.0,
+                      width: (Platform.isAndroid || Platform.isIOS)
+                          ? double.infinity
+                          : 400.0,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          if ((Platform.isAndroid || Platform.isIOS) && size.height > size.width) _logoImage(),
+                          if ((Platform.isAndroid || Platform.isIOS) &&
+                              size.height > size.width)
+                            _logoImage(),
                           const SizedBox(height: 12.0),
                           _binvenidoMessage(context),
                           const LoginFrom(),
@@ -47,50 +51,79 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ),
-            SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Align(
-                  alignment: Alignment.topRight,
-                  child: Builder(builder: (context) {
-                    return InkWell(
-                        borderRadius: BorderRadius.circular(20),
-                        onTap: () => loadEmpresasLoginFrom(context),
-                        child: Ink(
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
-                          child: const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Icon(Icons.refresh, color: Colors.grey),
-                          ),
-                        ));
-                  }),
-                ),
-              ),
-            ),
-            SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Align(
-                  alignment: Alignment.bottomRight,
-                  child: Builder(
-                    builder: (context) {
-                      return InkWell(
-                        borderRadius: BorderRadius.circular(20),
-                        onTap: () => context.push(ProxySettingsPage.path),
-                        child: Ink(
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
-                          child: const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Icon(Icons.connect_without_contact, color: Colors.grey),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ),
+            _refreshEmpresasIcon(),
+            _printInfoIcon(),
           ],
+        ),
+      ),
+    );
+  }
+
+  SafeArea _refreshEmpresasIcon() {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Align(
+          alignment: Alignment.topRight,
+          child: Builder(builder: (context) {
+            return InkWell(
+                borderRadius: BorderRadius.circular(20),
+                onTap: () => loadEmpresasLoginFrom(context),
+                child: Ink(
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(20)),
+                  child: const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Icon(Icons.refresh, color: Colors.grey),
+                  ),
+                ));
+          }),
+        ),
+      ),
+    );
+  }
+
+  SafeArea _printInfoIcon() {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Align(
+          alignment: Alignment.topLeft,
+          child: InkWell(
+              borderRadius: BorderRadius.circular(20),
+              onTap: () async {
+                showKDialogContent(
+                  context,
+                  title: "Configuraciones",
+                  builder: (context) {
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text("🔐 Identity:",
+                            style: TextStyle(fontWeight: FontWeight.w600)),
+                        const SizedBox(height: 4),
+                        Text(
+                          EnvConfig.identityServerUrl(),
+                          style: const TextStyle(color: Colors.black87),
+                        ),
+                        const SizedBox(height: 12),
+                        const Text("⚙️ Preferencias:",
+                            style: TextStyle(fontWeight: FontWeight.w600)),
+                        const SizedBox(height: 4),
+                        Text(
+                          EnvConfig.preferencesServerUrl(),
+                          style: const TextStyle(color: Colors.black87),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Icon(Icons.info_outlined, color: Colors.grey),
+              )),
         ),
       ),
     );

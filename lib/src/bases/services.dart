@@ -24,7 +24,7 @@ class ApiService {
   static Uri uri(String path,
       {Map<String, dynamic>? queryparams, String? serviceID}) {
     final location =
-        SessionManagerSDK().findServiceLocation(serviceID ?? _defaultServiceID);
+        SessionManagerSDK.findServiceLocation(serviceID ?? _defaultServiceID);
     if (location == null) {
       throw ServiceLocationNotFoundErr(
           "Servicio `$serviceID` no encontrado 🥺🥺");
@@ -33,10 +33,9 @@ class ApiService {
   }
 
   static Map<String, String> _headers() {
-    final manager = SessionManagerSDK();
     return {
       "Content-Type": "application/json",
-      "Authorization": manager.getToken() ?? "",
+      "Authorization": SessionManagerSDK.getToken() ?? "",
     };
   }
 

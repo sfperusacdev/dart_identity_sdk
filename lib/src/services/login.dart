@@ -1,6 +1,5 @@
 import 'package:dart_identity_sdk/dart_identity_sdk.dart';
-import 'package:dart_identity_sdk/src/managers/application_preferences.dart';
-import 'package:dart_identity_sdk/src/security/settings/server_sertting_storage.dart';
+import 'package:dart_identity_sdk/src/env/env.dart';
 
 class LoginService {
   Future<void> login({
@@ -12,23 +11,19 @@ class LoginService {
     required String password,
     required String profileID,
   }) async {
-    var settings =
-        SystemStorageManager().instance<ServerSettingsSorage>().getValue();
-    if (settings == null) throw Exception("invalid settings");
     final uri = ApiService.buildUri(
-      await settings.recoveryIndentityServiceAddress(),
+      EnvConfig.identityServerUrl(),
       "/v1/login",
     );
-    final manager = SessionManagerSDK();
-    manager.setIdentityServerURL(uri.toString());
-    await manager.login(
+    SessionManagerSDK.setIdentityServerURL(uri.toString());
+    await SessionManagerSDK.login(
       licence: licence,
       deviceid: deviceid,
       deviceName: deviceName,
       empresa: empresa,
       username: username,
       password: password,
-      appID: settings.appID,
+      appID: EnvConfig.appID,
       appVersion: ApplicationInfo().getAppVersion(),
       profileID: profileID,
     );

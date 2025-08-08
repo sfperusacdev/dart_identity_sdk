@@ -1,6 +1,6 @@
-import 'package:dart_identity_sdk/src/bases/storage/system_storage_manager.dart';
 import 'package:dart_identity_sdk/src/entities/empresa_app_perfile.dart';
 import 'package:dart_identity_sdk/src/pages/login/bloc/empresa_grupo_provider.dart';
+import 'package:dart_identity_sdk/src/pages/login/form_store_helper.dart';
 import 'package:dart_identity_sdk/src/security/settings/login_fields.dart';
 import 'package:dart_identity_sdk/src/services/login.dart';
 import 'package:dart_identity_sdk/src/managers/device_info_manager.dart';
@@ -17,7 +17,6 @@ class LoginFrom extends StatefulWidget {
 
 class _LoginFromState extends State<LoginFrom> {
   final formKey = GlobalKey<FormState>();
-  final loginMemory = SystemStorageManager().instance<LoginFielsStorage>();
   bool isLoading = false;
   bool _showPassword = false;
   String _empresa = '';
@@ -31,10 +30,11 @@ class _LoginFromState extends State<LoginFrom> {
     WidgetsBinding.instance.addPostFrameCallback(
       (_) async => await loadEmpresasLoginFrom(context),
     );
-    var value = loginMemory.getValue();
-    if (value != null) {
-      _username = value.username ?? '';
-      _password = value.password ?? '';
+
+    var storedState = LoginCredentialsStoreHelper.load();
+    if (storedState != null) {
+      _username = storedState.username ?? '';
+      _password = storedState.password ?? '';
       _memorize = true;
     }
     super.initState();
@@ -227,46 +227,48 @@ class _LoginFromState extends State<LoginFrom> {
   }
 
   Widget _submitButton() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 50.0),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(30.0),
-        child: MaterialButton(
-          elevation: 4.0,
-          height: 50.0,
-          color: Theme.of(context).primaryColor,
-          onPressed: onSubmit,
-          child: SizedBox(
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                const SizedBox(
-                  width: double.infinity,
-                  child: Text('Iniciar sesión',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white)),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    SizedBox(
-                        width: 15.0,
-                        height: 15.0,
-                        child: Visibility(
-                          visible: isLoading,
-                          child: const CircularProgressIndicator(
-                            strokeWidth: 3.0,
-                            color: Colors.white,
-                          ),
-                        )),
-                  ],
-                )
-              ],
+    return Builder(builder: (context) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 50.0),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(30.0),
+          child: MaterialButton(
+            elevation: 4.0,
+            height: 50.0,
+            color: Theme.of(context).primaryColor,
+            onPressed: () => onSubmit(context),
+            child: SizedBox(
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  const SizedBox(
+                    width: double.infinity,
+                    child: Text('Iniciar sesión',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.white)),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      SizedBox(
+                          width: 15.0,
+                          height: 15.0,
+                          child: Visibility(
+                            visible: isLoading,
+                            child: const CircularProgressIndicator(
+                              strokeWidth: 3.0,
+                              color: Colors.white,
+                            ),
+                          )),
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget _recordar() {
@@ -284,7 +286,7 @@ class _LoginFromState extends State<LoginFrom> {
     );
   }
 
-  void onSubmit() async {
+  void onSubmit(BuildContext context) async {
     if (isLoading) return;
     if (formKey.currentState == null) return;
     if (!formKey.currentState!.validate()) return;
@@ -296,10 +298,11 @@ class _LoginFromState extends State<LoginFrom> {
     var request = RequestLogin(
         empresa: _empresa, username: _username, password: _password);
     if (_memorize) {
-      loginMemory.setValue(request);
+      await LoginCredentialsStoreHelper.save(request);
     } else {
-      loginMemory.clean();
+      await LoginCredentialsStoreHelper.clear();
     }
+    if (!context.mounted) return;
     await showAsyncProgressKDialog(
       context,
       doProcess: () async {
