@@ -85,15 +85,86 @@ class SessionManagerSDK {
     return now == last;
   }
 
+  @Deprecated(
+      'Usar checkPermissions en su lugar para validar permisos con sucursal')
   static bool hasPerm(String permission) {
     final permissions = getCurrentSession()?.session?.permissions ?? [];
     return permissions.any((p) => p.id == permission);
   }
 
+  @Deprecated(
+      'Usar checkPermissions en su lugar para validar permisos con sucursal')
   static bool hasPermOnBranch(String permission, String branch) {
     final permissions = getCurrentSession()?.session?.permissions ?? [];
     return permissions.any(
         (p) => p.id == permission && (p.companyBrances ?? []).contains(branch));
+  }
+
+  /// Verifica si el usuario tiene todos los permisos especificados en `ids`
+  /// y si dichos permisos están habilitados para la sucursal actual o global ('*').
+  /// Retorna `true` si el usuario es admin o cumple con todas las condiciones,
+  /// de lo contrario, retorna `false`
+  static bool checkPermissions(List<String> ids, {String? sucursalCodigo}) {
+    final permissions = getCurrentSession()?.session?.permissions ?? [];
+
+    for (final id in ids) {
+      final isAdmin = permissions.any((p) => p.id == 'admin');
+      if (isAdmin) return true;
+
+      final perm = permissions.firstWhere((p) => p.id == id,
+          orElse: () => Permission(id: "<NULL>"));
+      if (perm.id == "<NULL>") return false;
+
+      final branches = perm.companyBrances ?? [];
+      final codigo = sucursalCodigo ?? "@@@@@#\$@@@@@";
+
+      final found = branches.any((b) => b == codigo || b == '*');
+      if (!found) return false;
+    }
+
+    return true;
+  }
+
+  /// Verifica si el usuario tiene al menos uno de los permisos especificados en `ids`,
+  /// y si dicho permiso está habilitado para la sucursal actual o global ('*').
+  /// Retorna `true` si el usuario es admin o cumple con alguna de las condiciones,
+  /// de lo contrario, retorna `false`
+  static bool checkAnyPermission(List<String> ids, {String? sucursalCodigo}) {
+    final permissions = getCurrentSession()?.session?.permissions ?? [];
+
+    final isAdmin = permissions.any((p) => p.id == 'admin');
+    if (isAdmin) return true;
+
+    final codigo = sucursalCodigo ?? '@@@@@#\$@@@@@';
+
+    return ids.any((id) {
+      final perm = permissions.firstWhere((p) => p.id == id,
+          orElse: () => Permission(id: "<NULL>"));
+      if (perm.id == "<NULL>") return false;
+
+      final branches = perm.companyBrances ?? [];
+      return branches.any((b) => b == codigo || b == '*');
+    });
+  }
+
+  /// Verifica si el usuario tiene algún permiso cuyo `id` comience con el prefijo dado
+  /// y esté habilitado para la sucursal actual o global ('*').
+  /// Retorna `true` si el usuario es admin o cumple con alguna coincidencia,
+  /// de lo contrario, retorna `false`
+  static bool checkPermissionStartsWith(String prefix,
+      {String? sucursalCodigo}) {
+    final permissions = getCurrentSession()?.session?.permissions ?? [];
+
+    final isAdmin = permissions.any((p) => p.id == 'admin');
+    if (isAdmin) return true;
+
+    final codigo = sucursalCodigo ?? '@@@@@#\$@@@@@';
+
+    return permissions.any((p) {
+      if (!(p.id ?? "#").startsWith(prefix)) return false;
+      final branches = p.companyBrances ?? [];
+      return branches.any((b) => b == codigo || b == '*');
+    });
   }
 
   static List<String> getSubordinates() {
