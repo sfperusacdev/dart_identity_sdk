@@ -112,9 +112,6 @@ class ApiService {
     Map<String, dynamic> qparams = const {},
     Duration? timeout,
   }) async {
-    assert(withUri != null || serviceID != null,
-        "At least one of 'withUri' or 'serviceID' must be provided.");
-
     final url =
         withUri ?? uri(path ?? "", queryparams: qparams, serviceID: serviceID);
     return _request(
@@ -131,9 +128,6 @@ class ApiService {
     Object? payload = const {},
     Map<String, dynamic>? qparams,
   }) async {
-    assert(withUri != null || serviceID != null,
-        "At least one of 'withUri' or 'serviceID' must be provided.");
-
     final url =
         withUri ?? uri(path ?? "", queryparams: qparams, serviceID: serviceID);
     return _request(
@@ -148,9 +142,6 @@ class ApiService {
     Object? payload = const {},
     Map<String, dynamic>? qparams,
   }) async {
-    assert(withUri != null || serviceID != null,
-        "At least one of 'withUri' or 'serviceID' must be provided.");
-
     final url =
         withUri ?? uri(path ?? "", queryparams: qparams, serviceID: serviceID);
     return _request(
@@ -166,9 +157,6 @@ class ApiService {
     Object? payload = const {},
     Map<String, dynamic>? qparams,
   }) async {
-    assert(withUri != null || serviceID != null,
-        "At least one of 'withUri' or 'serviceID' must be provided.");
-
     final url =
         withUri ?? uri(path ?? "", queryparams: qparams, serviceID: serviceID);
     return _request(
