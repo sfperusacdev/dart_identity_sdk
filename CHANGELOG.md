@@ -223,3 +223,7 @@
 # version: 5.11.0
 
 - Imanges picker, from file or camera
+
+# version: 5.12.0
+
+- add text styles
