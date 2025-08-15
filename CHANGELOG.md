@@ -209,3 +209,7 @@
 # version: 5.9.0
 
 - Add ControlledText
+
+# version: 5.10.0
+
+- Add TrackedBinaryState
