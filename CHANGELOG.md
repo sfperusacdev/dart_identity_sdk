@@ -201,3 +201,7 @@
 
 ## version:  5.8.2
 - Fix: AppPreferences
+
+
+## version:  5.8.3
+- Add onChange on CustomTextFormField

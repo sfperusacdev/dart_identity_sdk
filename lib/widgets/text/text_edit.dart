@@ -23,6 +23,8 @@ class CustomTextFormField extends StatefulWidget {
   final bool required;
   final String? Function(String value)? validator;
 
+  final Function(String value)? onChanged;
+
   const CustomTextFormField({
     super.key,
     this.controller,
@@ -39,6 +41,7 @@ class CustomTextFormField extends StatefulWidget {
     this.required = false,
     this.validator,
     this.multiLine = false,
+    this.onChanged,
   });
 
   @override
@@ -129,6 +132,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
               suffixIcon: suffixIcon,
             ),
             onChanged: (value) {
+              widget.onChanged?.call(value);
               handlePdaScan(value);
               _controller.refreshWordsCount();
             },
