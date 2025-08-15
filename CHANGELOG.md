@@ -198,3 +198,6 @@
 ## version:  5.8.1
 
 - Utilidades checkPermissions, checkAnyPermission y checkPermissionStartsWith
+
+## version:  5.8.2
+- Fix: AppPreferences

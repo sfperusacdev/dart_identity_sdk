@@ -87,7 +87,8 @@ class AppPreferences {
       private.setDomain(domain);
 
   //-----------------------------------SYNC DATA--------------------------------------//
-  Future<bool?> syncPreferencesWithLoaderIndicator(BuildContext context) async {
+  static Future<bool?> syncPreferencesWithLoaderIndicator(
+      BuildContext context) async {
     return showAsyncProgressKDialog<bool>(
       context,
       doProcess: () async {
@@ -140,7 +141,7 @@ class AppPreferences {
     }
   }
 
-  List<Map<String, dynamic>> readList(String key) {
+  static List<Map<String, dynamic>> readList(String key) {
     final value = private.getString(key);
     if (value == null) return [];
     try {
@@ -152,7 +153,7 @@ class AppPreferences {
     }
   }
 
-  dynamic readRaw(String key) {
+  static dynamic readRaw(String key) {
     final value = private.getString(key);
     if (value == null) return null;
     try {
@@ -163,7 +164,7 @@ class AppPreferences {
     }
   }
 
-  int? readInt(String key) {
+  static int? readInt(String key) {
     final value = private.getString(key);
     if (value == null) return null;
     try {
@@ -175,7 +176,7 @@ class AppPreferences {
     }
   }
 
-  bool? readBool(String key) {
+  static bool? readBool(String key) {
     final value = private.getString(key);
     if (value == null) return null;
     try {
@@ -187,7 +188,7 @@ class AppPreferences {
     }
   }
 
-  double? readDouble(String key) {
+  static double? readDouble(String key) {
     final value = private.getString(key);
     if (value == null) return null;
     try {
@@ -199,7 +200,7 @@ class AppPreferences {
     }
   }
 
-  String? readString(String key) {
+  static String? readString(String key) {
     final value = private.getString(key);
     if (value == null) return null;
     try {
