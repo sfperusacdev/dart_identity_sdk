@@ -178,7 +178,6 @@
 
 - refactor: service
 
-
 ## version: 5.7.0
 
 - fix soundpool
@@ -189,19 +188,24 @@
 
 ## version: 5.7.3
 
-- Change preferencias server 
+- Change preferencias server
 
-## version:  5.8.0
+## version: 5.8.0
 
 - Refactorizacion
 
-## version:  5.8.1
+## version: 5.8.1
 
 - Utilidades checkPermissions, checkAnyPermission y checkPermissionStartsWith
 
-## version:  5.8.2
+## version: 5.8.2
+
 - Fix: AppPreferences
 
+## version: 5.8.3
 
-## version:  5.8.3
 - Add onChange on CustomTextFormField
+
+# version: 5.9.0
+
+- Add ControlledText

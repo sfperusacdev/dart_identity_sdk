@@ -1,4 +1,5 @@
 import 'package:dart_identity_sdk/widgets/text/common.dart';
+import 'package:dart_identity_sdk/widgets/text/text.dart';
 import 'package:flutter/material.dart';
 import 'package:dart_identity_sdk/widgets/text/text_edit.dart';
 
@@ -10,7 +11,8 @@ class InputsPage extends StatefulWidget {
 }
 
 class _InputsPageState extends State<InputsPage> {
-  final controller = TextEditingCController();
+  final controller = TextEditingCController.withText("00");
+  final textcontroller = TextEditingCController.withText("hola11");
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +26,7 @@ class _InputsPageState extends State<InputsPage> {
               label: "Nombre",
               onChanged: (value) {
                 controller.setText(value);
+                textcontroller.setText(value);
               },
             ),
             CustomTextFormField(
@@ -32,6 +35,9 @@ class _InputsPageState extends State<InputsPage> {
               controller: controller,
               initValue: "Este es un texto de solo lectura",
             ),
+            Divider(),
+            ControlledText(controller: textcontroller, label: "Prueba"),
+            Divider(),
           ],
         ),
       ),
