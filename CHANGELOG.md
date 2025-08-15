@@ -218,3 +218,8 @@
 # version: 5.10.1
 
 - TrackedBinaryState, add isEmpty and isNotEmpty
+
+
+# version: 5.11.0
+
+- Imanges picker, from file or camera
