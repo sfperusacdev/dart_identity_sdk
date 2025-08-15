@@ -78,6 +78,10 @@ class TrackedBinaryState {
   /// Returns whether the asset has been initialized.
   bool isInitialized() => _isInitialized;
 
+  /// Returns true if there's no data.
+  bool isEmpty() => _data == null || _data!.isEmpty;
+  bool isNotEmpty() => !isEmpty();
+
   /// Marks the asset as unmodified.
   void markUnmodified() {
     _isModified = false;

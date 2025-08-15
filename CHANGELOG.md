@@ -213,3 +213,8 @@
 # version: 5.10.0
 
 - Add TrackedBinaryState
+
+
+# version: 5.10.1
+
+- TrackedBinaryState, add isEmpty and isNotEmpty
