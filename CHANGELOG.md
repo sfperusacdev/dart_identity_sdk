@@ -227,3 +227,7 @@
 # version: 5.12.0
 
 - add text styles
+
+# version: 5.13.0
+
+- add kdialogs source code

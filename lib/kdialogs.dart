@@ -1,4 +1,4 @@
-import 'package:kdialogs/kdialogs.dart';
+import 'package:dart_identity_sdk/kdialogs/kdialogs.dart';
 
 void initKDialogStrings() {
   setKDialogStrings(

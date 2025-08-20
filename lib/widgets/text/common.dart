@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kdialogs/kdialogs.dart';
+import 'package:dart_identity_sdk/kdialogs/kdialogs.dart';
 
 class TextEditingLabelState extends Cubit<String> {
   TextEditingLabelState() : super("");

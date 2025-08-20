@@ -1,7 +1,7 @@
 import 'package:dart_identity_sdk/widgets/text/common.dart';
 import 'package:flutter/material.dart';
 import 'package:dart_identity_sdk/widgets/text/text_edit.dart';
-import 'package:kdialogs/kdialogs.dart';
+import 'package:dart_identity_sdk/kdialogs/kdialogs.dart';
 
 class CustomSelectFormField<T extends SelectOption> extends StatelessWidget {
   final bool showSearchInput;

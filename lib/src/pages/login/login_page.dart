@@ -3,7 +3,7 @@ import 'package:dart_identity_sdk/src/env/env.dart';
 import 'package:dart_identity_sdk/src/pages/login/bloc/empresa_grupo_provider.dart';
 import 'package:dart_identity_sdk/src/pages/login/login_form_card.dart';
 import 'package:flutter/material.dart';
-import 'package:kdialogs/kdialogs.dart';
+import 'package:dart_identity_sdk/kdialogs/kdialogs.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {

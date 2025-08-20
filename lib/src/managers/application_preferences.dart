@@ -4,7 +4,7 @@ import 'package:dart_identity_sdk/src/logs/log.dart';
 import 'package:dart_identity_sdk/src/managers/session_manager.dart';
 import 'package:dart_identity_sdk/src/services/pb_perfiles.dart';
 import 'package:flutter/material.dart';
-import 'package:kdialogs/kdialogs.dart';
+import 'package:dart_identity_sdk/kdialogs/kdialogs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final appPreferencesDomainNotSet = Exception(

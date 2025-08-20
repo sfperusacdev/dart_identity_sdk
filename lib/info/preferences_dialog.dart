@@ -1,6 +1,6 @@
 import 'package:dart_identity_sdk/src/managers/application_preferences.dart';
 import 'package:flutter/material.dart';
-import 'package:kdialogs/kdialogs.dart';
+import 'package:dart_identity_sdk/kdialogs/kdialogs.dart';
 
 class _Content extends StatelessWidget {
   final Map<String, String> values;

@@ -6,7 +6,7 @@ import 'package:dart_identity_sdk/src/services/login.dart';
 import 'package:dart_identity_sdk/src/managers/device_info_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:kdialogs/kdialogs.dart';
+import 'package:dart_identity_sdk/kdialogs/kdialogs.dart';
 import 'package:provider/provider.dart';
 
 class LoginFrom extends StatefulWidget {
