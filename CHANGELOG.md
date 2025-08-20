@@ -233,3 +233,6 @@
 ## version: 5.13.1
 
 - implement entry storage using JSON structure under single key
+
+## version: 5.13.2
+- fix getEntry

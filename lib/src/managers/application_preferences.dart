@@ -66,7 +66,7 @@ class PreferencesWrapper {
     return setString(key, jsonEncode(data));
   }
 
-  Future<(String?, String?)> getEntry(String key) async {
+  (String?, String?) getEntry(String key) {
     final raw = getString(key);
     if (raw == null) return (null, null);
     final Map<String, dynamic> data = jsonDecode(raw);
