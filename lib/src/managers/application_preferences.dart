@@ -57,6 +57,24 @@ class PreferencesWrapper {
   Future<bool> remove(String key) => global.remove(_wrapKey(key));
 
   bool containsKey(String key) => global.containsKey(_wrapKey(key));
+  // helper
+  Future<bool> setEntry(String key, String code, String description) async {
+    final data = {
+      'code': code,
+      'description': description,
+    };
+    return setString(key, jsonEncode(data));
+  }
+
+  Future<(String?, String?)> getEntry(String key) async {
+    final raw = getString(key);
+    if (raw == null) return (null, null);
+    final Map<String, dynamic> data = jsonDecode(raw);
+    final code = data['code'];
+    final description = data['description'];
+    if (code is String && description is String) return (code, description);
+    return (null, null);
+  }
 
   //--------//
   Future<bool> _saveMapToStorage(Map<String, dynamic> map) async {

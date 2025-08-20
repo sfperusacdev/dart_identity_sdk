@@ -214,11 +214,9 @@
 
 - Add TrackedBinaryState
 
-
 # version: 5.10.1
 
 - TrackedBinaryState, add isEmpty and isNotEmpty
-
 
 # version: 5.11.0
 
@@ -231,3 +229,7 @@
 # version: 5.13.0
 
 - add kdialogs source code
+
+## version: 5.13.1
+
+- implement entry storage using JSON structure under single key
