@@ -66,17 +66,19 @@ class TrackedBinaryState {
     await _setDataFromFile(file, markModified: true);
   }
 
+  /// Returns whether the asset has been initialized.
+  bool isInitialized() => _isInitialized;
+
   /// Returns raw byte data.
   Uint8List? getBytes() => _data;
+  Uint8List? getBytesIfModified() => isInitialized() ? getBytes() : null;
 
   /// Returns base64 string of data.
   String? getBase64() => _data != null ? base64Encode(_data!) : null;
+  String? getBase64IfModified() => isInitialized() ? getBase64() : null;
 
   /// Returns whether the data has been modified.
   bool isModified() => _isModified;
-
-  /// Returns whether the asset has been initialized.
-  bool isInitialized() => _isInitialized;
 
   /// Returns true if there's no data.
   bool isEmpty() => _data == null || _data!.isEmpty;

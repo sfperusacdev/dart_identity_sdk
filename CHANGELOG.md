@@ -254,3 +254,9 @@
 ## version: 5.13.6
 
 - add getValueOrNull method to return null if empty and support optional trim
+
+
+
+## version: 5.13.7
+
+- add conditional getBytes/getBase64 methods
