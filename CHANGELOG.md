@@ -236,3 +236,5 @@
 
 ## version: 5.13.2
 - fix getEntry
+## version: 5.13.3
+- fix CustomTextFormField

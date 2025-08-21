@@ -11,29 +11,58 @@ class InputsPage extends StatefulWidget {
 }
 
 class _InputsPageState extends State<InputsPage> {
-  final controller = TextEditingCController.withText("00");
+  final controller01 = TextEditingCController.withText("00");
+  final controller02 = TextEditingCController();
+  final controller03 = TextEditingCController();
   final textcontroller = TextEditingCController.withText("hola11");
+  final multiline = TextEditingCController.withText(
+    "Este es un texto super largo para probar el comportamiento del input en multilines",
+  );
+  final camera = TextEditingCController.withText("hola11");
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Inputs")),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
             CustomTextFormField(
-              label: "Nombre",
+              label: "DNI",
+              controller: camera,
+              scannable: true,
+            ),
+            CustomTextFormField(
+              label: "Nombres",
               onChanged: (value) {
-                controller.setText(value);
+                controller01.setText(value);
                 textcontroller.setText(value);
               },
             ),
             CustomTextFormField(
-              label: "Nombre",
+              label: "Apellido Paterno",
               readonly: true,
-              controller: controller,
-              initValue: "Este es un texto de solo lectura",
+              controller: controller01,
+            ),
+            CustomTextFormField(
+              label: "Apellido Materno",
+              readonly: true,
+              controller: controller02,
+            ),
+            CustomTextFormField(
+              label: "Direccion",
+              controller: controller03,
+              suffixIcon: Icons.search,
+              onSuffixIconTab: (txt) {},
+              // initValue: Icons.search,
+            ),
+            CustomTextFormField(
+              label: "Multi Lines",
+              controller: multiline,
+              multiLine: true,
+              suffixIcon: Icons.search,
+              onSuffixIconTab: (txt) {},
             ),
             Divider(),
             ControlledText(controller: textcontroller, label: "Prueba"),

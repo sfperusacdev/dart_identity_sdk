@@ -60,16 +60,17 @@ class _ControlledTextState extends State<ControlledText> {
         isDense: !hasLabel,
         contentPadding: !hasLabel ? EdgeInsets.zero : null,
         errorStyle: const TextStyle(fontSize: 9, color: Colors.redAccent),
+        labelStyle: Theme.of(context).textTheme.titleMedium,
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(
             color: Theme.of(context).colorScheme.secondary,
-            width: 1.0,
+            width: 1.5,
           ),
         ),
         focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(
             color: Theme.of(context).colorScheme.secondary,
-            width: 1.0,
+            width: 1.5,
           ),
         ),
         suffixIcon: suffixIcon,

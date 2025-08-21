@@ -43,7 +43,8 @@ class _QrCardReaderState extends State<QrCardReader> {
 
     return ClipRRect(
       borderRadius: BorderRadiusGeometry.circular(18.0),
-      child: SizedBox(
+      child: Container(
+        color: Theme.of(context).colorScheme.surface,
         width: widget.width ?? screenSize.width * 0.8,
         height: widget.height ?? screenSize.width,
         child: Stack(

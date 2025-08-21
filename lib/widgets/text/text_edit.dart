@@ -81,12 +81,18 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
 
     if (widget.scannable) {
       suffixIcon = IconButton(
+        constraints: const BoxConstraints(),
+        padding: EdgeInsets.zero,
         onPressed: () => openQrReader(context),
+        color: Theme.of(context).colorScheme.surface,
         icon: const Icon(Icons.camera_alt),
       );
     } else if (widget.onSuffixIconTab != null) {
       suffixIcon = IconButton(
+        constraints: const BoxConstraints(),
+        padding: EdgeInsets.zero,
         onPressed: () => widget.onSuffixIconTab?.call(_controller),
+        color: Theme.of(context).colorScheme.surface,
         icon: Icon(widget.suffixIcon ?? Icons.select_all),
       );
     }
@@ -97,50 +103,79 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         BlocProvider.value(value: _controller.bottomLabelState),
       ],
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        spacing: 0,
         children: [
-          TextFormField(
-            maxLines: widget.multiLine ? null : 1,
-            obscureText: widget.obscureText,
-            controller: _controller,
-            readOnly: widget.readonly,
-            focusNode: _controller.focus,
-            keyboardType: widget.keyboardType,
-            validator: validator,
-            onSaved: widget.onSaved,
-            onTap: () {
-              if (!widget.readonly) return;
-              widget.onSuffixIconTab?.call(_controller);
-            },
-            decoration: InputDecoration(
-              errorStyle: const TextStyle(fontSize: 9, color: Colors.redAccent),
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(
-                  color: Theme.of(context).colorScheme.secondary,
-                  width: 1.0,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Expanded(
+                child: TextFormField(
+                  maxLines: widget.multiLine ? null : 1,
+                  obscureText: widget.obscureText,
+                  controller: _controller,
+                  readOnly: widget.readonly,
+                  focusNode: _controller.focus,
+                  keyboardType: widget.keyboardType,
+                  validator: validator,
+                  onSaved: widget.onSaved,
+                  onTap: () {
+                    if (!widget.readonly) return;
+                    widget.onSuffixIconTab?.call(_controller);
+                  },
+                  decoration: InputDecoration(
+                    errorStyle:
+                        const TextStyle(fontSize: 9, color: Colors.redAccent),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.secondary,
+                        width: 1.3,
+                      ),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.secondary,
+                        width: 2,
+                      ),
+                    ),
+                    label: BlocBuilder<TextEditingLabelState, String>(
+                      builder: (context, state) => Text(
+                        state,
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ),
+                  onChanged: (value) {
+                    widget.onChanged?.call(value);
+                    handlePdaScan(value);
+                    _controller.refreshWordsCount();
+                  },
+                  onFieldSubmitted: (_) => _secureOnSubmitCall(),
                 ),
               ),
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(
-                  color: Theme.of(context).colorScheme.secondary,
-                  width: 1.0,
-                ),
-              ),
-              label: BlocBuilder<TextEditingLabelState, String>(
-                builder: (context, state) => Text(state),
-              ),
-              suffixIcon: suffixIcon,
-            ),
-            onChanged: (value) {
-              widget.onChanged?.call(value);
-              handlePdaScan(value);
-              _controller.refreshWordsCount();
-            },
-            onFieldSubmitted: (_) => _secureOnSubmitCall(),
+              if (suffixIcon != null)
+                Container(
+                  margin: const EdgeInsets.only(left: 4.0),
+                  padding: const EdgeInsets.all(4.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(360),
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                  child: Center(child: suffixIcon),
+                )
+            ],
           ),
           BlocBuilder<TextEditingBottomLabelState, String>(
-            builder: (context, state) =>
-                Text(state, style: const TextStyle(color: Colors.black54)),
+            builder: (context, state) {
+              if (state.trim().isEmpty) return const SizedBox();
+              return Text(
+                state,
+                style: const TextStyle(color: Colors.black54),
+              );
+            },
           ),
         ],
       ),
@@ -171,6 +206,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
       contentPadding: EdgeInsetsGeometry.zero,
       scrollPadding: EdgeInsetsGeometry.zero,
       titlePadding: EdgeInsetsGeometry.zero,
+      backgroundColor: Colors.transparent,
       builder: (context) {
         return QrCardReader(
           onScan: (code) {
