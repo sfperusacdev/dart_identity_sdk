@@ -245,3 +245,7 @@
 ## version: 5.13.4
 
 - fix select options
+
+## version: 5.13.5
+
+- add dismissKeyboard flag to control auto unfocus behavior

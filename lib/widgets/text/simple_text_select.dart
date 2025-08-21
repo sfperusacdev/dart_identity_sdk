@@ -11,6 +11,7 @@ class CustomBasicSelectFormField<T extends SelectOption>
   final String? label;
   final void Function(SelectOptionOnChangeEventData<T> event)? onChange;
   final bool required;
+  final bool autoUnfocus;
 
   const CustomBasicSelectFormField({
     super.key,
@@ -19,6 +20,7 @@ class CustomBasicSelectFormField<T extends SelectOption>
     this.label,
     this.required = false,
     this.showSearchInput = true,
+    this.autoUnfocus = true,
     this.onChange,
   });
 
@@ -37,18 +39,26 @@ class CustomBasicSelectFormField<T extends SelectOption>
           initialSelection: [txt.getValue()],
           useMaxHeight: false,
         );
-        if (selecteds == null) return;
+        if (selecteds == null) {
+          
+          if (autoUnfocus) FocusManager.instance.primaryFocus?.unfocus();
+          return;
+        }
         if (selecteds.isEmpty) {
           txt.setText("", internalID: null);
           onChange?.call(SelectOptionOnChangeEventData(txt, options));
           return;
         }
         final selected = selecteds.first;
-        if (selected.getID() == prevVal) return;
+        if (selected.getID() == prevVal) {
+          if (autoUnfocus) FocusManager.instance.primaryFocus?.unfocus();
+          return;
+        }
         txt.setText(selected.getLabel(), internalID: selected.getID());
         onChange?.call(
           SelectOptionOnChangeEventData(txt, options, selected: selected),
         );
+        if (autoUnfocus) FocusManager.instance.primaryFocus?.unfocus();
       },
     );
   }
