@@ -35,6 +35,8 @@ class TextEditingCController extends TextEditingController {
   @override
   void clear() {
     super.clear();
+    _internalID = null;
+    _extra = null;
     refreshWordsCount();
   }
 
@@ -52,7 +54,14 @@ class TextEditingCController extends TextEditingController {
     return _internalID!;
   }
 
+  String? getValueOrNull({bool trim = false}) {
+    var value = getValue();
+    if (trim) value = value.trim();
+    return value.isEmpty ? null : value;
+  }
+
   dynamic getExtras() => _extra;
+  String? getInternalID() => _internalID;
 
   void updateLabel(String newTitle) => labelState.emitVal(newTitle);
   void updateBottomLabel(String text) => bottomLabelState.emitVal(text);

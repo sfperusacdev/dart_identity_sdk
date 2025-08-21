@@ -249,3 +249,8 @@
 ## version: 5.13.5
 
 - add dismissKeyboard flag to control auto unfocus behavior
+
+
+## version: 5.13.6
+
+- add getValueOrNull method to return null if empty and support optional trim
