@@ -25,6 +25,18 @@ List<StringOption> stringOptionsAdapter(List<String> values) {
   return values.map((s) => StringOption(s)).toList();
 }
 
+class SelectOptionItem implements SelectOption {
+  final String label;
+  final String value;
+  const SelectOptionItem(this.value, this.label);
+
+  @override
+  String getID() => value;
+
+  @override
+  String getLabel() => label;
+}
+
 Future<List<T>?> showBasicOptionsKDialog<T extends SelectOption>(
   BuildContext context, {
   required List<T> options,
@@ -34,7 +46,7 @@ Future<List<T>?> showBasicOptionsKDialog<T extends SelectOption>(
   String? title,
   String? acceptText,
   String? cancelText,
-  bool useMaxHeight = true,
+  bool useMaxHeight = false,
 }) async {
   acceptText ??= strings.acceptButtonText;
   cancelText ??= strings.cancelButtonText;

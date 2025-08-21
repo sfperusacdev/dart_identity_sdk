@@ -39,6 +39,7 @@ class CustomSelectFormField<T extends SelectOption> extends StatelessWidget {
             return options;
           },
           initialSelection: [txt.getValue()],
+          useMaxHeight: false,
         );
         if (selecteds == null) return;
         if (selecteds.isEmpty) {

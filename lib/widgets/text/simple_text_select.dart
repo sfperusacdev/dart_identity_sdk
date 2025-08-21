@@ -35,6 +35,7 @@ class CustomBasicSelectFormField<T extends SelectOption>
           searchInput: showSearchInput,
           options: options,
           initialSelection: [txt.getValue()],
+          useMaxHeight: false,
         );
         if (selecteds == null) return;
         if (selecteds.isEmpty) {
