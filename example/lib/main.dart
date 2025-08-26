@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dart_identity_sdk/dart_identity_sdk.dart';
 import 'package:dart_identity_sdk/info/preferences_dialog.dart';
+import 'package:dart_identity_sdk/utils/date_picker.dart';
 import 'package:example/configs/theme.dart';
 import 'package:example/inputs.dart';
 import 'package:flutter/material.dart';
@@ -116,6 +117,24 @@ class _HomePageState extends State<HomePage> {
               },
               icon: Icon(Icons.input),
               label: Text("Inputs"),
+            ),
+            FilledButton.icon(
+              onPressed: () async {
+                await showAllowedDatesPicker(
+                  context: context,
+                  allowedDates: [
+                    DateTime(2025, 1, 10),
+                    DateTime(2025, 1, 15),
+                    DateTime(2025, 1, 20),
+                  ],
+                  initialDate: DateTime(2025, 1, 12),
+                  helpText: "Pick a valid date",
+                  cancelText: "Close",
+                  confirmText: "Select",
+                );
+              },
+              icon: Icon(Icons.calendar_month),
+              label: Text("DatePicker"),
             ),
           ],
         ),
