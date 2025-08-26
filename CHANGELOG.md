@@ -260,3 +260,10 @@
 ## version: 5.13.7
 
 - add conditional getBytes/getBase64 methods
+
+
+
+
+# version: 5.14.0
+
+- add conditional getBytes/getBase64 methods
