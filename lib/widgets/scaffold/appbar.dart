@@ -35,7 +35,7 @@ class SearchAppBar extends StatefulWidget implements PreferredSizeWidget {
 
 class _SearchAppBarState extends State<SearchAppBar> {
   bool _isSearching = false;
-  final _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   Timer? _debounce;
 
   @override
@@ -46,61 +46,41 @@ class _SearchAppBarState extends State<SearchAppBar> {
   }
 
   void _onSearchChanged(String value) {
-    _debounce?.cancel();
-    _debounce = Timer(widget.debounce, () => widget.onChange?.call(value));
-  }
-
-  void _submitNow(String value) {
-    _debounce?.cancel();
-    widget.onChange?.call(value);
-  }
-
-  void _toggleSearch() {
-    setState(() {
-      _isSearching = !_isSearching;
-      if (!_isSearching) {
-        _searchController.clear();
-        _submitNow('');
-      }
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(widget.debounce, () {
+      widget.onChange?.call(value);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 150),
-        child: _isSearching
-            ? TextField(
-                key: const ValueKey('searchField'),
-                controller: _searchController,
-                autofocus: true,
-                onChanged: _onSearchChanged,
-                onSubmitted: _submitNow,
-                textInputAction: TextInputAction.search,
-                decoration: InputDecoration(
-                  hintText: 'Buscar...',
-                  border: InputBorder.none,
-                  suffixIcon: _searchController.text.isEmpty
-                      ? null
-                      : IconButton(
-                          icon: const Icon(Icons.clear),
-                          onPressed: () {
-                            _searchController.clear();
-                            _submitNow('');
-                            setState(() {}); // actualiza suffixIcon
-                          },
-                          tooltip: 'Limpiar',
-                        ),
-                ),
-              )
-            : Text(widget.title, key: const ValueKey('title')),
-      ),
+      title: _isSearching
+          ? TextField(
+              controller: _searchController,
+              autofocus: true,
+              onChanged: _onSearchChanged,
+              cursorColor: Colors.white,
+              style: const TextStyle(color: Colors.white),
+              decoration: const InputDecoration(
+                hintText: 'Buscar...',
+                hintStyle: TextStyle(color: Colors.white),
+                border: InputBorder.none,
+              ),
+            )
+          : Text(widget.title),
       actions: [
         IconButton(
           icon: Icon(_isSearching ? Icons.close : Icons.search),
-          tooltip: _isSearching ? 'Cerrar búsqueda' : 'Buscar',
-          onPressed: _toggleSearch,
+          onPressed: () {
+            setState(() {
+              _isSearching = !_isSearching;
+              if (!_isSearching) {
+                _searchController.clear();
+                _onSearchChanged('');
+              }
+            });
+          },
         ),
       ],
     );

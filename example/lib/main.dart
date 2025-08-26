@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dart_identity_sdk/dart_identity_sdk.dart';
 import 'package:dart_identity_sdk/info/preferences_dialog.dart';
 import 'package:dart_identity_sdk/utils/date_picker.dart';
+import 'package:example/appbar.dart';
 import 'package:example/configs/theme.dart';
 import 'package:example/inputs.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,12 @@ class AppRoutes extends IdentityRoutes {
         path: "/inputs",
         builder: (context, state) {
           return const InputsPage();
+        },
+      ),
+      GoRoute(
+        path: "/appbar",
+        builder: (context, state) {
+          return const AppbarPage();
         },
       ),
     ];
@@ -76,6 +83,7 @@ class _HomePageState extends State<HomePage> {
       body: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
+
           children: [
             Text(getSelectedBranch() ?? "no-ne"),
             Padding(padding: const EdgeInsets.all(24.0), child: Text(claims())),
@@ -110,6 +118,13 @@ class _HomePageState extends State<HomePage> {
               },
               icon: Icon(Icons.settings),
               label: Text("Preferences"),
+            ),
+            FilledButton.icon(
+              onPressed: () async {
+                await context.push("/appbar");
+              },
+              icon: Icon(Icons.input),
+              label: Text("Appbar"),
             ),
             FilledButton.icon(
               onPressed: () async {

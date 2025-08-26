@@ -250,25 +250,22 @@
 
 - add dismissKeyboard flag to control auto unfocus behavior
 
-
 ## version: 5.13.6
 
 - add getValueOrNull method to return null if empty and support optional trim
-
-
 
 ## version: 5.13.7
 
 - add conditional getBytes/getBase64 methods
 
-
-
-
 # version: 5.14.0
 
 - add conditional getBytes/getBase64 methods
 
-
 ## version: 5.14.1
 
 - add showAllowedDatesPicker
+
+## version: 5.14.2
+
+- fix appbar search
