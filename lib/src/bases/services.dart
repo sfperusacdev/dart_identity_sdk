@@ -163,4 +163,68 @@ class ApiService {
         () => http.put(url, body: jsonEncode(payload), headers: _headers()),
         url);
   }
+
+  static Future<Uint8List> download({
+    Uri? withUri,
+    String? serviceID,
+    String? path,
+    Map<String, dynamic> qparams = const {},
+    Object? payload = const {},
+    bool isPost = false,
+    Duration? timeout,
+  }) async {
+    final url =
+        withUri ?? uri(path ?? "", queryparams: qparams, serviceID: serviceID);
+
+    final client = http.Client();
+    try {
+      final response = isPost
+          ? await client
+              .post(url, body: jsonEncode(payload), headers: _headers())
+              .timeout(timeout ?? const Duration(seconds: 30))
+          : await client
+              .get(url, headers: _headers())
+              .timeout(timeout ?? const Duration(seconds: 30));
+
+      if (response.statusCode == 200) {
+        return response.bodyBytes;
+      } else {
+        throw ApiErrorResponse(_debugMessage(
+            "API error",
+            "Status Code: ${response.statusCode}",
+            "Response: ${response.body}",
+            url));
+      }
+    } catch (e, stackTrace) {
+      String errorMessage;
+      if (e is SocketException) {
+        errorMessage = _debugMessage("Connection Error", e.message, "", url);
+        throw ConnectionRefuted(err: errorMessage, url: url);
+      }
+      if (e is HttpException) {
+        errorMessage =
+            _debugMessage("Invalid HTTP Response", e.message, "", url);
+        throw ApiErrorResponse(errorMessage);
+      }
+      if (e is FormatException) {
+        errorMessage =
+            _debugMessage("Invalid Response Format", e.message, "", url);
+        throw RespuestaInvalida();
+      }
+      if (e is TimeoutException) {
+        errorMessage = _debugMessage(
+            "Request Timed Out", "The request took too long", "", url);
+        throw ApiErrorResponse(errorMessage);
+      }
+      if (e is http.ClientException) {
+        errorMessage = _debugMessage("Client Error", e.message, "", url);
+        throw ApiErrorResponse(errorMessage);
+      }
+      errorMessage = _debugMessage(
+          "Unexpected Error", e.toString(), stackTrace.toString(), url);
+      throw ApiErrorResponse(errorMessage);
+    } finally {
+      client.close();
+    }
+  }
 }

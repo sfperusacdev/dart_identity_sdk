@@ -269,3 +269,7 @@
 ## version: 5.14.2
 
 - fix appbar search
+
+# version:  5.15.0
+
+- feat: método download con soporte GET/POST
