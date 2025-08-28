@@ -11,9 +11,7 @@ List<RouteBase>? _last;
 
 class ApplicationRouterManager {
   final IdentityRoutes _routes;
-  final bool Function(DateTime? sessionDate)? sessionValidationCriteria;
-  const ApplicationRouterManager(this._routes,
-      {this.sessionValidationCriteria});
+  const ApplicationRouterManager(this._routes);
 
   GoRouter router() {
     final routes = _routes.routes();
@@ -33,8 +31,7 @@ class ApplicationRouterManager {
   }
 
   String _getInitialRoute() {
-    final hasValidSession =
-        SessionManagerSDK.hasValidSession(criteria: sessionValidationCriteria);
+    final hasValidSession = SessionManagerSDK.hasValidSession();
     if (hasValidSession) {
       final empresa = SessionManagerSDK.getCompanyCode();
       AppPreferences.setUpDomain(empresa);

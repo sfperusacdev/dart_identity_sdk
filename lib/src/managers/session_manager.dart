@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:dart_identity_sdk/dart_identity_sdk.dart';
 import 'package:dart_identity_sdk/src/entities/refresh_token_response.dart';
 import 'package:dart_identity_sdk/src/pages/login/login_page.dart';
+import 'package:dart_identity_sdk/src/sqlite/connection.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
@@ -9,7 +10,14 @@ import 'package:intl/intl.dart' as intl;
 
 const _sessionStorageKey = "dart_identity_sdk_session_storage";
 
+typedef SessionValidityEvaluator = bool Function(
+  DateTime loginDate,
+  IdentitySessionResponse session,
+);
+
 class SessionManagerSDK {
+  static SessionValidityEvaluator? _sessionValidityRule;
+
   static IdentitySessionResponse? _session;
   static String? _identityURL;
 
@@ -25,6 +33,10 @@ class SessionManagerSDK {
 
   static void setIdentityServerURL(String url) {
     _identityURL = url;
+  }
+
+  static void setSessionValidityRule(SessionValidityEvaluator rule) {
+    _sessionValidityRule = rule;
   }
 
   static String? findServiceLocation(String serviceID) {
@@ -76,10 +88,14 @@ class SessionManagerSDK {
         : null;
   }
 
-  static bool hasValidSession({bool Function(DateTime? loginDate)? criteria}) {
-    if (getCurrentSession()?.timeStamp == null) return false;
+  static bool hasValidSession() {
+    final session = getCurrentSession();
+    if (session == null || session.timeStamp == null) return false;
     final lastLogin = getLastLoginDate();
-    if (criteria != null) return criteria(lastLogin);
+    if (_sessionValidityRule != null) {
+      if (lastLogin == null) return false;
+      return _sessionValidityRule!(lastLogin, session);
+    }
     final last = intl.DateFormat('yyyy-MM-dd').format(lastLogin!.toLocal());
     final now = intl.DateFormat('yyyy-MM-dd').format(DateTime.now().toLocal());
     return now == last;
@@ -180,6 +196,8 @@ class SessionManagerSDK {
     await AppPreferences.global.remove(_sessionStorageKey);
     if (context.mounted) context.go(LoginPage.path);
     _firstOpen = false;
+    await LiteConnection
+        .closeIfConnected(); // ensure the database is properly closed and resources are released
   }
 
   static Future<void> login({

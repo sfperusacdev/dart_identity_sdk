@@ -20,6 +20,8 @@ dependencies:
   intl: ^0.20.2
   mobile_scanner: ^7.0.1
   package_info_plus: ^8.1.2
+  path: ^1.9.1
+  path_provider: ^2.1.5
   provider: ^6.1.5
   shared_preferences: ^2.5.3
   shared_preferences_content_provider: ^0.0.5

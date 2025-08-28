@@ -27,6 +27,7 @@ import 'dart:io';
 import 'package:dart_identity_sdk/dart_identity_sdk.dart';
 import 'package:dart_identity_sdk/kdialogs.dart';
 import 'package:dart_identity_sdk/src/env/env.dart';
+import 'package:dart_identity_sdk/src/sqlite/connection.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -39,7 +40,14 @@ Future<bool> initializeIdentityDependencies({
   String? defaultServiceID,
   int logPort = 30069,
   String envFileName = '.env', // asset
+  SessionValidityEvaluator? sessionValidityRule,
+  LiteDatabaseConfig? database,
 }) async {
+  if (database != null) LiteConnection.setDatabaseConfig(database);
+  if (sessionValidityRule != null) {
+    SessionManagerSDK.setSessionValidityRule(sessionValidityRule);
+  }
+
   initKDialogStrings();
   await LOG.init(logPort: logPort);
   try {
@@ -80,6 +88,22 @@ Future<bool> initializeIdentityDependencies({
     ); // es probable que falle en versiones 8.1 de android
   } catch (e) {
     LOG.printError(e.toString());
+  }
+
+  // Connects to the local database using the current session's company domain, if available
+  if (SessionManagerSDK.hasValidSession()) {
+    final session = SessionManagerSDK.getCurrentSession();
+    final domain = session?.session?.company;
+
+    if (domain != null) {
+      try {
+        await LiteConnection.connect(domain);
+      } catch (e) {
+        LOG.printError("Failed to connect to database: ${e.toString()}");
+      }
+    } else {
+      LOG.printError("Session is missing company domain");
+    }
   }
   return true;
 }

@@ -1,9 +1,11 @@
 import 'package:dart_identity_sdk/src/entities/empresa_app_perfile.dart';
+import 'package:dart_identity_sdk/src/logs/log.dart';
 import 'package:dart_identity_sdk/src/pages/login/bloc/empresa_grupo_provider.dart';
 import 'package:dart_identity_sdk/src/pages/login/form_store_helper.dart';
 import 'package:dart_identity_sdk/src/security/settings/login_fields.dart';
 import 'package:dart_identity_sdk/src/services/login.dart';
 import 'package:dart_identity_sdk/src/managers/device_info_manager.dart';
+import 'package:dart_identity_sdk/src/sqlite/connection.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:dart_identity_sdk/kdialogs/kdialogs.dart';
@@ -313,15 +315,25 @@ class _LoginFromState extends State<LoginFrom> {
         if (index == -1) throw "no se econtro licencia para $selectedEmpresa";
         final licence = licences[index];
         final service = LoginService();
+        final domain = _empresa.trim();
         await service.login(
           licence: licence.licenceCode ?? "",
           deviceid: await DeviceLicenceManager.deviceID(),
           deviceName: await DeviceLicenceManager.deviceName(),
-          empresa: _empresa.trim(),
+          empresa: domain,
           username: _username.trim(),
           password: _password.trim(),
           profileID: _perfil,
         );
+
+        // Attempts to connect to the local database using the provided domain
+        try {
+          await LiteConnection.connect(domain);
+        } catch (e) {
+          LOG.printError("Failed to connect to database: ${e.toString()}");
+          throw "No se pudo preparar la conexión con la base de datos para el dominio: $domain";
+        }
+
         return true;
       },
       onSuccess: (_) => context.go("/home"),
