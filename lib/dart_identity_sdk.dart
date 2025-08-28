@@ -41,11 +41,17 @@ Future<bool> initializeIdentityDependencies({
   int logPort = 30069,
   String envFileName = '.env', // asset
   SessionValidityEvaluator? sessionValidityRule,
+  List<String> minimumRequiredServices = const [],
+  List<String> minimumRequiredPermissions = const [],
   LiteDatabaseConfig? database,
 }) async {
   if (database != null) LiteConnection.setDatabaseConfig(database);
   if (sessionValidityRule != null) {
-    SessionManagerSDK.setSessionValidityRule(sessionValidityRule);
+    SessionManagerSDK.setSessionValidityRule(
+      rule: sessionValidityRule,
+      minimumRequiredPermissions: minimumRequiredPermissions,
+      minimumRequiredServices: minimumRequiredServices,
+    );
   }
 
   initKDialogStrings();
@@ -111,7 +117,15 @@ Future<bool> initializeIdentityDependencies({
 const _selectedBranchKey = "x_selected_branch";
 
 String? getSelectedBranch() {
-  return AppPreferences.private.getString(_selectedBranchKey);
+  final value = AppPreferences.private.getString(_selectedBranchKey);
+  if (value != null) {
+    return value;
+  }
+  final list = SessionManagerSDK.findCompanyBranchs();
+  if (list.isNotEmpty) {
+    return list.first;
+  }
+  return null;
 }
 
 Future<void> setSelectedBranch(String value) async {

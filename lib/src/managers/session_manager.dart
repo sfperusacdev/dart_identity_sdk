@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:dart_identity_sdk/dart_identity_sdk.dart';
+import 'package:dart_identity_sdk/kdialogs/src/show_bottom_alert.dart';
 import 'package:dart_identity_sdk/src/entities/refresh_token_response.dart';
 import 'package:dart_identity_sdk/src/pages/login/login_page.dart';
 import 'package:dart_identity_sdk/src/sqlite/connection.dart';
@@ -16,6 +17,8 @@ typedef SessionValidityEvaluator = bool Function(
 );
 
 class SessionManagerSDK {
+  static List<String>? _minimumRequiredServices;
+  static List<String>? _minimumRequiredPermissions;
   static SessionValidityEvaluator? _sessionValidityRule;
 
   static IdentitySessionResponse? _session;
@@ -35,9 +38,19 @@ class SessionManagerSDK {
     _identityURL = url;
   }
 
-  static void setSessionValidityRule(SessionValidityEvaluator rule) {
+  static void setSessionValidityRule({
+    SessionValidityEvaluator? rule,
+    List<String>? minimumRequiredServices,
+    List<String>? minimumRequiredPermissions,
+  }) {
     _sessionValidityRule = rule;
+    _minimumRequiredServices = minimumRequiredServices;
+    _minimumRequiredPermissions = minimumRequiredPermissions;
   }
+
+  // static void setSessionValidityRule(SessionValidityEvaluator rule) {
+  //   _sessionValidityRule = rule;
+  // }
 
   static String? findServiceLocation(String serviceID) {
     final session = getCurrentSession();
@@ -259,6 +272,49 @@ class SessionManagerSDK {
   static Future<void> _persistSession(IdentitySessionResponse session) async {
     await AppPreferences.global.setString(_sessionStorageKey, session.toJson());
     _session = session;
+  }
+
+  static Future<bool> validateMinimumSessionRequirements(
+    BuildContext context,
+  ) async {
+    final companyCode = getCompanyCode();
+    if (companyCode.isEmpty) {
+      await showBottomAlertKDialog(
+        context,
+        title: "Error",
+        message: "No se ha encontrado la empresa configurada",
+      );
+      return false;
+    }
+    if (_minimumRequiredPermissions?.isNotEmpty == true) {
+      final hasPermissions = SessionManagerSDK.checkPermissions(
+        _minimumRequiredPermissions!,
+      );
+      if (!hasPermissions) {
+        await showBottomAlertKDialog(
+          context,
+          title: "Error de permisos",
+          message: "No cuentas con los permisos necesarios para continuar",
+        );
+        return false;
+      }
+    }
+    if (_minimumRequiredServices?.isNotEmpty == true) {
+      final (notFounds, ok) = SessionManagerSDK.checkDependencies(
+        _minimumRequiredServices!,
+      );
+      if (!ok) {
+        final notFoundServices = notFounds.join(', ');
+        await showBottomAlertKDialog(
+          context,
+          title: "Error de servicios",
+          message:
+              "No se encontraron los siguientes servicios requeridos: [$notFoundServices]. No es posible continuar",
+        );
+        return false;
+      }
+    }
+    return true;
   }
 }
 

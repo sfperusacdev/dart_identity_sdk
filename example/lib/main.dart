@@ -5,13 +5,21 @@ import 'package:dart_identity_sdk/info/preferences_dialog.dart';
 import 'package:dart_identity_sdk/utils/date_picker.dart';
 import 'package:example/appbar.dart';
 import 'package:example/configs/theme.dart';
+import 'package:example/home2.dart';
 import 'package:example/inputs.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await initializeIdentityDependencies(appID: "tareo.app");
+  await initializeIdentityDependencies(
+    appID: "tareo.app",
+    minimumRequiredServices: [
+      "com.sfperusac.tareoapp",
+      "com.sfperusac.syncdata",
+    ],
+    minimumRequiredPermissions: ["login.tareoapp.application"],
+  );
   runApp(const MyApp());
 }
 
@@ -21,6 +29,12 @@ class AppRoutes extends IdentityRoutes {
     return [
       GoRoute(
         path: "/home",
+        builder: (context, state) {
+          return MainHome();
+        },
+      ),
+      GoRoute(
+        path: "/dialogs",
         builder: (context, state) {
           return const HomePage();
         },
