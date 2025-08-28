@@ -1,5 +1,5 @@
 import 'package:dart_identity_sdk/dart_identity_sdk.dart';
-import 'package:dart_identity_sdk/src/sqlite/no_connected.dart';
+import 'package:dart_identity_sdk/sqlite/no_connected.dart';
 import 'package:path_provider/path_provider.dart' as pathprovider;
 import 'package:path/path.dart' as p;
 import 'package:sqflite/sqflite.dart' as sqlite;

@@ -3,7 +3,7 @@ import 'package:dart_identity_sdk/dart_identity_sdk.dart';
 import 'package:dart_identity_sdk/kdialogs/src/show_bottom_alert.dart';
 import 'package:dart_identity_sdk/src/entities/refresh_token_response.dart';
 import 'package:dart_identity_sdk/src/pages/login/login_page.dart';
-import 'package:dart_identity_sdk/src/sqlite/connection.dart';
+import 'package:dart_identity_sdk/sqlite/connection.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;

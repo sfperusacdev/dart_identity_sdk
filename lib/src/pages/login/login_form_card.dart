@@ -5,7 +5,7 @@ import 'package:dart_identity_sdk/src/pages/login/form_store_helper.dart';
 import 'package:dart_identity_sdk/src/security/settings/login_fields.dart';
 import 'package:dart_identity_sdk/src/services/login.dart';
 import 'package:dart_identity_sdk/src/managers/device_info_manager.dart';
-import 'package:dart_identity_sdk/src/sqlite/connection.dart';
+import 'package:dart_identity_sdk/sqlite/connection.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:dart_identity_sdk/kdialogs/kdialogs.dart';

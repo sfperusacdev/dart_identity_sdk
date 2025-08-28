@@ -27,7 +27,7 @@ import 'dart:io';
 import 'package:dart_identity_sdk/dart_identity_sdk.dart';
 import 'package:dart_identity_sdk/kdialogs.dart';
 import 'package:dart_identity_sdk/src/env/env.dart';
-import 'package:dart_identity_sdk/src/sqlite/connection.dart';
+import 'package:dart_identity_sdk/sqlite/connection.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
