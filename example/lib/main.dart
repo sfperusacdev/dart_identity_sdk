@@ -13,6 +13,7 @@ import 'package:go_router/go_router.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeIdentityDependencies(
+    logPort: 30069,
     appID: "tareo.app",
     minimumRequiredServices: [
       "com.sfperusac.tareoapp",

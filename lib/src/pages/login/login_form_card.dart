@@ -298,7 +298,10 @@ class _LoginFromState extends State<LoginFrom> {
       return;
     }
     var request = RequestLogin(
-        empresa: _empresa, username: _username, password: _password);
+      empresa: _empresa,
+      username: _username,
+      password: _password,
+    );
     if (_memorize) {
       await LoginCredentialsStoreHelper.save(request);
     } else {

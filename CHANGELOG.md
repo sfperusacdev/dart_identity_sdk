@@ -288,3 +288,9 @@
 
 - fix sync preferences
 - define default theme
+
+
+
+## version: 5.16.3
+
+- fix prefs

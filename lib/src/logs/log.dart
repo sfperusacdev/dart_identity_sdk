@@ -11,16 +11,21 @@ String _dosDigitos(int numero) {
 
 String obtenerFechaActual() {
   final DateTime ahora = DateTime.now();
-  String fechaFormateada = '${ahora.year}/${_dosDigitos(ahora.month)}/${_dosDigitos(ahora.day)} '
+  String fechaFormateada =
+      '${ahora.year}/${_dosDigitos(ahora.month)}/${_dosDigitos(ahora.day)} '
       '${_dosDigitos(ahora.hour)}:${_dosDigitos(ahora.minute)}:${_dosDigitos(ahora.second)}';
   return fechaFormateada;
 }
 
 class LOG {
+  static int _logPort = 0;
   static late sqflite.Database _connecion;
   static bool _isopenDB = false;
-
+  
+  static get logPort => _logPort;
+  
   static Future<void> init({int logPort = 30069}) async {
+    _logPort = logPort;
     if (_isopenDB) return;
     try {
       if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
@@ -51,7 +56,8 @@ class LOG {
     for (var line in lines) {
       response += "$line\n";
     }
-    return Response.ok(response, headers: {"Content-Type": "text/plain; charset=UTF-8"});
+    return Response.ok(response,
+        headers: {"Content-Type": "text/plain; charset=UTF-8"});
   }
 
   static Future<List<String>> _listLogLines() async {

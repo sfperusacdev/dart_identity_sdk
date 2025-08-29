@@ -35,12 +35,14 @@ class EmpresaGrupoPrivider extends ChangeNotifier {
 
   set justSetSelectedPerfil(String perfilID) {
     _estado[_selectedEmpresa ?? "unknow"] = perfilID;
-    AppPreferences.global.setString(_key, jsonEncode(_estado));
+    final str = jsonEncode(_estado);
+    AppPreferences.global.setString(_key, str);
   }
 
   set setselectedPerfil(String perfilID) {
     _estado[_selectedEmpresa ?? "unknow"] = perfilID;
-    AppPreferences.global.setString(_key, jsonEncode(_estado));
+    final str = jsonEncode(_estado);
+    AppPreferences.global.setString(_key, str);
     notifyListeners();
   }
 

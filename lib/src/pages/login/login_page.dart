@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dart_identity_sdk/dart_identity_sdk.dart';
 import 'package:dart_identity_sdk/src/env/env.dart';
 import 'package:dart_identity_sdk/src/pages/login/bloc/empresa_grupo_provider.dart';
 import 'package:dart_identity_sdk/src/pages/login/login_form_card.dart';
@@ -100,19 +101,33 @@ class _LoginPageState extends State<LoginPage> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text("🔐 Identity:",
-                            style: TextStyle(fontWeight: FontWeight.w600)),
+                        const Text(
+                          "🔐 Identity:",
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                        ),
                         const SizedBox(height: 4),
                         Text(
                           EnvConfig.identityServerUrl(),
                           style: const TextStyle(color: Colors.black87),
                         ),
                         const SizedBox(height: 12),
-                        const Text("⚙️ Preferencias:",
-                            style: TextStyle(fontWeight: FontWeight.w600)),
+                        const Text(
+                          "⚙️ Preferencias:",
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                        ),
                         const SizedBox(height: 4),
                         Text(
                           EnvConfig.preferencesServerUrl(),
+                          style: const TextStyle(color: Colors.black87),
+                        ),
+                        const SizedBox(height: 12),
+                        const Text(
+                          "🖥️ LogServer:",
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          "http://127.0.0.1:${LOG.logPort}",
                           style: const TextStyle(color: Colors.black87),
                         ),
                       ],
