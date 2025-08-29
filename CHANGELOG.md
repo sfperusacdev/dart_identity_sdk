@@ -282,14 +282,10 @@
 
 - fix package
 
-
-
 ## version: 5.16.2
 
 - fix sync preferences
 - define default theme
-
-
 
 ## version: 5.16.3
 
@@ -298,3 +294,7 @@
 ## version: 5.16.5
 
 - fix authority, en el query de licencias
+
+## version: 5.16.6
+
+- fix authority,esta es la buena

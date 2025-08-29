@@ -46,8 +46,12 @@
     <uses-permission android:name="shared_preferences.permission.WRITE_DATA" />
     <uses-permission android:name="shared_preferences.permission.READ_DATA" />
     <queries>
-        <package android:name="com.sfperusac.manager" />       
+        <package android:name="com.sfperusac.manager" />
     </queries>
+    <queries>
+        <provider android:authorities="com.sfperusac.manager.licencias" />
+    </queries>
+
 
     <uses-permission
         android:name="android.permission.INTERNET" />
