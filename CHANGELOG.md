@@ -281,3 +281,10 @@
 ## version: 5.16.1
 
 - fix package
+
+
+
+## version: 5.16.2
+
+- fix sync preferences
+- define default theme
