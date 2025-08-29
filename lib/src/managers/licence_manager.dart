@@ -14,7 +14,7 @@ abstract class ReadeProvider {
 }
 
 class _SharedPreferences implements ReadeProvider {
-  static const providerAuthority = "com.sfperusac.licences.provider";
+  static const providerAuthority = "com.sfperusac.manager.provider";
   @override
   Future<String> deviceID() async {
     final value = await SharedPreferencesContentProvider.get("__device_id__");

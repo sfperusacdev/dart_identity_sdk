@@ -294,3 +294,7 @@
 ## version: 5.16.3
 
 - fix prefs
+
+## version: 5.16.5
+
+- fix authority, en el query de licencias
