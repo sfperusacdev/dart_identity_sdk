@@ -174,23 +174,40 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
                   child: SafeArea(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Column(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Text(
-                              sucursal.split(".").last,
-                              style: const BlodTextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: Text(
+                                  "Sucursal: ${sucursal.split(".").last}",
+                                  style: const BlodTextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                  ),
+                                ),
                               ),
-                            ),
+                              IconButton(
+                                onPressed: () =>
+                                    _showSelectSucursalDialog(context),
+                                icon: const Icon(Icons.domain),
+                                color: Colors.white,
+                              ),
+                            ],
                           ),
-                          IconButton(
-                            onPressed: () => _showSelectSucursalDialog(context),
-                            icon: const Icon(Icons.domain),
-                            color: Colors.white,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              IconButton(
+                                onPressed: () => _syncPreferences(context),
+                                icon: Icon(
+                                  Icons.cloud_sync,
+                                  color: Theme.of(context).colorScheme.surface,
+                                ),
+                              )
+                            ],
                           ),
                         ],
                       ),
@@ -202,6 +219,12 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _syncPreferences(BuildContext context) async {
+    await AppPreferences.syncPreferencesWithLoaderIndicator(
+      context,
     );
   }
 
@@ -238,14 +261,16 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
     final initialSelection = <String>[];
     final current = getSelectedBranch();
     if (current != null && current.isNotEmpty) {
-      initialSelection.add(current);
+      initialSelection.add(current.split(".").last);
     }
     final selected = await showBasicOptionsKDialog(
       context,
       initialSelection: initialSelection,
       title: "Sucursales",
       options: stringOptionsAdapter(
-        SessionManagerSDK.findCompanyBranchs(),
+        SessionManagerSDK.findCompanyBranchs()
+            .map((elm) => elm.split(".").last)
+            .toList(),
       ),
     );
     if (selected == null || selected.isEmpty) return;
