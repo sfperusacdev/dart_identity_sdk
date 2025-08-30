@@ -231,6 +231,7 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
     await AppPreferences.syncPreferencesWithLoaderIndicator(
       context,
     );
+    setState(() {});
   }
 
   Future<void> _handleSessionValidation() async {
