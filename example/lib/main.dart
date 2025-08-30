@@ -98,7 +98,6 @@ class _HomePageState extends State<HomePage> {
       body: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
-
           children: [
             Text(getSelectedBranch() ?? "no-ne"),
             Padding(padding: const EdgeInsets.all(24.0), child: Text(claims())),

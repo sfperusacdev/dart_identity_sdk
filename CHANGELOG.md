@@ -298,3 +298,11 @@
 ## version: 5.16.6
 
 - fix authority,esta es la buena
+
+## version: 5.16.7
+
+- Implemented type-safe read methods for bool, int, double, string, stringList, json, and raw
+- Added normalization for boolean parsing using PostgreSQL-compatible values
+- Handled values stored as JSON-encoded strings for all supported types
+- Ensured single scalar values are wrapped in list for readStringList
+- Removed unnecessary jsonDecode from native SharedPreferences types

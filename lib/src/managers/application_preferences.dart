@@ -80,8 +80,23 @@ class PreferencesWrapper {
   Future<bool> _saveMapToStorage(Map<String, dynamic> map) async {
     final futures = <Future<bool>>[];
     for (var key in map.keys) {
-      futures.add(global.setString(_wrapKey(key), jsonEncode(map[key])));
+      final value = map[key];
+      switch (value) {
+        case String v:
+          futures.add(global.setString(_wrapKey(key), v));
+        case int v:
+          futures.add(global.setInt(_wrapKey(key), v));
+        case double v:
+          futures.add(global.setDouble(_wrapKey(key), v));
+        case bool v:
+          futures.add(global.setBool(_wrapKey(key), v));
+        case List<String> v:
+          futures.add(global.setStringList(_wrapKey(key), v));
+        default:
+          futures.add(global.setString(_wrapKey(key), jsonEncode(value)));
+      }
     }
+
     var results = await Future.wait(futures);
     for (var result in results) {
       if (!result) return false;
@@ -147,17 +162,6 @@ class AppPreferences {
   }
 
   //-----------------------------------ACCESS DATA--------------------------------------//
-  static Map<String, dynamic> readMap(String key) {
-    final value = private.getString(key);
-    if (value == null) return {};
-    try {
-      final decoded = jsonDecode(value);
-      return decoded is Map<String, dynamic> ? decoded : {};
-    } catch (err) {
-      debugPrint(err.toString());
-      return {};
-    }
-  }
 
   static List<Map<String, dynamic>> readList(String key) {
     final value = private.getString(key);
@@ -171,59 +175,105 @@ class AppPreferences {
     }
   }
 
-  static dynamic readRaw(String key) {
-    final value = private.getString(key);
-    if (value == null) return null;
-    try {
-      return jsonDecode(value);
-    } catch (err) {
-      debugPrint(err.toString());
-      return null;
-    }
+  static Object? read(String key) {
+    final value = private.get(key);
+    return value;
   }
 
   static int? readInt(String key) {
-    final value = private.getString(key);
-    if (value == null) return null;
-    try {
-      final decoded = jsonDecode(value);
-      return decoded is int ? decoded : null;
-    } catch (err) {
-      debugPrint(err.toString());
-      return null;
+    final raw = private.get(key);
+    dynamic value = raw;
+
+    if (value is String) {
+      try {
+        value = jsonDecode(value);
+      } catch (_) {}
     }
+
+    if (value is int) return value;
+    if (value is double) return value.toInt();
+    if (value is String) return int.tryParse(value);
+    return null;
+  }
+
+  static List<String>? readStringList(String key) {
+    final raw = private.get(key);
+    dynamic value = raw;
+    if (value is String) {
+      try {
+        value = jsonDecode(value);
+      } catch (_) {}
+    }
+    if (value is List) {
+      final list = value.map((e) => e.toString()).toList();
+      return list;
+    }
+    if (value is String || value is int || value is double || value is bool) {
+      return [value.toString()];
+    }
+    return null;
   }
 
   static bool? readBool(String key) {
-    final value = private.getString(key);
-    if (value == null) return null;
-    try {
-      final decoded = jsonDecode(value);
-      return decoded is bool ? decoded : null;
-    } catch (err) {
-      debugPrint(err.toString());
-      return null;
+    final raw = private.get(key);
+    dynamic value = raw;
+
+    if (value is String) {
+      try {
+        value = jsonDecode(value);
+      } catch (_) {}
+    }
+
+    switch (value) {
+      case bool b:
+        return b;
+      case int i:
+        return i == 1;
+      case String s:
+        final normalized = s.toLowerCase();
+        if (['1', 't', 'true', 'y', 'yes'].contains(normalized)) return true;
+        if (['0', 'f', 'false', 'n', 'no'].contains(normalized)) return false;
+        return null;
+      default:
+        return null;
     }
   }
 
   static double? readDouble(String key) {
-    final value = private.getString(key);
-    if (value == null) return null;
-    try {
-      final decoded = jsonDecode(value);
-      return decoded is double ? decoded : null;
-    } catch (err) {
-      debugPrint(err.toString());
-      return null;
+    final raw = private.get(key);
+    dynamic value = raw;
+
+    if (value is String) {
+      try {
+        value = jsonDecode(value);
+      } catch (_) {}
     }
+
+    if (value is double) return value;
+    if (value is int) return value.toDouble();
+    if (value is String) return double.tryParse(value);
+    return null;
   }
 
   static String? readString(String key) {
+    final raw = private.get(key);
+    if (raw is String) {
+      try {
+        final decoded = jsonDecode(raw);
+        return decoded is String ? decoded : raw;
+      } catch (_) {
+        return raw;
+      }
+    }
+    return raw?.toString();
+  }
+
+  static Map<String, dynamic>? readJson(String key) {
     final value = private.getString(key);
     if (value == null) return null;
     try {
       final decoded = jsonDecode(value);
-      return decoded is String ? decoded : value;
+      return decoded is Map<String, dynamic> ? decoded : null;
     } catch (err) {
       debugPrint(err.toString());
       return null;

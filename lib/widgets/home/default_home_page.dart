@@ -1,4 +1,5 @@
 import 'package:dart_identity_sdk/dart_identity_sdk.dart';
+import 'package:dart_identity_sdk/info/preferences_dialog.dart';
 import 'package:dart_identity_sdk/kdialogs/src/show_basic_options.dart';
 import 'package:dart_identity_sdk/kdialogs/src/show_bottom_alert.dart';
 import 'package:dart_identity_sdk/kdialogs/src/show_confirmation.dart';
@@ -202,6 +203,10 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
                             children: [
                               IconButton(
                                 onPressed: () => _syncPreferences(context),
+                                onLongPress: () async =>
+                                    await showDomainPreferencesDialog(
+                                  context,
+                                ),
                                 icon: Icon(
                                   Icons.cloud_sync,
                                   color: Theme.of(context).colorScheme.surface,
