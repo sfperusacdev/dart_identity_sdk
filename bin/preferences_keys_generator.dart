@@ -73,7 +73,7 @@ Future<String> generatePreferencesKeysClass(String envPath) async {
 
   for (final key in values) {
     final fieldName = _toConstantCase(key);
-    buffer.writeln("  static const String $fieldName = '$key';");
+    buffer.writeln("  static const String $fieldName = '${key.trim()}';");
   }
 
   buffer.writeln('}');

@@ -308,4 +308,9 @@
 - Removed unnecessary jsonDecode from native SharedPreferences types
 
 ## version: 5.16.8
+
 - add script para generar keys de las preferencias
+
+## version: 5.16.9
+
+- fix preferences keys value
