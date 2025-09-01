@@ -306,3 +306,6 @@
 - Handled values stored as JSON-encoded strings for all supported types
 - Ensured single scalar values are wrapped in list for readStringList
 - Removed unnecessary jsonDecode from native SharedPreferences types
+
+## version: 5.16.8
+- add script para generar keys de las preferencias
