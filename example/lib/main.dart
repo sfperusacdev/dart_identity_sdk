@@ -62,7 +62,10 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(routerConfig: routes, theme: appTheme);
+    return SafeArea(
+      top: false,
+      child: MaterialApp.router(routerConfig: routes, theme: appTheme),
+    );
   }
 }
 

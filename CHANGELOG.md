@@ -314,3 +314,7 @@
 ## version: 5.16.9
 
 - fix preferences keys value
+
+## version: 5.16.10
+
+- fix input

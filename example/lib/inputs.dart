@@ -19,6 +19,7 @@ class _InputsPageState extends State<InputsPage> {
     "Este es un texto super largo para probar el comportamiento del input en multilines",
   );
   final camera = TextEditingCController.withText("hola11");
+  final dark = TextEditingCController.withText("00");
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +64,21 @@ class _InputsPageState extends State<InputsPage> {
               multiLine: true,
               suffixIcon: Icons.search,
               onSuffixIconTab: (txt) {},
+            ),
+            Container(
+              decoration: BoxDecoration(color: Theme.of(context).primaryColor),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CustomTextFormField(
+                  label: "Input dark",
+                  darkMode: true,
+                  controller: dark,
+                  suffixIcon: Icons.search,
+                  onSuffixIconTab: (txt) {
+                    txt.updateBottomLabel("hola");
+                  },
+                ),
+              ),
             ),
             Divider(),
             ControlledText(controller: textcontroller, label: "Prueba"),

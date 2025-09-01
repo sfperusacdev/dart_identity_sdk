@@ -19,9 +19,9 @@ class MainHome extends StatelessWidget {
         ),
         HomeMenuCard(
           assetImage: "assets/topico.png",
-          title: "TOPICO",
+          title: "Inputs",
           onTab: () {
-            context.push("/dialogs");
+            context.push("/inputs");
           },
         ),
         HomeMenuCard(

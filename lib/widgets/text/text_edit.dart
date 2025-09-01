@@ -21,6 +21,7 @@ class CustomTextFormField extends StatefulWidget {
   final TextInputType? keyboardType;
   final void Function(String? value)? onSaved;
   final bool required;
+  final bool darkMode;
   final String? Function(String value)? validator;
 
   final Function(String value)? onChanged;
@@ -29,6 +30,7 @@ class CustomTextFormField extends StatefulWidget {
     super.key,
     this.controller,
     this.readonly = false,
+    this.darkMode = false,
     this.obscureText = false,
     this.initValue,
     this.label,
@@ -102,82 +104,106 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         BlocProvider.value(value: _controller.labelState),
         BlocProvider.value(value: _controller.bottomLabelState),
       ],
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        spacing: 0,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Expanded(
-                child: TextFormField(
-                  maxLines: widget.multiLine ? null : 1,
-                  obscureText: widget.obscureText,
-                  controller: _controller,
-                  readOnly: widget.readonly,
-                  focusNode: _controller.focus,
-                  keyboardType: widget.keyboardType,
-                  validator: validator,
-                  onSaved: widget.onSaved,
-                  onTap: () {
-                    if (!widget.readonly) return;
-                    widget.onSuffixIconTab?.call(_controller);
-                  },
-                  decoration: InputDecoration(
-                    errorStyle:
-                        const TextStyle(fontSize: 9, color: Colors.redAccent),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.secondary,
-                        width: 1.3,
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          textSelectionTheme: Theme.of(context).textSelectionTheme.copyWith(
+                selectionHandleColor: Colors.red,
+                selectionColor: Colors.blue.withValues(alpha: 0.4),
+              ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          spacing: 0,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    maxLines: widget.multiLine ? null : 1,
+                    obscureText: widget.obscureText,
+                    controller: _controller,
+                    readOnly: widget.readonly,
+                    focusNode: _controller.focus,
+                    keyboardType: widget.keyboardType,
+                    validator: validator,
+                    onSaved: widget.onSaved,
+                    onTap: () {
+                      if (!widget.readonly) return;
+                      widget.onSuffixIconTab?.call(_controller);
+                    },
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          color: widget.darkMode ? Colors.white : Colors.black,
+                        ),
+                    cursorColor: widget.darkMode ? Colors.white : Colors.black,
+                    decoration: InputDecoration(
+                      errorStyle: const TextStyle(
+                        fontSize: 9,
+                        color: Colors.redAccent,
                       ),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.secondary,
-                        width: 2,
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.secondary,
+                          width: 1.3,
+                        ),
                       ),
-                    ),
-                    label: BlocBuilder<TextEditingLabelState, String>(
-                      builder: (context, state) => Text(
-                        state,
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w400,
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.secondary,
+                          width: 2,
+                        ),
+                      ),
+                      label: BlocBuilder<TextEditingLabelState, String>(
+                        builder: (context, state) => Text(
+                          state,
+                          style: TextStyle(
+                            color:
+                                widget.darkMode ? Colors.white : Colors.black,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
                       ),
                     ),
+                    onChanged: (value) {
+                      widget.onChanged?.call(value);
+                      handlePdaScan(value);
+                      _controller.refreshWordsCount();
+                    },
+                    onFieldSubmitted: (_) => _secureOnSubmitCall(),
                   ),
-                  onChanged: (value) {
-                    widget.onChanged?.call(value);
-                    handlePdaScan(value);
-                    _controller.refreshWordsCount();
-                  },
-                  onFieldSubmitted: (_) => _secureOnSubmitCall(),
                 ),
-              ),
-              if (suffixIcon != null)
-                Container(
-                  margin: const EdgeInsets.only(left: 4.0),
-                  padding: const EdgeInsets.all(4.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(360),
-                    color: Theme.of(context).colorScheme.secondary,
-                  ),
-                  child: Center(child: suffixIcon),
-                )
-            ],
-          ),
-          BlocBuilder<TextEditingBottomLabelState, String>(
-            builder: (context, state) {
-              if (state.trim().isEmpty) return const SizedBox();
-              return Text(
-                state,
-                style: const TextStyle(color: Colors.black54),
-              );
-            },
-          ),
-        ],
+                if (suffixIcon != null)
+                  Container(
+                    margin: const EdgeInsets.only(left: 4.0),
+                    padding: const EdgeInsets.all(4.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(360),
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                    child: Center(child: suffixIcon),
+                  )
+              ],
+            ),
+            BlocBuilder<TextEditingBottomLabelState, String>(
+              builder: (context, state) {
+                if (state.trim().isEmpty) return const SizedBox();
+                return Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        state,
+                        style: TextStyle(
+                          color:
+                              widget.darkMode ? Colors.white : Colors.black54,
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
