@@ -1,3 +1,4 @@
+import 'package:dart_identity_sdk/src/bases/sound_service.dart';
 import 'package:dart_identity_sdk/widgets/text/common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -237,10 +238,11 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         return QrCardReader(
           onScan: (code) {
             if (context.mounted) context.pop(code.trim());
+            SoundService.cameraSound();
           },
         );
       },
-    );
+    );    
     if (scannedValue == null || scannedValue.isEmpty) return;
     _controller.text = scannedValue;
     SystemChannels.textInput.invokeMethod('TextInput.hide');

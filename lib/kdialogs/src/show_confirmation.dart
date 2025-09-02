@@ -15,6 +15,7 @@ Future<bool> showConfirmationKDialog(
   final result = await showDialog<bool>(
     context: context,
     barrierDismissible: false,
+    useRootNavigator: true,
     builder: (context) {
       return PopScope(
         canPop: false,
@@ -28,14 +29,20 @@ Future<bool> showConfirmationKDialog(
               : null,
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
+              onPressed: () => Navigator.of(
+                context,
+                rootNavigator: true,
+              ).pop(false),
               child: Text(
                 cancelText!,
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
             TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
+              onPressed: () => Navigator.of(
+                context,
+                rootNavigator: true,
+              ).pop(true),
               child: Text(
                 acceptText!,
                 style: const TextStyle(fontWeight: FontWeight.bold),

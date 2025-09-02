@@ -1,3 +1,4 @@
+import 'package:dart_identity_sdk/kdialogs/kdialogs.dart';
 import 'package:dart_identity_sdk/widgets/text/common.dart';
 import 'package:dart_identity_sdk/widgets/text/text.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +34,16 @@ class _InputsPageState extends State<InputsPage> {
               label: "DNI",
               controller: camera,
               scannable: true,
+              onSubmit: (txt) async {
+                await showAsyncProgressKDialog(
+                  context,
+                  doProcess: () async {
+                    await Future.delayed(Duration(milliseconds: 15));
+                    txt.clear();
+                    return true;
+                  },
+                );
+              },
             ),
             CustomTextFormField(
               label: "Nombres",

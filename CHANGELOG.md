@@ -318,3 +318,7 @@
 ## version: 5.16.10
 
 - fix input
+
+# version: 5.17.0
+
+- fix loading dialogs

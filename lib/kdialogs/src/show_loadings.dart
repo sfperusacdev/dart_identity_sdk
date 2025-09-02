@@ -15,8 +15,12 @@ Future<void Function()> showKDialogWithLoadingMessage(
   showDialog(
     context: context,
     barrierDismissible: false,
+    useRootNavigator: true,
     builder: (context) {
-      dismiss() => Navigator.of(context).pop();
+      dismiss() => Navigator.of(
+            context,
+            rootNavigator: true,
+          ).pop();
       if (!completer.isCompleted) completer.complete(dismiss);
 
       return PopScope(
@@ -56,8 +60,12 @@ Future<void Function()> showKDialogWithLoadingIndicator(
   showDialog(
     context: context,
     barrierDismissible: false,
+    useRootNavigator: true,
     builder: (context) {
-      dismiss() => Navigator.of(context).pop();
+      dismiss() => Navigator.of(
+            context,
+            rootNavigator: true,
+          ).pop();
       if (!completer.isCompleted) {
         completer.complete(dismiss);
       }
