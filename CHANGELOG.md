@@ -322,3 +322,10 @@
 # version: 5.17.0
 
 - fix loading dialogs
+
+# version: 5.17.1
+
+- Uses HardwareKeyboard to capture key events from physical scanners
+- Configurable scan timing, character filtering, and propagation control
+- Triggers callback when valid scan is detected
+- Supports Zebra TC15 and similar devices

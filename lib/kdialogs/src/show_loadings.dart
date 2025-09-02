@@ -6,8 +6,12 @@ import 'package:dart_identity_sdk/kdialogs/src/strings.dart';
 Future<void Function()> showKDialogWithLoadingMessage(
   BuildContext context, {
   String message = "",
-  TextStyle textStyle =
-      const TextStyle(color: Colors.black38, fontSize: 14, height: 1.2),
+  TextStyle textStyle = const TextStyle(
+    color: Colors.black38,
+    fontSize: 14,
+    height: 1.2,
+  ),
+  bool useRootNavigator = true,
 }) async {
   message = message.isNotEmpty ? message : strings.loadingDialogMessage;
   final completer = Completer<void Function()>();
@@ -15,12 +19,9 @@ Future<void Function()> showKDialogWithLoadingMessage(
   showDialog(
     context: context,
     barrierDismissible: false,
-    useRootNavigator: true,
+    useRootNavigator: useRootNavigator,
     builder: (context) {
-      dismiss() => Navigator.of(
-            context,
-            rootNavigator: true,
-          ).pop();
+      dismiss() => Navigator.of(context, rootNavigator: useRootNavigator).pop();
       if (!completer.isCompleted) completer.complete(dismiss);
 
       return PopScope(
@@ -54,21 +55,19 @@ Future<void Function()> showKDialogWithLoadingMessage(
 }
 
 Future<void Function()> showKDialogWithLoadingIndicator(
-    BuildContext context) async {
+  BuildContext context, {
+  bool useRootNavigator = true,
+}) async {
   final completer = Completer<void Function()>();
 
   showDialog(
     context: context,
     barrierDismissible: false,
-    useRootNavigator: true,
+    useRootNavigator: useRootNavigator,
     builder: (context) {
-      dismiss() => Navigator.of(
-            context,
-            rootNavigator: true,
-          ).pop();
-      if (!completer.isCompleted) {
-        completer.complete(dismiss);
-      }
+      dismiss() => Navigator.of(context, rootNavigator: useRootNavigator).pop();
+      if (!completer.isCompleted) completer.complete(dismiss);
+
       return const PopScope(
         canPop: false,
         child: AlertDialog(

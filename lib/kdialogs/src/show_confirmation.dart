@@ -7,6 +7,7 @@ Future<bool> showConfirmationKDialog(
   String? message,
   String? acceptText,
   String? cancelText,
+  bool useRootNavigator = true,
 }) async {
   message ??= strings.confirmDialogText;
   acceptText ??= strings.confirmButtonText;
@@ -15,7 +16,7 @@ Future<bool> showConfirmationKDialog(
   final result = await showDialog<bool>(
     context: context,
     barrierDismissible: false,
-    useRootNavigator: true,
+    useRootNavigator: useRootNavigator,
     builder: (context) {
       return PopScope(
         canPop: false,
@@ -31,7 +32,7 @@ Future<bool> showConfirmationKDialog(
             TextButton(
               onPressed: () => Navigator.of(
                 context,
-                rootNavigator: true,
+                rootNavigator: useRootNavigator,
               ).pop(false),
               child: Text(
                 cancelText!,
@@ -41,7 +42,7 @@ Future<bool> showConfirmationKDialog(
             TextButton(
               onPressed: () => Navigator.of(
                 context,
-                rootNavigator: true,
+                rootNavigator: useRootNavigator,
               ).pop(true),
               child: Text(
                 acceptText!,
@@ -64,6 +65,7 @@ Future<bool> showConfirmationKDialogWithCallback(
   String? message,
   String? acceptText,
   String? cancelText,
+  bool useRootNavigator = true,
 }) async {
   final bool answer = await showConfirmationKDialog(
     context,
@@ -71,6 +73,7 @@ Future<bool> showConfirmationKDialogWithCallback(
     acceptText: acceptText,
     cancelText: cancelText,
     message: message,
+    useRootNavigator: useRootNavigator,
   );
 
   if (answer == true) onConfirm();
