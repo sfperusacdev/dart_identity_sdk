@@ -11,7 +11,6 @@ Future<void Function()> showKDialogWithLoadingMessage(
     fontSize: 14,
     height: 1.2,
   ),
-  bool useRootNavigator = true,
 }) async {
   message = message.isNotEmpty ? message : strings.loadingDialogMessage;
   final completer = Completer<void Function()>();
@@ -19,9 +18,8 @@ Future<void Function()> showKDialogWithLoadingMessage(
   showDialog(
     context: context,
     barrierDismissible: false,
-    useRootNavigator: useRootNavigator,
     builder: (context) {
-      dismiss() => Navigator.of(context, rootNavigator: useRootNavigator).pop();
+      dismiss() => Navigator.of(context).pop();
       if (!completer.isCompleted) completer.complete(dismiss);
 
       return PopScope(
@@ -55,17 +53,15 @@ Future<void Function()> showKDialogWithLoadingMessage(
 }
 
 Future<void Function()> showKDialogWithLoadingIndicator(
-  BuildContext context, {
-  bool useRootNavigator = true,
-}) async {
+  BuildContext context,
+) async {
   final completer = Completer<void Function()>();
 
   showDialog(
     context: context,
     barrierDismissible: false,
-    useRootNavigator: useRootNavigator,
     builder: (context) {
-      dismiss() => Navigator.of(context, rootNavigator: useRootNavigator).pop();
+      dismiss() => Navigator.of(context).pop();
       if (!completer.isCompleted) completer.complete(dismiss);
 
       return const PopScope(

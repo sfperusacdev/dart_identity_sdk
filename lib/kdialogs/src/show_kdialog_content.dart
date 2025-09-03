@@ -22,7 +22,6 @@ Future<T?> showKDialogContent<T>(
   bool allowBackButtonToClose = true,
   Color? backgroundColor,
   required Widget Function(BuildContext context) builder,
-  bool useRootNavigator = false,
 }) async {
   title ??= strings.defaultDialogTitle;
   saveBtnText ??= strings.saveButtonText;
@@ -38,10 +37,7 @@ Future<T?> showKDialogContent<T>(
             children: [
               IconButton(
                 iconSize: 25,
-                onPressed: () => Navigator.of(
-                  context,
-                  rootNavigator: useRootNavigator,
-                ).pop(null),
+                onPressed: () => Navigator.of(context).pop(null),
                 icon: const Icon(Icons.close),
               ),
               Flexible(
@@ -69,7 +65,6 @@ Future<T?> showKDialogContent<T>(
               if (shouldClose && context.mounted) {
                 Navigator.of(
                   context,
-                  rootNavigator: useRootNavigator,
                 ).pop(true); // ✅ Cierra el diálogo si onSave devuelve true
               }
             },
@@ -84,7 +79,6 @@ Future<T?> showKDialogContent<T>(
     context: context,
     barrierDismissible: closeOnOutsideTap,
     useSafeArea: true,
-    useRootNavigator: useRootNavigator,
     builder: (context) {
       return PopScope(
         canPop: allowBackButtonToClose,

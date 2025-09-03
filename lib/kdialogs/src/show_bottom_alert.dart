@@ -8,7 +8,6 @@ Future<bool> showBottomAlertKDialog(
   bool retryable = false,
   String? acceptText,
   String? retryText,
-  bool useRootNavigator = true,
 }) async {
   title ??= strings.bottomErrorAlertTitle;
   acceptText ??= strings.acceptButtonText;
@@ -19,7 +18,6 @@ Future<bool> showBottomAlertKDialog(
     backgroundColor: Colors.transparent,
     useSafeArea: true,
     enableDrag: true,
-    useRootNavigator: useRootNavigator,
     builder: (context) {
       return SafeArea(
         child: PopScope(
@@ -65,9 +63,8 @@ Future<bool> showBottomAlertKDialog(
                           Visibility(
                             visible: retryable,
                             child: TextButton(
-                              onPressed: () => Navigator.of(context,
-                                      rootNavigator: useRootNavigator)
-                                  .pop(retryable),
+                              onPressed: () =>
+                                  Navigator.of(context).pop(retryable),
                               child: Text(retryText ?? "RETRY"),
                             ),
                           ),
@@ -75,7 +72,6 @@ Future<bool> showBottomAlertKDialog(
                           ElevatedButton(
                             onPressed: () => Navigator.of(
                               context,
-                              rootNavigator: useRootNavigator,
                             ).pop(false),
                             child: Text(acceptText ?? "ACCEPT"),
                           )

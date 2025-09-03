@@ -329,3 +329,7 @@
 - Configurable scan timing, character filtering, and propagation control
 - Triggers callback when valid scan is detected
 - Supports Zebra TC15 and similar devices
+
+# version: 5.17.2
+
+- fix tracked bytes
