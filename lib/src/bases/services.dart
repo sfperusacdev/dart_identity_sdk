@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:dart_identity_sdk/dart_identity_sdk.dart';
+import 'package:dart_identity_sdk/src/env/env.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 
@@ -23,8 +24,9 @@ class ApiService {
 
   static Uri uri(String path,
       {Map<String, dynamic>? queryparams, String? serviceID}) {
-    final location =
-        SessionManagerSDK.findServiceLocation(serviceID ?? _defaultServiceID);
+    final location = SessionManagerSDK.findServiceLocation(
+      serviceID ?? _defaultServiceID,
+    );
     if (location == null) {
       throw ServiceLocationNotFoundErr(
           "Servicio `$serviceID` no encontrado 🥺🥺");
@@ -36,6 +38,7 @@ class ApiService {
     return {
       "Content-Type": "application/json",
       "Authorization": SessionManagerSDK.getToken() ?? "",
+      "X-Origin": "android:${EnvConfig.appID}"
     };
   }
 
