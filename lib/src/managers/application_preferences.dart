@@ -92,6 +92,8 @@ class PreferencesWrapper {
           futures.add(global.setBool(_wrapKey(key), v));
         case List<String> v:
           futures.add(global.setStringList(_wrapKey(key), v));
+        case null:
+          futures.add(global.setString(_wrapKey(key), ''));
         default:
           futures.add(global.setString(_wrapKey(key), jsonEncode(value)));
       }
@@ -265,6 +267,7 @@ class AppPreferences {
         return raw;
       }
     }
+    if (raw == 'null') return null;
     return raw?.toString();
   }
 
