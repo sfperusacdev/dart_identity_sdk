@@ -336,3 +336,7 @@
 # version: 5.17.3
 
 - add X-Origin header
+
+# version: 5.17.5
+- fix null en preferencias
+- la lectura de preferencias ahora devuelve un valor no null

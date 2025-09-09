@@ -93,7 +93,7 @@ class PreferencesWrapper {
         case List<String> v:
           futures.add(global.setStringList(_wrapKey(key), v));
         case null:
-          futures.add(global.setString(_wrapKey(key), ''));
+          futures.add(global.remove(_wrapKey(key)));
         default:
           futures.add(global.setString(_wrapKey(key), jsonEncode(value)));
       }
@@ -182,7 +182,7 @@ class AppPreferences {
     return value;
   }
 
-  static int? readInt(String key) {
+  static int readInt(String key, {int defaultValue = 0}) {
     final raw = private.get(key);
     dynamic value = raw;
 
@@ -194,11 +194,12 @@ class AppPreferences {
 
     if (value is int) return value;
     if (value is double) return value.toInt();
-    if (value is String) return int.tryParse(value);
-    return null;
+    if (value is String) return int.tryParse(value) ?? defaultValue;
+    return defaultValue;
   }
 
-  static List<String>? readStringList(String key) {
+  static List<String> readStringList(String key,
+      {List<String> defaultValue = const []}) {
     final raw = private.get(key);
     dynamic value = raw;
     if (value is String) {
@@ -213,10 +214,10 @@ class AppPreferences {
     if (value is String || value is int || value is double || value is bool) {
       return [value.toString()];
     }
-    return null;
+    return defaultValue;
   }
 
-  static bool? readBool(String key) {
+  static bool readBool(String key, {bool defaultValue = false}) {
     final raw = private.get(key);
     dynamic value = raw;
 
@@ -235,13 +236,13 @@ class AppPreferences {
         final normalized = s.toLowerCase();
         if (['1', 't', 'true', 'y', 'yes'].contains(normalized)) return true;
         if (['0', 'f', 'false', 'n', 'no'].contains(normalized)) return false;
-        return null;
+        return defaultValue;
       default:
-        return null;
+        return defaultValue;
     }
   }
 
-  static double? readDouble(String key) {
+  static double readDouble(String key, {double defaultValue = 0.0}) {
     final raw = private.get(key);
     dynamic value = raw;
 
@@ -253,11 +254,11 @@ class AppPreferences {
 
     if (value is double) return value;
     if (value is int) return value.toDouble();
-    if (value is String) return double.tryParse(value);
-    return null;
+    if (value is String) return double.tryParse(value) ?? defaultValue;
+    return defaultValue;
   }
 
-  static String? readString(String key) {
+  static String readString(String key, {String defaultValue = ''}) {
     final raw = private.get(key);
     if (raw is String) {
       try {
@@ -267,8 +268,8 @@ class AppPreferences {
         return raw;
       }
     }
-    if (raw == 'null') return null;
-    return raw?.toString();
+    if (raw == null || raw == 'null') return defaultValue;
+    return raw.toString();
   }
 
   static Map<String, dynamic>? readJson(String key) {
