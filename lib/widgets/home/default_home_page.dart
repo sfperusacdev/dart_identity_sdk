@@ -13,12 +13,13 @@ class DefaultHomePage extends StatefulWidget {
 
   final Future<void> Function(BuildContext context)? onDependenciesReady;
   final List<HomeMenuCard> children;
+  final VoidCallback? onRefreshPreferences;
 
-  const DefaultHomePage({
-    super.key,
-    this.onDependenciesReady,
-    required this.children,
-  });
+  const DefaultHomePage(
+      {super.key,
+      this.onDependenciesReady,
+      required this.children,
+      this.onRefreshPreferences});
 
   @override
   State<DefaultHomePage> createState() => _DefaultHomePageState();
@@ -203,10 +204,12 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
                             children: [
                               IconButton(
                                 onPressed: () => _syncPreferences(context),
-                                onLongPress: () async =>
-                                    await showDomainPreferencesDialog(
-                                  context,
-                                ),
+                                onLongPress: () async {
+                                  await showDomainPreferencesDialog(
+                                    context,
+                                  );
+                                  widget.onRefreshPreferences?.call();
+                                },
                                 icon: Icon(
                                   Icons.cloud_sync,
                                   color: Theme.of(context).colorScheme.surface,
