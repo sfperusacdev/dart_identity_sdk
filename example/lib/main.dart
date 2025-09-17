@@ -15,6 +15,7 @@ void main() async {
   await initializeIdentityDependencies(
     logPort: 30069,
     appID: "tareo.app",
+    appName: "Tareo SF",
     minimumRequiredServices: [
       "com.sfperusac.tareoapp",
       "com.sfperusac.syncdata",

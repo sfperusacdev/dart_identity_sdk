@@ -22,6 +22,7 @@ Future<T?> executeAsyncWithErrorDialog<T>(
         context,
         message: err.toString(),
         acceptText: errorAcceptText,
+        errorSound: true,
       );
     }
     if (onError != null) onError(err.toString());

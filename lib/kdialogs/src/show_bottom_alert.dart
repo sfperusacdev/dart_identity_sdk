@@ -1,3 +1,4 @@
+import 'package:dart_identity_sdk/src/bases/sound_service.dart';
 import 'package:flutter/material.dart';
 import 'package:dart_identity_sdk/kdialogs/src/strings.dart';
 
@@ -6,12 +7,14 @@ Future<bool> showBottomAlertKDialog(
   String? title,
   required String message,
   bool retryable = false,
+  bool errorSound = false,
   String? acceptText,
   String? retryText,
 }) async {
   title ??= strings.bottomErrorAlertTitle;
   acceptText ??= strings.acceptButtonText;
   retryText ??= strings.errorRetryText;
+  if (errorSound) SoundService.errorSound();
   final result = await showModalBottomSheet<bool>(
     context: context,
     isDismissible: false,

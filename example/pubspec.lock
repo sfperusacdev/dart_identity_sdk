@@ -135,7 +135,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "5.17.6"
+    version: "5.17.7"
   fake_async:
     dependency: transitive
     description:

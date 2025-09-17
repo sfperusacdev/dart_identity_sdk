@@ -5,36 +5,37 @@ import 'package:go_router/go_router.dart';
 
 class MainHome extends StatelessWidget {
   const MainHome({super.key});
-
   @override
   Widget build(BuildContext context) {
     return DefaultHomePage(
-      children: [
-        HomeMenuCard(
-          assetImage: "assets/topico.png",
-          title: "TOPICO",
-          onTab: () {
-            context.push("/dialogs");
-          },
-        ),
-        HomeMenuCard(
-          assetImage: "assets/topico.png",
-          title: "Inputs",
-          onTab: () {
-            context.push("/inputs");
-          },
-        ),
-        HomeMenuCard(
-          assetImage: "assets/topico.png",
-          title: "Preff",
-          onTab: () {
-            final value = AppPreferences.readBool(
-              "tareo_app_cosecha_usar_bloques",
-            );
-            debugPrint("....> $value");
-          },
-        ),
-      ],
+      builder: (context) {
+        return [
+          HomeMenuCard(
+            assetImage: "assets/topico.png",
+            title: "TOPICO",
+            onTab: () {
+              context.push("/dialogs");
+            },
+          ),
+          HomeMenuCard(
+            assetImage: "assets/topico.png",
+            title: "Inputs",
+            onTab: () {
+              context.push("/inputs");
+            },
+          ),
+          HomeMenuCard(
+            assetImage: "assets/topico.png",
+            title: "Preff",
+            onTab: () {
+              final value = AppPreferences.readBool(
+                "tareo_app_cosecha_usar_bloques",
+              );
+              debugPrint("....> $value");
+            },
+          ),
+        ];
+      },
     );
   }
 }

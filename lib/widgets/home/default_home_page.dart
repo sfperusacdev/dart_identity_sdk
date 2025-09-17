@@ -1,5 +1,6 @@
 import 'package:dart_identity_sdk/dart_identity_sdk.dart';
 import 'package:dart_identity_sdk/info/preferences_dialog.dart';
+import 'package:dart_identity_sdk/kdialogs/src/about_dialog.dart';
 import 'package:dart_identity_sdk/kdialogs/src/show_basic_options.dart';
 import 'package:dart_identity_sdk/kdialogs/src/show_bottom_alert.dart';
 import 'package:dart_identity_sdk/kdialogs/src/show_confirmation.dart';
@@ -12,14 +13,15 @@ class DefaultHomePage extends StatefulWidget {
   static const path = '/home';
 
   final Future<void> Function(BuildContext context)? onDependenciesReady;
-  final List<HomeMenuCard> children;
+  final List<HomeMenuCard> Function(BuildContext context) builder;
   final VoidCallback? onRefreshPreferences;
 
-  const DefaultHomePage(
-      {super.key,
-      this.onDependenciesReady,
-      required this.children,
-      this.onRefreshPreferences});
+  const DefaultHomePage({
+    super.key,
+    this.onDependenciesReady,
+    required this.builder,
+    this.onRefreshPreferences,
+  });
 
   @override
   State<DefaultHomePage> createState() => _DefaultHomePageState();
@@ -106,7 +108,7 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
                       Wrap(
                         runSpacing: 12.0,
                         spacing: 12.0,
-                        children: widget.children,
+                        children: widget.builder(context),
                       ),
                     ],
                   ),
@@ -122,13 +124,16 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Image(
-                          image: const AssetImage(
-                            "packages/dart_identity_sdk/assets/logo-sf.png",
+                        InkWell(
+                          onTap: () => showCustomAboutDialog(context),
+                          child: Image(
+                            image: const AssetImage(
+                              "packages/dart_identity_sdk/assets/logo-sf.png",
+                            ),
+                            height: 50,
+                            fit: BoxFit.fill,
+                            color: Theme.of(context).primaryColor,
                           ),
-                          height: 50,
-                          fit: BoxFit.fill,
-                          color: Theme.of(context).primaryColor,
                         ),
                         Material(
                           borderRadius: BorderRadius.circular(10.0),

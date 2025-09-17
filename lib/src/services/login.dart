@@ -24,7 +24,7 @@ class LoginService {
       username: username,
       password: password,
       appID: EnvConfig.appID,
-      appVersion: ApplicationInfo().getAppVersion(),
+      appVersion: ApplicationInfo.appVersion,
       profileID: profileID,
     );
     AppPreferences.setUpDomain(empresa);

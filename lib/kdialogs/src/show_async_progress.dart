@@ -72,6 +72,7 @@ Future<T?> showAsyncProgressKDialog<T>(
           retryable: retryable,
           acceptText: errorAcceptText,
           retryText: errorRetryText,
+          errorSound: true,
         );
       }
 

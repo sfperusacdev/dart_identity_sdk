@@ -346,3 +346,8 @@
 # version: 5.17.6
 
 - on refresh preferences event
+
+# version: 5.18.0
+
+- fix validacion de permisos
+- about dialog

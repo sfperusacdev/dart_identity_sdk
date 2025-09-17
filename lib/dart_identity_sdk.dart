@@ -38,6 +38,7 @@ bool _appInfoInited = false;
 
 Future<bool> initializeIdentityDependencies({
   required String appID,
+  required String appName,
   String? defaultServiceID,
   required int logPort,
   String envFileName = '.env', // asset
@@ -48,12 +49,10 @@ Future<bool> initializeIdentityDependencies({
 }) async {
   if (database != null) LiteConnection.setDatabaseConfig(database);
   if (sessionValidityRule != null) {
-    SessionManagerSDK.setSessionValidityRule(
-      rule: sessionValidityRule,
-      minimumRequiredPermissions: minimumRequiredPermissions,
-      minimumRequiredServices: minimumRequiredServices,
-    );
+    SessionManagerSDK.setSessionValidityRule(sessionValidityRule);
   }
+  SessionManagerSDK.setMinimumRequiredPermissions(minimumRequiredPermissions);
+  SessionManagerSDK.setMinimumRequiredServices(minimumRequiredServices);
 
   initKDialogStrings();
   await LOG.init(logPort: logPort);
@@ -70,7 +69,7 @@ Future<bool> initializeIdentityDependencies({
   if (defaultServiceID != null) {
     ApiService.setDefaultServiceID(defaultServiceID);
   }
-  EnvConfig.setApplicationID(appID);
+  EnvConfig.setApplicationID(appID, name: appName);
   try {
     if (Platform.isAndroid || Platform.isIOS) {
       final ca = await PlatformAssetBundle().load('assets/certs/rootCA.pem');
@@ -81,7 +80,7 @@ Future<bool> initializeIdentityDependencies({
     LOG.printError([err]);
   }
   if (!_appInfoInited) {
-    await ApplicationInfo().init();
+    await ApplicationInfo.init();
     _appInfoInited = true;
   }
   if (!_managerInited) {

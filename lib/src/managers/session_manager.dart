@@ -38,19 +38,17 @@ class SessionManagerSDK {
     _identityURL = url;
   }
 
-  static void setSessionValidityRule({
-    SessionValidityEvaluator? rule,
-    List<String>? minimumRequiredServices,
-    List<String>? minimumRequiredPermissions,
-  }) {
-    _sessionValidityRule = rule;
-    _minimumRequiredServices = minimumRequiredServices;
-    _minimumRequiredPermissions = minimumRequiredPermissions;
+  static void setMinimumRequiredServices(List<String> services) {
+    _minimumRequiredServices = services;
   }
 
-  // static void setSessionValidityRule(SessionValidityEvaluator rule) {
-  //   _sessionValidityRule = rule;
-  // }
+  static void setMinimumRequiredPermissions(List<String> permissions) {
+    _minimumRequiredPermissions = permissions;
+  }
+
+  static void setSessionValidityRule(SessionValidityEvaluator rule) {
+    _sessionValidityRule = rule;
+  }
 
   static String? findServiceLocation(String serviceID) {
     final session = getCurrentSession();
@@ -287,14 +285,16 @@ class SessionManagerSDK {
       return false;
     }
     if (_minimumRequiredPermissions?.isNotEmpty == true) {
-      final hasPermissions = SessionManagerSDK.checkPermissions(
-        _minimumRequiredPermissions!,
-      );
-      if (!hasPermissions) {
+      final missingPermissions = _minimumRequiredPermissions!
+          .where((p) => !SessionManagerSDK.checkPermissions([p]))
+          .toList();
+
+      if (missingPermissions.isNotEmpty) {
         await showBottomAlertKDialog(
           context,
           title: "Error de permisos",
-          message: "No cuentas con los permisos necesarios para continuar",
+          message:
+              "Faltan los siguientes permisos para continuar:\n- ${missingPermissions.join('\n- ')}",
         );
         return false;
       }
