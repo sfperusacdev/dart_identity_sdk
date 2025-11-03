@@ -42,8 +42,8 @@ class ListScaffold<T> extends StatelessWidget {
     PreferredSizeWidget? appBar;
     if (this.appBar != null) {
       appBar = appBar;
-    } else if (this.appBarBuilder != null) {
-      appBar = AppBarBuilder(builder: this.appBarBuilder!);
+    } else if (appBarBuilder != null) {
+      appBar = AppBarBuilder(builder: appBarBuilder!);
     }
 
     return BlocProvider(

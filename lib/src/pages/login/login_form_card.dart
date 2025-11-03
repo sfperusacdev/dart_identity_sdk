@@ -89,7 +89,7 @@ class _LoginFromState extends State<LoginFrom> {
       final provider = Provider.of<EmpresaGrupoPrivider>(context);
       final empresas = provider.empresas;
       return DropdownButtonFormField<String>(
-        value: provider.getselectedEmpresa,
+        initialValue: provider.getselectedEmpresa,
         isExpanded: true,
         decoration: InputDecoration(
           label: const Text("Empresa", style: TextStyle(color: Colors.black)),
@@ -132,7 +132,7 @@ class _LoginFromState extends State<LoginFrom> {
         return Container();
       }
       return DropdownButtonFormField<EmpresaAppPerfil>(
-        value: provider.getSelectedPerfil,
+        initialValue: provider.getSelectedPerfil,
         isExpanded: true,
         decoration: InputDecoration(
           label: const Text("Grupo", style: TextStyle(color: Colors.black)),

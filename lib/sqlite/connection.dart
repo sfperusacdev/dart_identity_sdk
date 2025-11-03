@@ -9,6 +9,8 @@ class LiteDatabaseConfig {
 
   final int version;
   final sqlite.OnDatabaseCreateFn? onCreate;
+  final sqlite.OnDatabaseVersionChangeFn? onUpgrade;
+  final sqlite.OnDatabaseVersionChangeFn? onDowngrade;
 
   /// Duration in which the connection is considered "locked" after last usage.
   final Duration lockDuration;
@@ -17,6 +19,8 @@ class LiteDatabaseConfig {
     this.sqliteDisabled = false,
     this.version = 1,
     this.onCreate,
+    this.onUpgrade,
+    this.onDowngrade,
     this.lockDuration = const Duration(seconds: 5),
   });
 
@@ -51,6 +55,8 @@ class LiteConnection {
       domain,
       version: _config!.version,
       onCreate: _config!.onCreate,
+      onUpgrade: _config!.onUpgrade,
+      onDowngrade: _config!.onDowngrade,
     );
     LOG.printInfo("Database connection established");
     return _dbFuture!;
@@ -70,6 +76,8 @@ class LiteConnection {
     String domain, {
     required int version,
     sqlite.OnDatabaseCreateFn? onCreate,
+    sqlite.OnDatabaseVersionChangeFn? onUpgrade,
+    sqlite.OnDatabaseVersionChangeFn? onDowngrade,
   }) async {
     final dir = await pathprovider.getExternalStorageDirectory();
     final basePath = dir?.path ?? await sqlite.getDatabasesPath();
@@ -80,6 +88,8 @@ class LiteConnection {
       dbPath,
       version: version,
       onCreate: onCreate,
+      onUpgrade: onUpgrade,
+      onDowngrade: onDowngrade,
     );
   }
 

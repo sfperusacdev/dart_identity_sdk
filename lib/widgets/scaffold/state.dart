@@ -18,7 +18,7 @@ class QueryState<T> {
     String? filter,
   }) {
     return QueryState<T>(
-      rawdata: data ?? this.rawdata,
+      rawdata: data ?? rawdata,
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage ?? this.errorMessage,
       filter: filter ?? this.filter,

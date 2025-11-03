@@ -351,3 +351,7 @@
 
 - fix validacion de permisos
 - about dialog
+
+# version: 5.19.0
+
+- fix sql upgrade
