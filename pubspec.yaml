@@ -1,6 +1,6 @@
 name: dart_identity_sdk
 description: Just a sdk for identity
-version: 5.19.0
+version: 5.20.0
 homepage: https://github.com/sfperusacdev/dart_identity_sdk
 
 environment:
@@ -44,7 +44,6 @@ flutter:
     - assets/sounds/
     - assets/sounds/qr.mp3
     - assets/sounds/error.mp3
-
 #
 # For details regarding assets in packages, see
 # https://flutter.dev/assets-and-images/#from-packages

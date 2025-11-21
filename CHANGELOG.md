@@ -355,3 +355,9 @@
 # version: 5.19.0
 
 - fix sql upgrade
+
+
+
+# version: 5.20.0
+
+- add onSuffixIconLogTab

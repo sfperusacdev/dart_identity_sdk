@@ -18,6 +18,7 @@ class CustomTextFormField extends StatefulWidget {
   final bool multiLine;
   final void Function(TextEditingCController txt)? onSubmit;
   final void Function(TextEditingCController txt)? onSuffixIconTab;
+  final void Function(TextEditingCController txt)? onSuffixIconLogTab;
 
   final TextInputType? keyboardType;
   final void Function(String? value)? onSaved;
@@ -39,6 +40,7 @@ class CustomTextFormField extends StatefulWidget {
     this.scannable = false,
     this.suffixIcon,
     this.onSuffixIconTab,
+    this.onSuffixIconLogTab,
     this.keyboardType,
     this.onSaved,
     this.required = false,
@@ -95,6 +97,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         constraints: const BoxConstraints(),
         padding: EdgeInsets.zero,
         onPressed: () => widget.onSuffixIconTab?.call(_controller),
+        onLongPress: () => widget.onSuffixIconLogTab?.call(_controller),
         color: Theme.of(context).colorScheme.surface,
         icon: Icon(widget.suffixIcon ?? Icons.select_all),
       );
@@ -242,7 +245,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
           },
         );
       },
-    );    
+    );
     if (scannedValue == null || scannedValue.isEmpty) return;
     _controller.text = scannedValue;
     SystemChannels.textInput.invokeMethod('TextInput.hide');
