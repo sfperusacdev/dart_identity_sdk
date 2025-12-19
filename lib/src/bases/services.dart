@@ -47,15 +47,18 @@ class ApiService {
     final client = http.Client();
     try {
       final response = await requestFunc();
-      final decoded =
-          json.decode(utf8.decode(response.bodyBytes)); // Decodificar en UTF-8
+
+      final decoded = json.decode(
+        utf8.decode(response.bodyBytes),
+      ); // Decodificar en UTF-8
 
       if (response.statusCode ~/ 100 != 2) {
         throw ApiErrorResponse(_debugMessage(
-            "API error",
-            "Status Code: ${response.statusCode}",
-            "Response: ${response.body}",
-            url));
+          "API error",
+          decoded["message"] ?? "",
+          "Response: ${response.body}",
+          url,
+        ));
       }
 
       return decoded["data"];
@@ -192,11 +195,15 @@ class ApiService {
       if (response.statusCode == 200) {
         return response.bodyBytes;
       } else {
+        final decoded = json.decode(
+          utf8.decode(response.bodyBytes),
+        ); // Decodificar en UTF-8
         throw ApiErrorResponse(_debugMessage(
-            "API error",
-            "Status Code: ${response.statusCode}",
-            "Response: ${response.body}",
-            url));
+          "API error",
+          decoded["message"] ?? "",
+          "Response: ${response.body}",
+          url,
+        ));
       }
     } catch (e, stackTrace) {
       String errorMessage;

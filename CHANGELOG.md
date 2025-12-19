@@ -356,8 +356,10 @@
 
 - fix sql upgrade
 
-
-
 # version: 5.20.0
 
 - add onSuffixIconLogTab
+
+# version: 5.20.1
+
+- fix api response error
