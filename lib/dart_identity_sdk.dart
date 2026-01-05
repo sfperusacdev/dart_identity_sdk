@@ -28,9 +28,7 @@ import 'package:dart_identity_sdk/dart_identity_sdk.dart';
 import 'package:dart_identity_sdk/kdialogs.dart';
 import 'package:dart_identity_sdk/src/env/env.dart';
 import 'package:dart_identity_sdk/sqlite/connection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 bool _managerInited = false;
 bool _soundInited = false;
@@ -56,15 +54,6 @@ Future<bool> initializeIdentityDependencies({
 
   initKDialogStrings();
   await LOG.init(logPort: logPort);
-  if (kDebugMode || kProfileMode) {
-    try {
-      await dotenv.load(fileName: envFileName);
-    } catch (e) {
-      LOG.printError(
-        ["ERROR cargando las variables de entorno:", e.toString()],
-      );
-    }
-  }
 
   if (defaultServiceID != null) {
     ApiService.setDefaultServiceID(defaultServiceID);

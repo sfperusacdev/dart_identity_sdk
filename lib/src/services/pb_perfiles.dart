@@ -1,12 +1,10 @@
-import 'package:dart_identity_sdk/src/bases/services.dart';
-import 'package:dart_identity_sdk/src/entities/empresa_app_perfile.dart';
-import 'package:dart_identity_sdk/src/entities/preferencia.dart';
+import 'package:dart_identity_sdk/dart_identity_sdk.dart';
 import 'package:dart_identity_sdk/src/env/env.dart';
 
 class AppPerfilService {
   Future<List<EmpresaAppPerfil>> findPefiles(List<String> empresas) async {
     final uri = ApiService.buildUri(
-      await EnvConfig.preferencesServerUrl(),
+      await LicenceManagerSDK.preferencesUrl(),
       "/v1/api/perfiles",
     );
     var result = await ApiService.post(
@@ -22,7 +20,7 @@ class AppPerfilService {
 
   Future<List<Preferencia>> findPreferencias(String perfilid) async {
     final uri = ApiService.buildUri(
-      await EnvConfig.preferencesServerUrl(),
+      await LicenceManagerSDK.preferencesUrl(),
       "/v1/api/perfil/$perfilid/preferencias",
     );
     var result = await ApiService.get(

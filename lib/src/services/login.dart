@@ -12,7 +12,7 @@ class LoginService {
     required String profileID,
   }) async {
     final uri = ApiService.buildUri(
-      await EnvConfig.identityServerUrl(),
+      await LicenceManagerSDK.identityUrl(),
       "/v1/login",
     );
     SessionManagerSDK.setIdentityServerURL(uri.toString());

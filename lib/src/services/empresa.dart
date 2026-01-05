@@ -1,12 +1,11 @@
-import 'package:dart_identity_sdk/src/bases/services.dart';
-import 'package:dart_identity_sdk/src/env/env.dart';
+import 'package:dart_identity_sdk/dart_identity_sdk.dart';
 import 'package:dart_identity_sdk/src/security/empresa.dart';
 
 class EmpresaService {
   Future<List<Empresa>> getEmpresas(List<String> licencias) async {
     if (licencias.isEmpty) return [];
     final uri = ApiService.buildUri(
-      await EnvConfig.identityServerUrl(),
+      await LicenceManagerSDK.identityUrl(),
       "/v1/get-licence-empresa",
     );
     var result = await ApiService.post(

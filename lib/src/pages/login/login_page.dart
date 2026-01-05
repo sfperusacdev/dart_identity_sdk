@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:dart_identity_sdk/dart_identity_sdk.dart';
-import 'package:dart_identity_sdk/src/env/env.dart';
 import 'package:dart_identity_sdk/src/pages/login/bloc/empresa_grupo_provider.dart';
 import 'package:dart_identity_sdk/src/pages/login/login_form_card.dart';
 import 'package:flutter/material.dart';
@@ -107,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         const SizedBox(height: 4),
                         FutureBuilder(
-                          future: EnvConfig.identityServerUrl(),
+                          future: LicenceManagerSDK.identityUrl(),
                           builder: (context, snapshot) {
                             return Text(snapshot.data ?? "loading");
                           },
@@ -119,7 +118,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         const SizedBox(height: 4),
                         FutureBuilder(
-                          future: EnvConfig.preferencesServerUrl(),
+                          future: LicenceManagerSDK.preferencesUrl(),
                           builder: (context, snapshot) {
                             return Text(snapshot.data ?? "loading");
                           },
