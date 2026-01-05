@@ -1,7 +1,5 @@
+import 'package:dart_identity_sdk/dart_identity_sdk.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
-const _globalIdentityServerAddress = "https://api.identity2.sfperusac.com";
-const _globalPreferencesServerAddress = "https://console.sfperusac.com";
 
 class EnvConfig {
   static late final String _identityApp;
@@ -19,21 +17,15 @@ class EnvConfig {
   static String? get appName => _identityName;
   static String get appID => _identityApp;
 
-  static String identityServerUrl() {
-    try {
-      final value = dotenv.get("IDENTITY_SERVER_URL");
-      return value.isEmpty ? _globalIdentityServerAddress : value;
-    } catch (_) {
-      return _globalIdentityServerAddress;
-    }
+  static Future<String> identityServerUrl() async {
+    final identity = await LicenceManagerSDK.identityUrl();
+    final value = dotenv.maybeGet("IDENTITY_SERVER_URL");
+    return (value == null || value.isEmpty) ? identity : value;
   }
 
-  static String preferencesServerUrl() {
-    try {
-      final value = dotenv.get("PREFERENCES_SERVER_URL");
-      return value.isEmpty ? _globalPreferencesServerAddress : value;
-    } catch (_) {
-      return _globalPreferencesServerAddress;
-    }
+  static Future<String> preferencesServerUrl() async {
+    final preferences = await LicenceManagerSDK.preferencesUrl();
+    final value = dotenv.maybeGet("PREFERENCES_SERVER_URL");
+    return (value == null || value.isEmpty) ? preferences : value;
   }
 }

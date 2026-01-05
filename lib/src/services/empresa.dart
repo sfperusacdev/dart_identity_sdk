@@ -6,7 +6,7 @@ class EmpresaService {
   Future<List<Empresa>> getEmpresas(List<String> licencias) async {
     if (licencias.isEmpty) return [];
     final uri = ApiService.buildUri(
-      EnvConfig.identityServerUrl(),
+      await EnvConfig.identityServerUrl(),
       "/v1/get-licence-empresa",
     );
     var result = await ApiService.post(

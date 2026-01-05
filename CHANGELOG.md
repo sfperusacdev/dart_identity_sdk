@@ -363,3 +363,7 @@
 # version: 5.20.1
 
 - fix api response error
+
+# version: 5.20.2
+
+- integracion url con manager sdk

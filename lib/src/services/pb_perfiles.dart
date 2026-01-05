@@ -6,7 +6,7 @@ import 'package:dart_identity_sdk/src/env/env.dart';
 class AppPerfilService {
   Future<List<EmpresaAppPerfil>> findPefiles(List<String> empresas) async {
     final uri = ApiService.buildUri(
-      EnvConfig.preferencesServerUrl(),
+      await EnvConfig.preferencesServerUrl(),
       "/v1/api/perfiles",
     );
     var result = await ApiService.post(
@@ -22,7 +22,7 @@ class AppPerfilService {
 
   Future<List<Preferencia>> findPreferencias(String perfilid) async {
     final uri = ApiService.buildUri(
-      EnvConfig.preferencesServerUrl(),
+      await EnvConfig.preferencesServerUrl(),
       "/v1/api/perfil/$perfilid/preferencias",
     );
     var result = await ApiService.get(

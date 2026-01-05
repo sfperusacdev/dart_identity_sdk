@@ -9,12 +9,45 @@ import 'package:http/http.dart' as http;
 abstract class ReadeProvider {
   Future<void> init() async {}
   Future<List<Licence>> licences();
+  Future<bool> isDevMode();
+  Future<String> identityUrl();
+  Future<String> preferencesUrl();
   Future<String> deviceID();
   Future<String> deviceName();
 }
 
 class _SharedPreferences implements ReadeProvider {
   static const providerAuthority = "com.sfperusac.manager.licencias";
+  @override
+  Future<bool> isDevMode() async {
+    final value = await SharedPreferencesContentProvider.get("app_environment");
+    return value == "dev";
+  }
+
+  @override
+  Future<String> identityUrl() async {
+    final dev = await isDevMode();
+    var key = "identity_prod_url";
+    if (dev) {
+      key = "identity_dev_url";
+    }
+    final value = await SharedPreferencesContentProvider.get(key);
+    if (value is String) return value;
+    return "---identity-url-not-found---";
+  }
+
+  @override
+  Future<String> preferencesUrl() async {
+    final dev = await isDevMode();
+    var key = "preferences_prod_url";
+    if (dev) {
+      key = "preferences_dev_url";
+    }
+    final value = await SharedPreferencesContentProvider.get(key);
+    if (value is String) return value;
+    return "---preferences-url-not-found---";
+  }
+
   @override
   Future<String> deviceID() async {
     final value = await SharedPreferencesContentProvider.get("__device_id__");
@@ -76,6 +109,21 @@ class _LocalServer implements ReadeProvider {
   }
 
   @override
+  Future<bool> isDevMode() async {
+    return false;
+  }
+
+  @override
+  Future<String> identityUrl() async {
+    return "---identity-url-not-found---";
+  }
+
+  @override
+  Future<String> preferencesUrl() async {
+    return "---preferences-url-not-found---";
+  }
+
+  @override
   Future<String> deviceName() async {
     final url = Uri.parse("${await getURL()}/v1/devicename");
     final response = await http.get(url);
@@ -132,6 +180,34 @@ class LicenceManagerSDK {
     } catch (err) {
       if (kDebugMode) print("LicenceManagerSDK.init ERROR: ${err.toString()}");
       throw '''Servicio de autentificación no encontrado''';
+    }
+  }
+
+  static Future<String> identityUrl() async {
+    if (!_wasInited) throw "LicenceManagerSDK was not initialized";
+    try {
+      final result = await _reader.identityUrl();
+      _preferences.setString("IDENTITY_URL", result);
+      return result;
+    } catch (err) {
+      LOG.printWarn("Identity URL read from SharedPreferences");
+      final stored = _preferences.getString("IDENTITY_URL");
+      if (stored == null) rethrow;
+      return stored;
+    }
+  }
+
+  static Future<String> preferencesUrl() async {
+    if (!_wasInited) throw "LicenceManagerSDK was not initialized";
+    try {
+      final result = await _reader.preferencesUrl();
+      _preferences.setString("PREFERENCES_URL", result);
+      return result;
+    } catch (err) {
+      LOG.printWarn("Preferences URL read from SharedPreferences");
+      final stored = _preferences.getString("PREFERENCES_URL");
+      if (stored == null) rethrow;
+      return stored;
     }
   }
 

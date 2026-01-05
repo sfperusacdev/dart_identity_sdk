@@ -106,9 +106,11 @@ class _LoginPageState extends State<LoginPage> {
                           style: TextStyle(fontWeight: FontWeight.w600),
                         ),
                         const SizedBox(height: 4),
-                        Text(
-                          EnvConfig.identityServerUrl(),
-                          style: const TextStyle(color: Colors.black87),
+                        FutureBuilder(
+                          future: EnvConfig.identityServerUrl(),
+                          builder: (context, snapshot) {
+                            return Text(snapshot.data ?? "loading");
+                          },
                         ),
                         const SizedBox(height: 12),
                         const Text(
@@ -116,9 +118,11 @@ class _LoginPageState extends State<LoginPage> {
                           style: TextStyle(fontWeight: FontWeight.w600),
                         ),
                         const SizedBox(height: 4),
-                        Text(
-                          EnvConfig.preferencesServerUrl(),
-                          style: const TextStyle(color: Colors.black87),
+                        FutureBuilder(
+                          future: EnvConfig.preferencesServerUrl(),
+                          builder: (context, snapshot) {
+                            return Text(snapshot.data ?? "loading");
+                          },
                         ),
                         const SizedBox(height: 12),
                         const Text(
