@@ -370,3 +370,7 @@
 # version: 5.20.3
 
 - remove dotenv
+
+# version: 5.21.0
+- add InternetService for checking real internet connectivity
+
