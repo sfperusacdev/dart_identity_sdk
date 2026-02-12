@@ -72,6 +72,11 @@ class LiteConnection {
     }
   }
 
+  static Future<String> getDatabaseRootPath() async {
+    final externalDir = await pathprovider.getExternalStorageDirectory();
+    return externalDir?.path ?? await sqlite.getDatabasesPath();
+  }
+
   static Future<sqlite.Database> _openDatabase(
     String domain, {
     required int version,
@@ -79,8 +84,7 @@ class LiteConnection {
     sqlite.OnDatabaseVersionChangeFn? onUpgrade,
     sqlite.OnDatabaseVersionChangeFn? onDowngrade,
   }) async {
-    final dir = await pathprovider.getExternalStorageDirectory();
-    final basePath = dir?.path ?? await sqlite.getDatabasesPath();
+    final basePath = await getDatabaseRootPath();
     final dbPath = p.join(basePath, "${domain}_db.db");
     LOG.printInfo("Database path: $dbPath");
 

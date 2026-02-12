@@ -1,4 +1,5 @@
 import 'package:dart_identity_sdk/dart_identity_sdk.dart';
+import 'package:dart_identity_sdk/src/pages/dbs/database_manager_page.dart';
 import 'package:dart_identity_sdk/src/pages/login/login_page.dart';
 import 'package:go_router/go_router.dart';
 
@@ -21,6 +22,12 @@ class ApplicationRouterManager {
       GoRoute(
         path: LoginPage.path,
         builder: (context, state) => const LoginPage(),
+      ),
+    );
+    routes.add(
+      GoRoute(
+        path: DatabaseManagerPage.path,
+        builder: (context, state) => const DatabaseManagerPage(),
       ),
     );
     _router = GoRouter(

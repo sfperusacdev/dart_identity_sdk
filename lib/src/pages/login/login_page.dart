@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'package:dart_identity_sdk/dart_identity_sdk.dart';
+import 'package:dart_identity_sdk/src/pages/dbs/database_manager_page.dart';
 import 'package:dart_identity_sdk/src/pages/login/bloc/empresa_grupo_provider.dart';
 import 'package:dart_identity_sdk/src/pages/login/login_form_card.dart';
 import 'package:flutter/material.dart';
 import 'package:dart_identity_sdk/kdialogs/kdialogs.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
@@ -53,6 +55,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             _refreshEmpresasIcon(),
             _printInfoIcon(),
+            _databaseManager(),
           ],
         ),
       ),
@@ -142,6 +145,25 @@ class _LoginPageState extends State<LoginPage> {
                 padding: EdgeInsets.all(8.0),
                 child: Icon(Icons.info_outlined, color: Colors.grey),
               )),
+        ),
+      ),
+    );
+  }
+
+  SafeArea _databaseManager() {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Align(
+          alignment: Alignment.bottomLeft,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(20),
+            onDoubleTap: () => context.push(DatabaseManagerPage.path),
+            child: const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Icon(Icons.sd_storage, color: Colors.white),
+            ),
+          ),
         ),
       ),
     );

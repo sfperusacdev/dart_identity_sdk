@@ -374,3 +374,6 @@
 # version: 5.21.0
 - add InternetService for checking real internet connectivity
 
+## 5.22.0
+- Added database manager screen with support for listing, exporting (ZIP), and deleting local SQLite databases, including WAL/SHM files.
+- Added bulk action to delete all local databases with confirmation.

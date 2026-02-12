@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dart_identity_sdk/dart_identity_sdk.dart';
 import 'package:dart_identity_sdk/info/preferences_dialog.dart';
+import 'package:dart_identity_sdk/sqlite/connection.dart';
 import 'package:dart_identity_sdk/utils/date_picker.dart';
 import 'package:example/appbar.dart';
 import 'package:example/configs/theme.dart';
@@ -18,9 +19,11 @@ void main() async {
     appName: "Tareo SF",
     minimumRequiredServices: [
       "com.sfperusac.tareoapp",
-      "com.sfperusac.syncdata",
+      "com.sfperusac.contratos",
     ],
+    defaultServiceID: "com.sfperusac.tareoapp",
     minimumRequiredPermissions: ["login.tareoapp.application"],
+    database: LiteDatabaseConfig(),
   );
   runApp(const MyApp());
 }
