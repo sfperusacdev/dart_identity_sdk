@@ -23,6 +23,7 @@ class _QrCardReaderState extends State<QrCardReader> {
   bool hasScanned = false;
   final MobileScannerController scannerController = MobileScannerController(
     detectionSpeed: DetectionSpeed.normal,
+    autoStart: false,
   );
 
   @override

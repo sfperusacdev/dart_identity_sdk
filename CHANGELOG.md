@@ -377,3 +377,6 @@
 ## 5.22.0
 - Added database manager screen with support for listing, exporting (ZIP), and deleting local SQLite databases, including WAL/SHM files.
 - Added bulk action to delete all local databases with confirmation.
+
+## 5.22.1
+- fix camera qr scan

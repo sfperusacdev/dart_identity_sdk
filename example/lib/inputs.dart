@@ -38,7 +38,7 @@ class _InputsPageState extends State<InputsPage> {
                 await showAsyncProgressKDialog(
                   context,
                   doProcess: () async {
-                    await Future.delayed(Duration(milliseconds: 15));
+                    await Future.delayed(Duration(seconds: 1));
                     txt.clear();
                     return true;
                   },
