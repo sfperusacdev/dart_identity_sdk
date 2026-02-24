@@ -1,6 +1,7 @@
 import 'package:dart_identity_sdk/src/bases/sound_service.dart';
 import 'package:flutter/material.dart';
 import 'package:dart_identity_sdk/kdialogs/src/strings.dart';
+import 'package:flutter/services.dart';
 
 Future<bool> showBottomAlertKDialog(
   BuildContext context, {
@@ -61,26 +62,47 @@ Future<bool> showBottomAlertKDialog(
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Visibility(
-                            visible: retryable,
-                            child: TextButton(
-                              onPressed: () =>
-                                  Navigator.of(context).pop(retryable),
-                              child: Text(retryText ?? "RETRY"),
-                            ),
+                          IconButton(
+                            onPressed: () async {
+                              await Clipboard.setData(
+                                ClipboardData(text: message),
+                              );
+                              if (!context.mounted) return;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Texto copiado"),
+                                  duration: Duration(milliseconds: 1200),
+                                ),
+                              );
+                              Navigator.of(context).pop(false);
+                            },
+                            icon: const Icon(Icons.copy),
                           ),
-                          const SizedBox(width: 22),
-                          ElevatedButton(
-                            onPressed: () => Navigator.of(
-                              context,
-                            ).pop(false),
-                            child: Text(acceptText ?? "ACCEPT"),
-                          )
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Visibility(
+                                visible: retryable,
+                                child: TextButton(
+                                  onPressed: () async {
+                                    Navigator.of(context).pop(retryable);
+                                  },
+                                  child: Text(retryText ?? "RETRY"),
+                                ),
+                              ),
+                              const SizedBox(width: 22),
+                              ElevatedButton(
+                                onPressed: () =>
+                                    Navigator.of(context).pop(false),
+                                child: Text(acceptText ?? "ACCEPT"),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),

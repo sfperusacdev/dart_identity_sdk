@@ -387,3 +387,7 @@
 - Dispara `onInputSettled` al inicio del widget (post-frame) para exponer el estado inicial.
 - Permite configurar el delay vía `inputSettledDelay` (default: 500ms).
 - Limpieza interna: cancelación de timers y listeners para evitar ejecuciones duplicadas y leaks.
+
+
+## 5.22.3
+- Permite copierar error
