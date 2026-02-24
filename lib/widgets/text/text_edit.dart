@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dart_identity_sdk/src/bases/sound_service.dart';
 import 'package:dart_identity_sdk/widgets/text/common.dart';
 import 'package:flutter/material.dart';
@@ -16,16 +18,21 @@ class CustomTextFormField extends StatefulWidget {
   final bool scannable;
   final IconData? suffixIcon;
   final bool multiLine;
+
   final void Function(TextEditingCController txt)? onSubmit;
   final void Function(TextEditingCController txt)? onSuffixIconTab;
   final void Function(TextEditingCController txt)? onSuffixIconLogTab;
+
+  /// Called when the input reaches a stable state and can be safely reacted to.
+  final FutureOr<void> Function(TextEditingCController txt)? onInputSettled;
+
+  final Duration inputSettledDelay;
 
   final TextInputType? keyboardType;
   final void Function(String? value)? onSaved;
   final bool required;
   final bool darkMode;
   final String? Function(String value)? validator;
-
   final Function(String value)? onChanged;
 
   const CustomTextFormField({
@@ -41,6 +48,8 @@ class CustomTextFormField extends StatefulWidget {
     this.suffixIcon,
     this.onSuffixIconTab,
     this.onSuffixIconLogTab,
+    this.onInputSettled,
+    this.inputSettledDelay = const Duration(milliseconds: 500),
     this.keyboardType,
     this.onSaved,
     this.required = false,
@@ -55,26 +64,58 @@ class CustomTextFormField extends StatefulWidget {
 
 class _CustomTextFormFieldState extends State<CustomTextFormField> {
   late TextEditingCController _controller;
+  Timer? _settledTimer;
+  bool _isSubmitting = false;
 
   @override
   void initState() {
     _setupController();
+    _controller.focus.addListener(_onFocusChange);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _emitInputSettled();
+    });
+
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _settledTimer?.cancel();
+    _controller.focus.removeListener(_onFocusChange);
+    super.dispose();
   }
 
   void _setupController() {
     _controller = widget.controller ?? TextEditingCController();
-    if (widget.initValue != null) _controller.text = widget.initValue ?? "";
+    if (widget.initValue != null) {
+      _controller.text = widget.initValue!;
+    }
     if (_controller.labelState.state.isEmpty && widget.label != null) {
-      _controller.updateLabel(widget.label ?? "");
+      _controller.updateLabel(widget.label!);
     }
   }
 
+  void _onFocusChange() {
+    if (!_controller.focus.hasFocus) {
+      _emitInputSettled();
+    }
+  }
+
+  void _handleInputSettledDebounced() {
+    if (widget.onInputSettled == null) return;
+    _settledTimer?.cancel();
+    _settledTimer = Timer(widget.inputSettledDelay, _emitInputSettled);
+  }
+
+  void _emitInputSettled() {
+    _settledTimer?.cancel();
+    widget.onInputSettled?.call(_controller);
+  }
+
   String? validator(String? value) {
-    if (widget.required) {
-      if (value == null || value.trim().isEmpty) {
-        return "Campo requerido";
-      }
+    if (widget.required && (value == null || value.trim().isEmpty)) {
+      return "Campo requerido";
     }
     if (widget.validator == null) return null;
     return widget.validator!(value ?? "");
@@ -117,7 +158,6 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          spacing: 0,
           children: [
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -172,6 +212,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                       widget.onChanged?.call(value);
                       handlePdaScan(value);
                       _controller.refreshWordsCount();
+                      _handleInputSettledDebounced();
                     },
                     onFieldSubmitted: (_) => _secureOnSubmitCall(),
                   ),
@@ -197,6 +238,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                       child: Text(
                         state,
                         style: TextStyle(
+                          fontSize: 10.0,
                           color:
                               widget.darkMode ? Colors.white : Colors.black54,
                         ),
@@ -215,8 +257,6 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
   void handlePdaScan(String inputValue) {
     if (widget.onSubmit == null) return;
 
-    // inputValue is the input value, and _controller.wordCount is the current character count.
-    // On manual typing, wordCount updates per keypress, but during fast scans, it may not update in time.
     if (inputValue.length - _controller.wordCount > 4) {
       final scannedText = inputValue.substring(_controller.wordCount).trim();
       _controller.text = scannedText;
@@ -224,6 +264,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         TextPosition(offset: _controller.text.length),
       );
       SystemChannels.textInput.invokeMethod('TextInput.hide');
+      _emitInputSettled();
       _secureOnSubmitCall();
     }
   }
@@ -246,20 +287,26 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         );
       },
     );
+
     if (scannedValue == null || scannedValue.isEmpty) return;
+
     _controller.text = scannedValue;
     SystemChannels.textInput.invokeMethod('TextInput.hide');
+    _emitInputSettled();
     _secureOnSubmitCall();
     _controller.refreshWordsCount();
   }
 
-  bool _isSubmitting = false;
   void _secureOnSubmitCall() {
+    _emitInputSettled();
+
     if (_isSubmitting) return;
     final text = _controller.text.trim();
     if (text.isEmpty) return;
+
     _isSubmitting = true;
     widget.onSubmit?.call(_controller);
+
     Future.delayed(const Duration(milliseconds: 5), () {
       _isSubmitting = false;
     });

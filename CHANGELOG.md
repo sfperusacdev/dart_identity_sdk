@@ -380,3 +380,10 @@
 
 ## 5.22.1
 - fix camera qr scan
+
+## 5.22.2
+- Agrega callback `onInputSettled` para ejecutar acciones cuando el input queda estable (debounce).
+- Ejecuta `onInputSettled` también al perder foco y al hacer submit (incluye escaneo por PDA/QR).
+- Dispara `onInputSettled` al inicio del widget (post-frame) para exponer el estado inicial.
+- Permite configurar el delay vía `inputSettledDelay` (default: 500ms).
+- Limpieza interna: cancelación de timers y listeners para evitar ejecuciones duplicadas y leaks.

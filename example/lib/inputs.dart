@@ -44,6 +44,10 @@ class _InputsPageState extends State<InputsPage> {
                   },
                 );
               },
+              onInputSettled: (txt) async {
+                await Future.delayed(Duration(microseconds: 10));
+                txt.updateBottomLabel("este es un texto ${txt.getValue()}");
+              },
             ),
             CustomTextFormField(
               label: "Nombres",
