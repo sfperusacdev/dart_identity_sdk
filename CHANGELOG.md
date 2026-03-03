@@ -391,3 +391,6 @@
 
 ## 5.22.3
 - Permite copierar error
+
+## 5.22.4
+- fix exporta db name

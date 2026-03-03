@@ -13,8 +13,8 @@ Future<File> zipFiles(
   final zipPath = '${tmpDir.path}/$name';
 
   final zipFile = File(zipPath);
-  if (zipFile.existsSync()) {
-    zipFile.deleteSync();
+  if (await zipFile.exists()) {
+    await zipFile.delete();
   }
 
   final archive = Archive();

@@ -62,11 +62,17 @@ class _DatabaseManagerPageState extends State<DatabaseManagerPage> {
   }
 
   Future<void> exportDatabase(BuildContext context, _DbEntry entry) async {
+    final fecha =
+        DateTime.now().toIso8601String().substring(0, 10).replaceAll('-', '');
+
     final zipFile = await showAsyncProgressKDialog(
       context,
       doProcess: () async {
         final paths = await getDbPaths(entry.name);
-        return zipFiles(paths);
+        return zipFiles(
+          paths,
+          name: "${entry.name}_$fecha.zip",
+        );
       },
     );
     if (zipFile == null) return;
