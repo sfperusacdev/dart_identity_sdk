@@ -367,30 +367,40 @@
 # version: 5.20.2
 
 - integracion url con manager sdk
+
 # version: 5.20.3
 
 - remove dotenv
 
 # version: 5.21.0
+
 - add InternetService for checking real internet connectivity
 
 ## 5.22.0
+
 - Added database manager screen with support for listing, exporting (ZIP), and deleting local SQLite databases, including WAL/SHM files.
 - Added bulk action to delete all local databases with confirmation.
 
 ## 5.22.1
+
 - fix camera qr scan
 
 ## 5.22.2
+
 - Agrega callback `onInputSettled` para ejecutar acciones cuando el input queda estable (debounce).
 - Ejecuta `onInputSettled` también al perder foco y al hacer submit (incluye escaneo por PDA/QR).
 - Dispara `onInputSettled` al inicio del widget (post-frame) para exponer el estado inicial.
 - Permite configurar el delay vía `inputSettledDelay` (default: 500ms).
 - Limpieza interna: cancelación de timers y listeners para evitar ejecuciones duplicadas y leaks.
 
-
 ## 5.22.3
+
 - Permite copierar error
 
 ## 5.22.4
+
 - fix exporta db name
+
+## 5.22.5
+
+- add service-id flag and improve error logging
