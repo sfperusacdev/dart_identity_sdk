@@ -9,6 +9,7 @@ environment:
 
 dependencies:
   archive: ^4.0.7
+  args: ^2.7.0
   audioplayers: ^6.4.0
   flutter:
     sdk: flutter
