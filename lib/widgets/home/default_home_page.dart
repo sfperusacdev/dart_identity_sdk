@@ -55,7 +55,7 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
                 const Duration(milliseconds: 500)) {
               backPressTime = now;
             }
-            await _goOut(context);
+            await goOutSession(context);
           },
           child: Stack(
             children: [
@@ -139,7 +139,7 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
                           borderRadius: BorderRadius.circular(10.0),
                           elevation: 4.0,
                           child: InkWell(
-                            onTap: () => _goOut(context),
+                            onTap: () => goOutSession(context),
                             borderRadius: BorderRadius.circular(10.0),
                             child: Ink(
                               decoration: BoxDecoration(
@@ -197,8 +197,9 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
                                 ),
                               ),
                               IconButton(
-                                onPressed: () =>
-                                    _showSelectSucursalDialog(context),
+                                onPressed: () => _showSelectSucursalDialog(
+                                  context,
+                                ),
                                 icon: const Icon(Icons.domain),
                                 color: Colors.white,
                               ),
@@ -291,13 +292,13 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
     await setSelectedBranch(selected.first.value);
     setState(() {});
   }
+}
 
-  Future<void> _goOut(BuildContext context, {bool confirm = true}) async {
-    if (confirm) {
-      final ok = await showConfirmationKDialog(context,
-          message: "Estás seguro de cerrar sesión");
-      if (!ok) return;
-    }
-    if (context.mounted) await SessionManagerSDK.logout(context);
+Future<void> goOutSession(BuildContext context, {bool confirm = true}) async {
+  if (confirm) {
+    final ok = await showConfirmationKDialog(context,
+        message: "Estás seguro de cerrar sesión");
+    if (!ok) return;
   }
+  if (context.mounted) await SessionManagerSDK.logout(context);
 }

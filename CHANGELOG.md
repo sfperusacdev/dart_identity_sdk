@@ -404,3 +404,7 @@
 ## 5.22.5
 
 - add service-id flag and improve error logging
+
+## 5.22.6
+
+- add base home page
