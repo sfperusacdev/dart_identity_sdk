@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:dart_identity_sdk/widgets/scaffold/state.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class QueryController<T, Q> extends Cubit<QueryState<T>> {
-  final Future<T> Function(Q query) _fetchCallback;
+  final FutureOr<T> Function(Q query) _fetchCallback;
   final bool _clearOnRefresh;
   final T Function(T data, String filter)? _filterCallback;
   final bool Function(T data)? _onLoad;
@@ -13,7 +15,7 @@ class QueryController<T, Q> extends Cubit<QueryState<T>> {
   bool _hasLoadedOnce = false;
 
   QueryController({
-    required Future<T> Function(Q query) fetchCallback,
+    required FutureOr<T> Function(Q query) fetchCallback,
     Q? initialQuery,
     bool clearOnRefresh = false,
     T Function(T data, String filter)? filterCallback,

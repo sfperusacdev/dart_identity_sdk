@@ -416,3 +416,7 @@
 - Se añadió soporte para `initialQuery`, `updateQuery` y `refetch`.
 - `QueryView` fue actualizado para soportar el nuevo `QueryController<T, Q>`.
 - Mejora en la flexibilidad del controlador para manejar requests dinámicos.
+
+
+## 5.22.7
+- QueryController recive un FutureOr
