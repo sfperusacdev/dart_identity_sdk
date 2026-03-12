@@ -4,8 +4,8 @@ import 'package:dart_identity_sdk/widgets/scaffold/state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class QueryView<T> extends StatelessWidget {
-  final QueryController<T> controller;
+class QueryView<T, Q> extends StatelessWidget {
+  final QueryController<T, Q> controller;
   final Widget Function(BuildContext context, T data) builder;
   final Widget? loading;
   final Widget Function(BuildContext context, String error)? error;
@@ -26,7 +26,7 @@ class QueryView<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<QueryController<T>, QueryState<T>>(
+    return BlocBuilder<QueryController<T, Q>, QueryState<T>>(
       bloc: controller,
       builder: (context, state) {
         if (state.isLoading) {
@@ -61,7 +61,9 @@ class QueryView<T> extends StatelessWidget {
             ),
           );
         }
+
         final rawdata = state.rawdata;
+
         if (showEmptyPlaceholder &&
             (rawdata == null || rawdata is List && rawdata.isEmpty)) {
           return emptyPlaceholder ??
@@ -70,9 +72,11 @@ class QueryView<T> extends StatelessWidget {
                 onRefresh: () => controller.refresh(silent: false),
               );
         }
+
         if (rawdata != null) {
           return builder(context, controller.data as T);
         }
+
         return const SizedBox.shrink();
       },
     );

@@ -26,12 +26,12 @@ enum _DbAction { export, delete }
 enum _GlobalAction { clearAll }
 
 class _DatabaseManagerPageState extends State<DatabaseManagerPage> {
-  late final QueryController<List<_DbEntry>> queryController;
+  late final QueryController<List<_DbEntry>, void> queryController;
 
   @override
   void initState() {
     super.initState();
-    queryController = QueryController(fetchCallback: listFilePaths);
+    queryController = QueryController(fetchCallback: (_) => listFilePaths());
   }
 
   Future<List<_DbEntry>> listFilePaths() async {

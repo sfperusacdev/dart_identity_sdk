@@ -408,3 +408,11 @@
 ## 5.22.6
 
 - add base home page
+
+## 5.22.7
+
+- Se agregó soporte para queries con parámetros en `QueryController`.
+- `QueryController` ahora utiliza dos genéricos `<T, Q>` para manejar el tipo de datos y el tipo de query.
+- Se añadió soporte para `initialQuery`, `updateQuery` y `refetch`.
+- `QueryView` fue actualizado para soportar el nuevo `QueryController<T, Q>`.
+- Mejora en la flexibilidad del controlador para manejar requests dinámicos.
