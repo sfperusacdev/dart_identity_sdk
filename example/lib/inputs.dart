@@ -3,6 +3,8 @@ import 'package:dart_identity_sdk/widgets/text/common.dart';
 import 'package:dart_identity_sdk/widgets/text/text.dart';
 import 'package:flutter/material.dart';
 import 'package:dart_identity_sdk/widgets/text/text_edit.dart';
+import 'package:dart_identity_sdk/widgets/text/date_input.dart';
+import 'package:dart_identity_sdk/widgets/text/time_input.dart';
 
 class InputsPage extends StatefulWidget {
   const InputsPage({super.key});
@@ -16,6 +18,8 @@ class _InputsPageState extends State<InputsPage> {
   final controller02 = TextEditingCController();
   final controller03 = TextEditingCController();
   final textcontroller = TextEditingCController.withText("hola11");
+  final fecha = TextEditingCController();
+  final hora = TextEditingCController();
   final multiline = TextEditingCController.withText(
     "Este es un texto super largo para probar el comportamiento del input en multilines",
   );
@@ -46,7 +50,7 @@ class _InputsPageState extends State<InputsPage> {
               },
               onInputSettled: (txt) async {
                 await Future.delayed(Duration(microseconds: 10));
-                txt.updateBottomLabel("este es un texto ${txt.getValue()}");
+                txt.setBottomLabel("este es un texto ${txt.getValue()}");
               },
             ),
             CustomTextFormField(
@@ -66,6 +70,8 @@ class _InputsPageState extends State<InputsPage> {
               readonly: true,
               controller: controller02,
             ),
+            CustomDateFormField(label: "Fecha", controller: fecha),
+            CustomTimeFormField(label: "Hora", controller: hora),
             CustomTextFormField(
               label: "Direccion",
               controller: controller03,
@@ -90,7 +96,7 @@ class _InputsPageState extends State<InputsPage> {
                   controller: dark,
                   suffixIcon: Icons.search,
                   onSuffixIconTab: (txt) {
-                    txt.updateBottomLabel("hola");
+                    txt.setBottomLabel("hola");
                   },
                 ),
               ),

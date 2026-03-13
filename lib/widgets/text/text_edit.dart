@@ -92,7 +92,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
       _controller.text = widget.initValue!;
     }
     if (_controller.labelState.state.isEmpty && widget.label != null) {
-      _controller.updateLabel(widget.label!);
+      _controller.setLabel(widget.label!);
     }
   }
 

@@ -417,6 +417,16 @@
 - `QueryView` fue actualizado para soportar el nuevo `QueryController<T, Q>`.
 - Mejora en la flexibilidad del controlador para manejar requests dinámicos.
 
-
 ## 5.22.7
+
 - QueryController recive un FutureOr
+
+## 5.23.0
+
+- Se añadió soporte para manejar `TimeOfDay` en `TextEditingCController`
+- Se agregó el constructor `TextEditingCController.withTime`
+- Se implementaron los métodos `setTime` y `getTimeOrNull`
+- Las horas ahora se muestran al usuario en formato de 12 horas (`hh:mm AM/PM`)
+- El valor interno de hora se almacena en formato `HH:mm`
+- `getDatetimeOrNull` ahora puede interpretar valores de hora y devolver un `DateTime` con la fecha actual y la hora del controller
+- Refactorización del controller para reducir duplicación de código y mejorar legibilidad
