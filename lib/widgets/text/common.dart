@@ -79,6 +79,18 @@ class TextEditingCController extends TextEditingController {
     _extra = extras;
   }
 
+  void setSelectOption(SelectOption? option, {dynamic extras}) {
+    if (option == null) {
+      clear();
+      return;
+    }
+    setText(
+      option.getLabel(),
+      internalID: option.getID(),
+      extras: extras,
+    );
+  }
+
   void setDatetime(DateTime? datetime) {
     if (datetime == null) {
       clear();

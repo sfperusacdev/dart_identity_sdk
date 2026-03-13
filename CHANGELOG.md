@@ -443,3 +443,7 @@
 
 - Refactor `ControlledText` using `CustomTextControllerObserver`
 - Extract controller text listening into reusable widget
+
+## 5.23.4
+
+- add setSelectOption method to CustomTextControllerObserver
