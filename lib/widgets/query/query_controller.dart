@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:dart_identity_sdk/widgets/scaffold/state.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,6 +12,7 @@ class QueryController<T, Q> extends Cubit<QueryState<T>> {
 
   Q? _query;
   bool _hasLoadedOnce = false;
+  int _requestId = 0;
 
   QueryController({
     required FutureOr<T> Function(Q? query) fetchCallback,
@@ -22,25 +22,19 @@ class QueryController<T, Q> extends Cubit<QueryState<T>> {
     bool Function(T data)? onDataLoadDecision,
     void Function(T data)? onUpdate,
   })  : _fetchCallback = fetchCallback,
-        _query = initialQuery,
         _clearOnRefresh = clearOnRefresh,
         _filterCallback = filterCallback,
         _onLoad = onDataLoadDecision,
         _onUpdate = onUpdate,
         super(QueryState<T>(isLoading: true)) {
-    if (_query != null) {
-      fetch();
-    }
+    fetch(query: initialQuery);
   }
 
   Q? get query => _query;
 
   Future<void> fetch({Q? query, bool silent = false}) async {
-    if (query != null) {
-      _query = query;
-    }
-
-    final currentQuery = _query;
+    final currentRequest = ++_requestId;
+    _query = query;
 
     if (!silent) {
       emit(
@@ -48,30 +42,54 @@ class QueryController<T, Q> extends Cubit<QueryState<T>> {
           isLoading: true,
           rawdata: _clearOnRefresh ? null : state.rawdata,
           filter: state.filter,
+          errorMessage: '',
         ),
       );
     }
 
     try {
-      final result = await _fetchCallback(currentQuery);
+      final result = await _fetchCallback(_query);
+
+      if (currentRequest != _requestId) return;
 
       if (!_hasLoadedOnce) {
         if (_onLoad != null) {
           final shouldContinue = _onLoad!.call(result);
-          if (!shouldContinue) return;
+          if (!shouldContinue) {
+            _hasLoadedOnce = true;
+            emit(
+              QueryState<T>(
+                rawdata: state.rawdata,
+                filter: state.filter,
+                isLoading: false,
+              ),
+            );
+            return;
+          }
         }
         _hasLoadedOnce = true;
       }
 
-      emit(QueryState<T>(rawdata: result, filter: state.filter));
+      emit(
+        QueryState<T>(
+          rawdata: result,
+          filter: state.filter,
+          isLoading: false,
+        ),
+      );
+
       _onUpdate?.call(result);
     } catch (e, stackTrace) {
+      if (currentRequest != _requestId) return;
+
       final errorMessage = parseErrorMessage(e);
+
       emit(
         QueryState<T>(
           errorMessage: errorMessage,
           rawdata: state.rawdata,
           filter: state.filter,
+          isLoading: false,
         ),
       );
 
@@ -88,7 +106,8 @@ class QueryController<T, Q> extends Cubit<QueryState<T>> {
 
   Future<void> refetch() => fetch(query: _query);
 
-  Future<void> refresh({bool silent = true}) => fetch(silent: silent);
+  Future<void> refresh({bool silent = true}) =>
+      fetch(query: _query, silent: silent);
 
   void clearFilter() => applyFilter('');
 
@@ -107,8 +126,10 @@ class QueryController<T, Q> extends Cubit<QueryState<T>> {
     final currentData = state.rawdata;
     if (currentData == null) return null;
 
-    if (currentData is List && state.filter.trim().length > 2) {
-      return _filterCallback?.call(currentData as T, state.filter.trim());
+    final filter = state.filter.trim();
+
+    if (_filterCallback != null && filter.isNotEmpty) {
+      return _filterCallback!(currentData, filter);
     }
 
     return currentData;
