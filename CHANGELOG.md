@@ -430,3 +430,7 @@
 - El valor interno de hora se almacena en formato `HH:mm`
 - `getDatetimeOrNull` ahora puede interpretar valores de hora y devolver un `DateTime` con la fecha actual y la hora del controller
 - Refactorización del controller para reducir duplicación de código y mejorar legibilidad
+
+## 5.23.1
+
+- fix
