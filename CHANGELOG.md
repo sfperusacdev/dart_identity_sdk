@@ -438,3 +438,8 @@
 ## 5.23.2
 
 - fix
+
+## 5.23.3
+
+- Refactor `ControlledText` using `CustomTextControllerObserver`
+- Extract controller text listening into reusable widget
