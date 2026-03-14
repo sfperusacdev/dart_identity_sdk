@@ -447,3 +447,7 @@
 ## 5.23.4
 
 - add setSelectOption method to CustomTextControllerObserver
+
+## 5.24.0
+
+- sqlite in memory

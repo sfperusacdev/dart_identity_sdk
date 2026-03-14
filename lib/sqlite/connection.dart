@@ -6,6 +6,7 @@ import 'package:sqflite/sqflite.dart' as sqlite;
 
 class LiteDatabaseConfig {
   final bool sqliteDisabled;
+  final bool inMemory;
 
   final int version;
   final sqlite.OnDatabaseCreateFn? onCreate;
@@ -17,6 +18,7 @@ class LiteDatabaseConfig {
 
   const LiteDatabaseConfig({
     this.sqliteDisabled = false,
+    this.inMemory = false,
     this.version = 1,
     this.onCreate,
     this.onUpgrade,
@@ -27,6 +29,15 @@ class LiteDatabaseConfig {
   /// Returns a config with SQLite disabled — connection will be skipped.
   factory LiteDatabaseConfig.disabled() {
     return const LiteDatabaseConfig(sqliteDisabled: true);
+  }
+
+  factory LiteDatabaseConfig.memory({
+    sqlite.OnDatabaseCreateFn? onCreate,
+  }) {
+    return LiteDatabaseConfig(
+      inMemory: true,
+      onCreate: onCreate,
+    );
   }
 }
 
@@ -84,6 +95,16 @@ class LiteConnection {
     sqlite.OnDatabaseVersionChangeFn? onUpgrade,
     sqlite.OnDatabaseVersionChangeFn? onDowngrade,
   }) async {
+    if (_config!.inMemory) {
+      return sqlite.openDatabase(
+        ':memory:',
+        version: version,
+        onCreate: onCreate,
+        onUpgrade: onUpgrade,
+        onDowngrade: onDowngrade,
+      );
+    }
+
     final basePath = await getDatabaseRootPath();
     final dbPath = p.join(basePath, "${domain}_db.db");
     LOG.printInfo("Database path: $dbPath");
