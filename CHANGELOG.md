@@ -451,3 +451,7 @@
 ## 5.24.0
 
 - sqlite in memory
+
+## 5.24.1
+
+- fix Scaffold
