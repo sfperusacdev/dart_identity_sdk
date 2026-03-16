@@ -18,22 +18,20 @@ class _BasePageState extends State<BasePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: PopScope(
-        canPop: false,
-        onPopInvokedWithResult: (didPop, result) async {
-          if (didPop) return;
-          final now = DateTime.now();
-          if (backPressTime == null) {
-            backPressTime = now;
-          } else if (now.difference(backPressTime!) >
-              const Duration(milliseconds: 500)) {
-            backPressTime = now;
-          }
-          await goOutSession(context);
-        },
-        child: widget.body(context),
-      ),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        final now = DateTime.now();
+        if (backPressTime == null) {
+          backPressTime = now;
+        } else if (now.difference(backPressTime!) >
+            const Duration(milliseconds: 500)) {
+          backPressTime = now;
+        }
+        await goOutSession(context);
+      },
+      child: widget.body(context),
     );
   }
 }
