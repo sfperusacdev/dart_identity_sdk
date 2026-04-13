@@ -138,10 +138,10 @@ class _ContentState<T extends SelectOption> extends State<_Content<T>> {
 
   void search(String value) {
     setState(() {
-      _filteredOptions = widget.options
-          .where((elm) =>
-              elm.getLabel().toLowerCase().contains(value.toLowerCase()))
-          .toList();
+      _filteredOptions = widget.options.where((elm) {
+        return elm.getID().toLowerCase().contains(value.toLowerCase()) ||
+            elm.getLabel().toLowerCase().contains(value.toLowerCase());
+      }).toList();
     });
   }
 

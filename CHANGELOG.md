@@ -455,3 +455,6 @@
 ## 5.24.1
 
 - fix Scaffold
+## 5.24.2
+
+- fix, buscar por codigo en select dialog
