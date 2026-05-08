@@ -14,17 +14,16 @@ Future<List<T>?> showAsyncOptionsDialog<T extends SelectOption>(
 }) async {
   acceptText ??= strings.acceptButtonText;
   cancelText ??= strings.cancelButtonText;
-  final options = await showAsyncProgressKDialog(
+  var options = await showAsyncProgressKDialog(
     context,
     doProcess: getOptions,
   );
 
-  if (options == null || options.isEmpty) return null;
   if (!context.mounted) return null;
 
   return await showBasicOptionsKDialog(
     context,
-    options: options,
+    options: options ?? [],
     initialSelection: initialSelection,
     allowMultipleSelection: allowMultipleSelection,
     searchInput: searchInput,

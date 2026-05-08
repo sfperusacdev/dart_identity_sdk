@@ -458,3 +458,7 @@
 ## 5.24.2
 
 - fix, buscar por codigo en select dialog
+
+## 5.24.3
+
+- fix, kdialogs no se muestra cuando no hay opciones 
