@@ -462,3 +462,8 @@
 ## 5.24.3
 
 - fix, kdialogs no se muestra cuando no hay opciones 
+
+## 5.24.4
+
+- Database manager: exportar schema (.sql) desde `sqlite_master` y compartir.
+- Database manager: importar DB desde `.zip` con validación (db + wal/shm/journal), dominio sugerido editable y confirmación de reemplazo.
