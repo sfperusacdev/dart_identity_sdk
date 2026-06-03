@@ -467,3 +467,6 @@
 
 - Database manager: exportar schema (.sql) desde `sqlite_master` y compartir.
 - Database manager: importar DB desde `.zip` con validación (db + wal/shm/journal), dominio sugerido editable y confirmación de reemplazo.
+
+## 5.24.5
+- Add logout event

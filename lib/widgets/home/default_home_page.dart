@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dart_identity_sdk/dart_identity_sdk.dart';
 import 'package:dart_identity_sdk/info/preferences_dialog.dart';
 import 'package:dart_identity_sdk/kdialogs/src/about_dialog.dart';
@@ -15,12 +17,14 @@ class DefaultHomePage extends StatefulWidget {
   final Future<void> Function(BuildContext context)? onDependenciesReady;
   final List<HomeMenuCard> Function(BuildContext context) builder;
   final VoidCallback? onRefreshPreferences;
+  final Future<void> Function(BuildContext context)? onLogout;
 
   const DefaultHomePage({
     super.key,
     this.onDependenciesReady,
     required this.builder,
     this.onRefreshPreferences,
+    this.onLogout,
   });
 
   @override
@@ -55,7 +59,9 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
                 const Duration(milliseconds: 500)) {
               backPressTime = now;
             }
-            await goOutSession(context);
+            await goOutSession(context, onBeforeNavigate: (context) async {
+              widget.onLogout?.call(context);
+            });
           },
           child: Stack(
             children: [
@@ -294,11 +300,17 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
   }
 }
 
-Future<void> goOutSession(BuildContext context, {bool confirm = true}) async {
+Future<void> goOutSession(
+  BuildContext context, {
+  bool confirm = true,
+  Future<void> Function(BuildContext context)? onBeforeNavigate,
+}) async {
   if (confirm) {
     final ok = await showConfirmationKDialog(context,
         message: "Estás seguro de cerrar sesión");
     if (!ok) return;
   }
-  if (context.mounted) await SessionManagerSDK.logout(context);
+  if (context.mounted) {
+    await SessionManagerSDK.logout(context, onBeforeNavigate: onBeforeNavigate);
+  }
 }

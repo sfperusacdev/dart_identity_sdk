@@ -202,13 +202,16 @@ class SessionManagerSDK {
     return getCurrentSession()?.session?.supervisors ?? [];
   }
 
-  static Future<void> logout(BuildContext context) async {
+  static Future<void> logout(
+    BuildContext context, {
+    Future<void> Function(BuildContext context)? onBeforeNavigate,
+  }) async {
     _session = null;
     await AppPreferences.global.remove(_sessionStorageKey);
+    if (context.mounted) await onBeforeNavigate?.call(context);
     if (context.mounted) context.go(LoginPage.path);
     _firstOpen = false;
-    await LiteConnection
-        .closeIfConnected(); // ensure the database is properly closed and resources are released
+    await LiteConnection.closeIfConnected();
   }
 
   static Future<void> login({
