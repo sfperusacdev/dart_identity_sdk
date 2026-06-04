@@ -85,6 +85,7 @@ class SessionManagerSDK {
   static String getLicenceCode() => _session?.device?.companyLicenceCode ?? "";
 
   static String? getProfileID() => _session?.profileID;
+  static String? getDeviceID() => _session?.deviceId;
 
   static String getCompanyCode() => _session?.session?.company ?? "";
 
@@ -243,7 +244,10 @@ class SessionManagerSDK {
     );
     final session = IdentitySessionResponse.fromMap(response);
     _firstOpen = true;
-    await _persistSession(session.copyWith(profileID: profileID));
+    await _persistSession(session.copyWith(
+      profileID: profileID,
+      deviceId: deviceid,
+    ));
   }
 
   static bool get ifFirstOpen => _firstOpen;

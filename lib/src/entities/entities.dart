@@ -7,6 +7,7 @@ class IdentitySessionResponse {
   String? profileID;
   String? userCode;
   List<Location>? locations;
+  String? deviceId;
   Device? device;
   List<Sucursale>? sucursales;
   Usuario? usuario;
@@ -20,6 +21,7 @@ class IdentitySessionResponse {
     this.userCode,
     this.locations,
     this.device,
+    this.deviceId,
     this.sucursales,
     this.usuario,
     this.session,
@@ -33,6 +35,7 @@ class IdentitySessionResponse {
     String? userCode,
     List<Location>? locations,
     Device? device,
+    String? deviceId,
     List<Sucursale>? sucursales,
     Usuario? usuario,
     Session? session,
@@ -45,29 +48,38 @@ class IdentitySessionResponse {
         userCode: userCode ?? this.userCode,
         locations: locations ?? this.locations,
         device: device ?? this.device,
+        deviceId: deviceId ?? this.deviceId,
         sucursales: sucursales ?? this.sucursales,
         usuario: usuario ?? this.usuario,
         session: session ?? this.session,
       );
 
-  factory IdentitySessionResponse.fromJson(String str) => IdentitySessionResponse.fromMap(json.decode(str));
+  factory IdentitySessionResponse.fromJson(String str) =>
+      IdentitySessionResponse.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
-  factory IdentitySessionResponse.fromMap(Map<String, dynamic> json) => IdentitySessionResponse(
+  factory IdentitySessionResponse.fromMap(Map<String, dynamic> json) =>
+      IdentitySessionResponse(
         date: json["date"],
         timeStamp: json["time_stamp"],
         token: json["token"],
         profileID: json["profile_id"],
         userCode: json["user_code"],
-        locations:
-            json["locations"] == null ? [] : List<Location>.from(json["locations"]!.map((x) => Location.fromMap(x))),
+        locations: json["locations"] == null
+            ? []
+            : List<Location>.from(
+                json["locations"]!.map((x) => Location.fromMap(x))),
         device: json["device"] == null ? null : Device.fromMap(json["device"]),
+        deviceId: json["device_id"],
         sucursales: json["sucursales"] == null
             ? []
-            : List<Sucursale>.from(json["sucursales"]!.map((x) => Sucursale.fromMap(x))),
-        usuario: json["usuario"] == null ? null : Usuario.fromMap(json["usuario"]),
-        session: json["session"] == null ? null : Session.fromMap(json["session"]),
+            : List<Sucursale>.from(
+                json["sucursales"]!.map((x) => Sucursale.fromMap(x))),
+        usuario:
+            json["usuario"] == null ? null : Usuario.fromMap(json["usuario"]),
+        session:
+            json["session"] == null ? null : Session.fromMap(json["session"]),
       );
 
   Map<String, dynamic> toMap() => {
@@ -76,9 +88,14 @@ class IdentitySessionResponse {
         "token": token,
         "profile_id": profileID,
         "user_code": userCode,
-        "locations": locations == null ? [] : List<dynamic>.from(locations!.map((x) => x.toMap())),
+        "locations": locations == null
+            ? []
+            : List<dynamic>.from(locations!.map((x) => x.toMap())),
+        "device_id": deviceId,
         "device": device?.toMap(),
-        "sucursales": sucursales == null ? [] : List<dynamic>.from(sucursales!.map((x) => x.toMap())),
+        "sucursales": sucursales == null
+            ? []
+            : List<dynamic>.from(sucursales!.map((x) => x.toMap())),
         "usuario": usuario?.toMap(),
         "session": session?.toMap(),
       };
@@ -140,9 +157,12 @@ class Device {
         deviceIdentifier: json["device_identifier"],
         deviceInfo: json["device_info"],
         companyLicenceCode: json["company_licence_code"],
-        createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
+        createdAt: json["created_at"] == null
+            ? null
+            : DateTime.parse(json["created_at"]),
         createdBy: json["created_by"],
-        writeAt: json["write_at"] == null ? null : DateTime.parse(json["write_at"]),
+        writeAt:
+            json["write_at"] == null ? null : DateTime.parse(json["write_at"]),
         writeBy: json["write_by"],
       );
 
@@ -229,19 +249,30 @@ class Session {
   factory Session.fromMap(Map<String, dynamic> json) => Session(
         company: json["company"],
         username: json["username"],
-        supervisors: json["supervisors"] == null ? [] : List<String>.from(json["supervisors"]!.map((x) => x)),
-        subordinates: json["subordinates"] == null ? [] : List<String>.from(json["subordinates"]!.map((x) => x)),
+        supervisors: json["supervisors"] == null
+            ? []
+            : List<String>.from(json["supervisors"]!.map((x) => x)),
+        subordinates: json["subordinates"] == null
+            ? []
+            : List<String>.from(json["subordinates"]!.map((x) => x)),
         permissions: json["permissions"] == null
             ? []
-            : List<Permission>.from(json["permissions"]!.map((x) => Permission.fromMap(x))),
+            : List<Permission>.from(
+                json["permissions"]!.map((x) => Permission.fromMap(x))),
       );
 
   Map<String, dynamic> toMap() => {
         "company": company,
         "username": username,
-        "supervisors": supervisors == null ? [] : List<dynamic>.from(supervisors!.map((x) => x)),
-        "subordinates": subordinates == null ? [] : List<dynamic>.from(subordinates!.map((x) => x)),
-        "permissions": permissions == null ? [] : List<dynamic>.from(permissions!.map((x) => x.toMap())),
+        "supervisors": supervisors == null
+            ? []
+            : List<dynamic>.from(supervisors!.map((x) => x)),
+        "subordinates": subordinates == null
+            ? []
+            : List<dynamic>.from(subordinates!.map((x) => x)),
+        "permissions": permissions == null
+            ? []
+            : List<dynamic>.from(permissions!.map((x) => x.toMap())),
       };
 }
 
@@ -263,19 +294,23 @@ class Permission {
         companyBrances: companyBrances ?? this.companyBrances,
       );
 
-  factory Permission.fromJson(String str) => Permission.fromMap(json.decode(str));
+  factory Permission.fromJson(String str) =>
+      Permission.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
   factory Permission.fromMap(Map<String, dynamic> json) => Permission(
         id: json["id"],
-        companyBrances:
-            json["company_brances"] == null ? [] : List<String>.from(json["company_brances"]!.map((x) => x)),
+        companyBrances: json["company_brances"] == null
+            ? []
+            : List<String>.from(json["company_brances"]!.map((x) => x)),
       );
 
   Map<String, dynamic> toMap() => {
         "id": id,
-        "company_brances": companyBrances == null ? [] : List<dynamic>.from(companyBrances!.map((x) => x)),
+        "company_brances": companyBrances == null
+            ? []
+            : List<dynamic>.from(companyBrances!.map((x) => x)),
       };
 }
 
@@ -335,9 +370,12 @@ class Sucursale {
         address: json["address"],
         companyCode: json["company_code"],
         isDisabled: json["is_disabled"],
-        createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
+        createdAt: json["created_at"] == null
+            ? null
+            : DateTime.parse(json["created_at"]),
         createdBy: json["created_by"],
-        writeAt: json["write_at"] == null ? null : DateTime.parse(json["write_at"]),
+        writeAt:
+            json["write_at"] == null ? null : DateTime.parse(json["write_at"]),
         writeBy: json["write_by"],
       );
 
@@ -425,9 +463,12 @@ class Usuario {
         passwordAttempts: json["password_attempts"],
         referenceCode: json["reference_code"],
         externalReference: json["external_reference"],
-        createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
+        createdAt: json["created_at"] == null
+            ? null
+            : DateTime.parse(json["created_at"]),
         createdBy: json["created_by"],
-        writeAt: json["write_at"] == null ? null : DateTime.parse(json["write_at"]),
+        writeAt:
+            json["write_at"] == null ? null : DateTime.parse(json["write_at"]),
         writeBy: json["write_by"],
       );
 

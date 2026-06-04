@@ -470,3 +470,7 @@
 
 ## 5.24.5
 - Add logout event
+
+
+## 5.24.6
+- store session device id
