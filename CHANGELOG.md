@@ -480,3 +480,7 @@
 
 ## 5.24.8
 - add semantic session lifecycle callbacks
+
+## 5.25.0
+- add support to sync data
+
