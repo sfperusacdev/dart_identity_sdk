@@ -45,8 +45,7 @@ flutter:
   assets:
     - assets/
     - assets/sounds/
-    - assets/sounds/qr.mp3
-    - assets/sounds/error.mp3
+    - assets/icons/
 #
 # For details regarding assets in packages, see
 # https://flutter.dev/assets-and-images/#from-packages

@@ -8,6 +8,7 @@ import 'package:example/appbar.dart';
 import 'package:example/configs/theme.dart';
 import 'package:example/home2.dart';
 import 'package:example/inputs.dart';
+import 'package:example/sync_tables.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -66,9 +67,12 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      top: false,
-      child: MaterialApp.router(routerConfig: routes, theme: appTheme),
+    return TableSyncProvider(
+      config: tableSyncConfig,
+      child: SafeArea(
+        top: false,
+        child: MaterialApp.router(routerConfig: routes, theme: appTheme),
+      ),
     );
   }
 }

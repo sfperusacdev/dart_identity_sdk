@@ -26,6 +26,12 @@ class ApplicationRouterManager {
     );
     routes.add(
       GoRoute(
+        path: TableSyncPage.path,
+        builder: (context, state) => const TableSyncPage(),
+      ),
+    );
+    routes.add(
+      GoRoute(
         path: DatabaseManagerPage.path,
         builder: (context, state) => const DatabaseManagerPage(),
       ),
@@ -54,6 +60,12 @@ class ApplicationRouterManager {
       }
       return true;
     }(), "the path ${LoginPage.path} are reserved");
+    assert(() {
+      for (var r in routes) {
+        if (r is GoRoute && r.path == TableSyncPage.path) return false;
+      }
+      return true;
+    }(), "the path ${TableSyncPage.path} are reserved");
     assert(() {
       var homefound = false;
       for (var r in routes) {

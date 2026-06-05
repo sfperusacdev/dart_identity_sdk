@@ -3,11 +3,12 @@ import 'dart:async';
 import 'package:dart_identity_sdk/dart_identity_sdk.dart';
 import 'package:dart_identity_sdk/info/preferences_dialog.dart';
 import 'package:dart_identity_sdk/kdialogs/src/about_dialog.dart';
+import 'package:dart_identity_sdk/kdialogs/src/show_async_progress.dart';
 import 'package:dart_identity_sdk/kdialogs/src/show_basic_options.dart';
-import 'package:dart_identity_sdk/kdialogs/src/show_bottom_alert.dart';
 import 'package:dart_identity_sdk/kdialogs/src/show_confirmation.dart';
 import 'package:dart_identity_sdk/styles/text.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 part 'clip.dart';
 part 'home_menu_card.dart';
 
@@ -19,6 +20,10 @@ class DefaultHomePage extends StatefulWidget {
   final List<HomeMenuCard> Function(BuildContext context) builder;
   final VoidCallback? onRefreshPreferences;
 
+  /// Preference key used to decide whether the initial sync dialog should open.
+  /// If null, the dialog is not shown automatically.
+  final String? showSyncDialogPreferenceKey;
+
   /// Called when session closing is already confirmed and imminent.
   final Future<void> Function(BuildContext context)? onSessionEnding;
 
@@ -27,6 +32,7 @@ class DefaultHomePage extends StatefulWidget {
     this.onSessionReady,
     required this.builder,
     this.onRefreshPreferences,
+    this.showSyncDialogPreferenceKey,
     this.onSessionEnding,
   });
 
@@ -41,12 +47,13 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback(
-      (_) => _handleSessionValidation(),
+      (_) => _handleSessionValidation(context),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final enabled = hasTableSyncProvider(context);
     final size = MediaQuery.of(context).size;
     return SafeArea(
       top: false,
@@ -82,7 +89,8 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
                     children: [
                       const Image(
                           image: AssetImage(
-                              "packages/dart_identity_sdk/assets/user.png"),
+                            "packages/dart_identity_sdk/assets/user.png",
+                          ),
                           width: 80,
                           height: 80,
                           fit: BoxFit.fill),
@@ -118,7 +126,16 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
                       Wrap(
                         runSpacing: 12.0,
                         spacing: 12.0,
-                        children: widget.builder(context),
+                        children: [
+                          ...widget.builder(context),
+                          if (enabled)
+                            HomeMenuCard(
+                              assetImage: "assets/icons/sincronizar.png",
+                              assetPackage: "dart_identity_sdk",
+                              title: "SINCRONIZAR",
+                              onTab: () => context.push(TableSyncPage.path),
+                            ),
+                        ],
                       ),
                     ],
                   ),
@@ -256,10 +273,25 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
     setState(() {});
   }
 
-  Future<void> _handleSessionValidation() async {
+  Future<void> _handleSessionValidation(BuildContext context) async {
+    await showAsyncProgressKDialog<bool>(
+      context,
+      retryable: true,
+      doProcess: () async {
+        await _prepareSession(context);
+        return true;
+      },
+      onSuccess: (_) {
+        if (!context.mounted) return;
+        _showInitialSyncDialogIfNeeded(context);
+      },
+    );
+  }
+
+  Future<void> _prepareSession(BuildContext context) async {
     try {
       if (!SessionManagerSDK.hasValidSession()) {
-        if (mounted) await SessionManagerSDK.logout(context);
+        if (context.mounted) await SessionManagerSDK.logout(context);
         return;
       }
 
@@ -267,22 +299,37 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
         context,
       );
       if (!ok) {
-        if (mounted) await SessionManagerSDK.logout(context);
+        if (context.mounted) await SessionManagerSDK.logout(context);
         return;
       }
 
-      if (mounted) {
+      if (context.mounted) {
         await widget.onSessionReady?.call(context);
       }
-    } catch (err) {
-      if (mounted) {
-        await showBottomAlertKDialog(
-          context,
-          message: err.toString(),
-        );
-        if (mounted) await SessionManagerSDK.logout(context);
+      if (context.mounted) {
+        LOG.printInfo(['TABLE_SYNC', 'home startConfiguredGroups']);
+        await maybeTableSyncBloc(context)?.startConfiguredGroups();
       }
+    } catch (err) {
+      if (context.mounted) {
+        await SessionManagerSDK.logout(context);
+      }
+      rethrow;
     }
+  }
+
+  Future<void> _showInitialSyncDialogIfNeeded(BuildContext context) async {
+    final preferenceKey = widget.showSyncDialogPreferenceKey;
+    final tableSyncBloc = maybeTableSyncBloc(context);
+    if (preferenceKey == null || preferenceKey.trim().isEmpty) return;
+    if (tableSyncBloc == null) return;
+
+    final enabled = AppPreferences.readBool(preferenceKey);
+    final firstOpen = SessionManagerSDK.ifFirstOpen;
+    if (!enabled || !firstOpen) return;
+
+    LOG.printInfo(['TABLE_SYNC', 'home show initial sync dialog']);
+    await showTableSyncDialog(context);
   }
 
   void _showSelectSucursalDialog(BuildContext context) async {
@@ -312,12 +359,16 @@ Future<void> goOutSession(
   bool confirm = true,
   Future<void> Function(BuildContext context)? onSessionEnding,
 }) async {
+  final tableSyncBloc = maybeTableSyncBloc(context);
   if (confirm) {
     final ok = await showConfirmationKDialog(context,
         message: "Estás seguro de cerrar sesión");
     if (!ok) return;
   }
   if (context.mounted) {
+    LOG.printInfo(['TABLE_SYNC', 'session ending stopAll']);
+    await tableSyncBloc?.stopAll();
+    if (!context.mounted) return;
     await SessionManagerSDK.logout(
       context,
       onSessionEnding: onSessionEnding,

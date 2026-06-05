@@ -30,7 +30,7 @@ class SoundService {
       _errormp3 = await _readBytesFromAssets(
         "packages/dart_identity_sdk/assets/sounds/error.mp3",
       );
-      debugPrint("Error sound initialized successfully.");
+      debugPrint("`Error` sound initialized successfully.");
     } catch (e, stackTrace) {
       debugPrint("Error initializing error sound: $e\nStackTrace: $stackTrace");
     }

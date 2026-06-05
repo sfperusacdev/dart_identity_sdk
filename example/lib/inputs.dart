@@ -1,3 +1,4 @@
+import 'package:dart_identity_sdk/dart_identity_sdk.dart';
 import 'package:dart_identity_sdk/kdialogs/kdialogs.dart';
 import 'package:dart_identity_sdk/widgets/text/common.dart';
 import 'package:dart_identity_sdk/widgets/text/text.dart';
@@ -29,7 +30,12 @@ class _InputsPageState extends State<InputsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Inputs")),
+      appBar: AppBar(
+        title: Text("Inputs"),
+        actions: [
+          TableSyncButton(groupIDs: ['tareos', 'datos_generales', "lotes"]),
+        ],
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(8.0),
         child: Column(

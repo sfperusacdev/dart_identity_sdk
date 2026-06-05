@@ -1,9 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="com.sfperusac.manager.permission.WRITE_DATA" />
-    <uses-permission android:name="com.sfperusac.manager.permission.READ_DATA" />
-    <uses-permission
-        android:name="android.permission.INTERNET" />
 
     <application
         android:label="example"
@@ -47,8 +43,24 @@
             <action android:name="android.intent.action.PROCESS_TEXT" />
             <data android:mimeType="text/plain" />
         </intent>
+    </queries>
+
+
+    <uses-permission android:name="shared_preferences.permission.WRITE_DATA" />
+    <uses-permission android:name="shared_preferences.permission.READ_DATA" />
+    <queries>
         <package android:name="com.sfperusac.manager" />
+    </queries>
+    <queries>
         <provider android:authorities="com.sfperusac.manager.licencias" />
     </queries>
 
+
+    <uses-permission
+        android:name="android.permission.INTERNET" />
+    <uses-permission
+        android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission
+        android:name="android.permission.READ_PRIVILEGED_PHONE_STATE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 </manifest>

@@ -2,6 +2,7 @@ part of 'default_home_page.dart';
 
 class HomeMenuCard extends StatelessWidget {
   final String assetImage;
+  final String? assetPackage;
   final String title;
   final Color color;
   final void Function()? onTab;
@@ -9,6 +10,7 @@ class HomeMenuCard extends StatelessWidget {
   const HomeMenuCard({
     super.key,
     required this.assetImage,
+    this.assetPackage,
     required this.title,
     this.color = const Color(0xFF1C3E1C),
     this.onTab,
@@ -30,7 +32,7 @@ class HomeMenuCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image(
-              image: AssetImage(assetImage),
+              image: AssetImage(assetImage, package: assetPackage),
               width: 65,
               height: 65,
               fit: BoxFit.fill,

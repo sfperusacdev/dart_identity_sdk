@@ -8,6 +8,7 @@ class MainHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultHomePage(
+      showSyncDialogPreferenceKey: "tareo_app_show_ventana_sincrorinizacion",
       builder: (context) {
         return [
           HomeMenuCard(

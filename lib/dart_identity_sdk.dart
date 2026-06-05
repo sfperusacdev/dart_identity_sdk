@@ -22,13 +22,12 @@ export 'src/services/pb_perfiles.dart';
 export 'src/logs/log.dart';
 export 'src/router.dart';
 export 'src/device_info.dart';
+export 'table_sync/table_sync.dart';
 
-import 'dart:io';
 import 'package:dart_identity_sdk/dart_identity_sdk.dart';
 import 'package:dart_identity_sdk/kdialogs.dart';
 import 'package:dart_identity_sdk/src/env/env.dart';
 import 'package:dart_identity_sdk/sqlite/connection.dart';
-import 'package:flutter/services.dart';
 
 bool _managerInited = false;
 bool _soundInited = false;
@@ -59,15 +58,7 @@ Future<bool> initializeIdentityDependencies({
     ApiService.setDefaultServiceID(defaultServiceID);
   }
   EnvConfig.setApplicationID(appID, name: appName);
-  try {
-    if (Platform.isAndroid || Platform.isIOS) {
-      final ca = await PlatformAssetBundle().load('assets/certs/rootCA.pem');
-      SecurityContext.defaultContext
-          .setTrustedCertificatesBytes(ca.buffer.asInt8List());
-    }
-  } catch (err) {
-    LOG.printError([err]);
-  }
+
   if (!_appInfoInited) {
     await ApplicationInfo.init();
     _appInfoInited = true;
