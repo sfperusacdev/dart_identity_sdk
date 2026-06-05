@@ -474,3 +474,6 @@
 
 ## 5.24.6
 - store session device id
+
+## 5.24.7
+- fix logout callback execution

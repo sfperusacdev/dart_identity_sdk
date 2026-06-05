@@ -17,7 +17,7 @@ class DefaultHomePage extends StatefulWidget {
   final Future<void> Function(BuildContext context)? onDependenciesReady;
   final List<HomeMenuCard> Function(BuildContext context) builder;
   final VoidCallback? onRefreshPreferences;
-  final Future<void> Function(BuildContext context)? onLogout;
+  final Future<void> Function()? onLogout;
 
   const DefaultHomePage({
     super.key,
@@ -59,9 +59,7 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
                 const Duration(milliseconds: 500)) {
               backPressTime = now;
             }
-            await goOutSession(context, onBeforeNavigate: (context) async {
-              widget.onLogout?.call(context);
-            });
+            await goOutSession(context, onLogout: widget.onLogout);
           },
           child: Stack(
             children: [
@@ -145,7 +143,10 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
                           borderRadius: BorderRadius.circular(10.0),
                           elevation: 4.0,
                           child: InkWell(
-                            onTap: () => goOutSession(context),
+                            onTap: () => goOutSession(
+                              context,
+                              onLogout: widget.onLogout,
+                            ),
                             borderRadius: BorderRadius.circular(10.0),
                             child: Ink(
                               decoration: BoxDecoration(
@@ -303,7 +304,7 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
 Future<void> goOutSession(
   BuildContext context, {
   bool confirm = true,
-  Future<void> Function(BuildContext context)? onBeforeNavigate,
+  Future<void> Function()? onLogout,
 }) async {
   if (confirm) {
     final ok = await showConfirmationKDialog(context,
@@ -311,6 +312,6 @@ Future<void> goOutSession(
     if (!ok) return;
   }
   if (context.mounted) {
-    await SessionManagerSDK.logout(context, onBeforeNavigate: onBeforeNavigate);
+    await SessionManagerSDK.logout(context, onLogout: onLogout);
   }
 }

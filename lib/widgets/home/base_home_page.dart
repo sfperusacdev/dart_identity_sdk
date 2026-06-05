@@ -2,7 +2,7 @@ import 'package:dart_identity_sdk/widgets/home/default_home_page.dart';
 import 'package:flutter/material.dart';
 
 class BasePage extends StatefulWidget {
-  final Future<void> Function(BuildContext context)? onLogout;
+  final Future<void> Function()? onLogout;
   final Widget Function(BuildContext context) body;
 
   const BasePage({
@@ -31,9 +31,7 @@ class _BasePageState extends State<BasePage> {
             const Duration(milliseconds: 500)) {
           backPressTime = now;
         }
-        await goOutSession(context, onBeforeNavigate: (context) async {
-          widget.onLogout?.call(context);
-        });
+        await goOutSession(context, onLogout: widget.onLogout);
       },
       child: widget.body(context),
     );

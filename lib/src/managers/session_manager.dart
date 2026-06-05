@@ -205,11 +205,11 @@ class SessionManagerSDK {
 
   static Future<void> logout(
     BuildContext context, {
-    Future<void> Function(BuildContext context)? onBeforeNavigate,
+    Future<void> Function()? onLogout,
   }) async {
     _session = null;
     await AppPreferences.global.remove(_sessionStorageKey);
-    if (context.mounted) await onBeforeNavigate?.call(context);
+    if (context.mounted) await onLogout?.call();
     if (context.mounted) context.go(LoginPage.path);
     _firstOpen = false;
     await LiteConnection.closeIfConnected();
