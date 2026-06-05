@@ -349,7 +349,7 @@ class _DatabaseManagerPageState extends State<DatabaseManagerPage> {
                 value: _GlobalAction.importDb,
                 child: Row(
                   children: [
-                    Icon(Icons.download, size: 20),
+                    Icon(Icons.download, color: Colors.black, size: 20),
                     SizedBox(width: 12),
                     Text('Importar'),
                   ],
