@@ -14,17 +14,20 @@ part 'home_menu_card.dart';
 class DefaultHomePage extends StatefulWidget {
   static const path = '/home';
 
-  final Future<void> Function(BuildContext context)? onDependenciesReady;
+  /// Called after the current session passes all required validations.
+  final Future<void> Function(BuildContext context)? onSessionReady;
   final List<HomeMenuCard> Function(BuildContext context) builder;
   final VoidCallback? onRefreshPreferences;
-  final Future<void> Function()? onLogout;
+
+  /// Called when session closing is already confirmed and imminent.
+  final Future<void> Function(BuildContext context)? onSessionEnding;
 
   const DefaultHomePage({
     super.key,
-    this.onDependenciesReady,
+    this.onSessionReady,
     required this.builder,
     this.onRefreshPreferences,
-    this.onLogout,
+    this.onSessionEnding,
   });
 
   @override
@@ -59,7 +62,10 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
                 const Duration(milliseconds: 500)) {
               backPressTime = now;
             }
-            await goOutSession(context, onLogout: widget.onLogout);
+            await goOutSession(
+              context,
+              onSessionEnding: widget.onSessionEnding,
+            );
           },
           child: Stack(
             children: [
@@ -145,7 +151,7 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
                           child: InkWell(
                             onTap: () => goOutSession(
                               context,
-                              onLogout: widget.onLogout,
+                              onSessionEnding: widget.onSessionEnding,
                             ),
                             borderRadius: BorderRadius.circular(10.0),
                             child: Ink(
@@ -266,7 +272,7 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
       }
 
       if (mounted) {
-        widget.onDependenciesReady?.call(context);
+        await widget.onSessionReady?.call(context);
       }
     } catch (err) {
       if (mounted) {
@@ -304,7 +310,7 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
 Future<void> goOutSession(
   BuildContext context, {
   bool confirm = true,
-  Future<void> Function()? onLogout,
+  Future<void> Function(BuildContext context)? onSessionEnding,
 }) async {
   if (confirm) {
     final ok = await showConfirmationKDialog(context,
@@ -312,6 +318,9 @@ Future<void> goOutSession(
     if (!ok) return;
   }
   if (context.mounted) {
-    await SessionManagerSDK.logout(context, onLogout: onLogout);
+    await SessionManagerSDK.logout(
+      context,
+      onSessionEnding: onSessionEnding,
+    );
   }
 }

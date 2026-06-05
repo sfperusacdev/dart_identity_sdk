@@ -477,3 +477,6 @@
 
 ## 5.24.7
 - fix logout callback execution
+
+## 5.24.8
+- add semantic session lifecycle callbacks

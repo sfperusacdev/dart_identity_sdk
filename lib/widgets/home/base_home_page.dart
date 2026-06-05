@@ -2,13 +2,14 @@ import 'package:dart_identity_sdk/widgets/home/default_home_page.dart';
 import 'package:flutter/material.dart';
 
 class BasePage extends StatefulWidget {
-  final Future<void> Function()? onLogout;
+  /// Called when session closing is already confirmed and imminent.
+  final Future<void> Function(BuildContext context)? onSessionEnding;
   final Widget Function(BuildContext context) body;
 
   const BasePage({
     super.key,
     required this.body,
-    this.onLogout,
+    this.onSessionEnding,
   });
 
   @override
@@ -31,7 +32,10 @@ class _BasePageState extends State<BasePage> {
             const Duration(milliseconds: 500)) {
           backPressTime = now;
         }
-        await goOutSession(context, onLogout: widget.onLogout);
+        await goOutSession(
+          context,
+          onSessionEnding: widget.onSessionEnding,
+        );
       },
       child: widget.body(context),
     );
