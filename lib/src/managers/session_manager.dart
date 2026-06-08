@@ -52,6 +52,7 @@ class SessionManagerSDK {
   }
 
   static String? readFromEnv(String serviceID) {
+    if (!dotenv.isInitialized) return "";
     final envKey = serviceID
         .trim()
         .replaceAll(RegExp(r'[^a-zA-Z0-9]+'), '_')

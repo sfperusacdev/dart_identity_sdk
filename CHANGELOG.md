@@ -485,5 +485,7 @@
 - add support to sync data
 
 ## 5.25.1
-- add support to oberride service urls
+- add support to override service urls
 
+## 5.25.2
+- fix override urls
