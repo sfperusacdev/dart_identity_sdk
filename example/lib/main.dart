@@ -25,6 +25,7 @@ void main() async {
     defaultServiceID: "com.sfperusac.tareoapp",
     minimumRequiredPermissions: ["login.tareoapp.application"],
     database: LiteDatabaseConfig(),
+    envFileName: ".env",
   );
   runApp(const MyApp());
 }

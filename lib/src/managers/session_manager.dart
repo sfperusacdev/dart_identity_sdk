@@ -5,6 +5,7 @@ import 'package:dart_identity_sdk/src/entities/refresh_token_response.dart';
 import 'package:dart_identity_sdk/src/pages/login/login_page.dart';
 import 'package:dart_identity_sdk/sqlite/connection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart' as intl;
@@ -50,7 +51,26 @@ class SessionManagerSDK {
     _sessionValidityRule = rule;
   }
 
+  static String? readFromEnv(String serviceID) {
+    final envKey = serviceID
+        .trim()
+        .replaceAll(RegExp(r'[^a-zA-Z0-9]+'), '_')
+        .replaceAll(RegExp(r'_+'), '_')
+        .replaceAll(RegExp(r'^_|_$'), '')
+        .toUpperCase();
+
+    final value = dotenv.maybeGet(envKey);
+    if (value == null || value.isEmpty) return null;
+
+    LOG.printInfo('Resolved "$serviceID" to ENV "$envKey"');
+
+    return value;
+  }
+
   static String? findServiceLocation(String serviceID) {
+    final overrideVal = readFromEnv(serviceID);
+    if (overrideVal != null && overrideVal.isNotEmpty) return overrideVal;
+
     final session = getCurrentSession();
     final locations = session?.locations ?? [];
     final index =

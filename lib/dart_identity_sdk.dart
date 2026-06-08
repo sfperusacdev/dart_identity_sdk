@@ -28,6 +28,7 @@ import 'package:dart_identity_sdk/dart_identity_sdk.dart';
 import 'package:dart_identity_sdk/kdialogs.dart';
 import 'package:dart_identity_sdk/src/env/env.dart';
 import 'package:dart_identity_sdk/sqlite/connection.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 bool _managerInited = false;
 bool _soundInited = false;
@@ -44,6 +45,11 @@ Future<bool> initializeIdentityDependencies({
   List<String> minimumRequiredPermissions = const [],
   LiteDatabaseConfig? database,
 }) async {
+  if (envFileName.isNotEmpty) {
+    try {
+      await dotenv.load(fileName: envFileName);
+    } catch (_) {}
+  }
   if (database != null) LiteConnection.setDatabaseConfig(database);
   if (sessionValidityRule != null) {
     SessionManagerSDK.setSessionValidityRule(sessionValidityRule);

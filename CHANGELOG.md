@@ -484,3 +484,6 @@
 ## 5.25.0
 - add support to sync data
 
+## 5.25.1
+- add support to oberride service urls
+
