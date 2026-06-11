@@ -4,6 +4,7 @@ import 'package:dart_identity_sdk/kdialogs/src/show_bottom_alert.dart';
 import 'package:dart_identity_sdk/src/entities/refresh_token_response.dart';
 import 'package:dart_identity_sdk/src/pages/login/login_page.dart';
 import 'package:dart_identity_sdk/sqlite/connection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
@@ -69,8 +70,10 @@ class SessionManagerSDK {
   }
 
   static String? findServiceLocation(String serviceID) {
-    final overrideVal = readFromEnv(serviceID);
-    if (overrideVal != null && overrideVal.isNotEmpty) return overrideVal;
+    if (kDebugMode || kProfileMode) {
+      final overrideVal = readFromEnv(serviceID);
+      if (overrideVal != null && overrideVal.isNotEmpty) return overrideVal;
+    }
 
     final session = getCurrentSession();
     final locations = session?.locations ?? [];

@@ -489,3 +489,6 @@
 
 ## 5.25.2
 - fix override urls
+
+## 5.25.3
+- fix override urls on on debug and profile models
