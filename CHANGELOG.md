@@ -492,3 +492,7 @@
 
 ## 5.25.3
 - fix override urls on on debug and profile models
+
+## 5.25.4
+- add SQLite table explorer from table sync page
+- add paginated SQLite records view with delete actions for tables and records

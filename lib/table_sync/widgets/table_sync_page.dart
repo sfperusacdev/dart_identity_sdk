@@ -1,8 +1,10 @@
 import 'package:dart_identity_sdk/table_sync/table_sync_bloc.dart';
 import 'package:dart_identity_sdk/table_sync/table_sync_state.dart';
 import 'package:dart_identity_sdk/table_sync/widgets/table_sync_status_view.dart';
+import 'package:dart_identity_sdk/src/pages/dbs/sqlite_tables_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class TableSyncPage extends StatelessWidget {
   static const path = '/syncronizar';
@@ -23,6 +25,11 @@ class TableSyncPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(title),
         actions: [
+          IconButton(
+            tooltip: 'Ver tablas SQLite',
+            onPressed: () => context.push(SqliteTablesPage.path),
+            icon: const Icon(Icons.table_chart_outlined),
+          ),
           BlocBuilder<TableSyncBloc, TableSyncState>(
             builder: (context, state) {
               return IconButton(

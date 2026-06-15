@@ -1,5 +1,6 @@
 import 'package:dart_identity_sdk/dart_identity_sdk.dart';
 import 'package:dart_identity_sdk/src/pages/dbs/database_manager_page.dart';
+import 'package:dart_identity_sdk/src/pages/dbs/sqlite_tables_page.dart';
 import 'package:dart_identity_sdk/src/pages/login/login_page.dart';
 import 'package:go_router/go_router.dart';
 
@@ -34,6 +35,12 @@ class ApplicationRouterManager {
       GoRoute(
         path: DatabaseManagerPage.path,
         builder: (context, state) => const DatabaseManagerPage(),
+      ),
+    );
+    routes.add(
+      GoRoute(
+        path: SqliteTablesPage.path,
+        builder: (context, state) => const SqliteTablesPage(),
       ),
     );
     _router = GoRouter(
