@@ -70,15 +70,16 @@ class SessionManagerSDK {
   }
 
   static String? findServiceLocation(String serviceID) {
-    if (kDebugMode || kProfileMode) {
+    if (kDebugMode) {
       final overrideVal = readFromEnv(serviceID);
       if (overrideVal != null && overrideVal.isNotEmpty) return overrideVal;
     }
 
     final session = getCurrentSession();
     final locations = session?.locations ?? [];
-    final index =
-        locations.indexWhere((element) => element.codigo == serviceID);
+    final index = locations.indexWhere(
+      (element) => element.codigo == serviceID,
+    );
     if (index == -1) return null;
     return locations[index].location;
   }

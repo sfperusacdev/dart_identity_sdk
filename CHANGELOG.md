@@ -496,3 +496,5 @@
 ## 5.25.4
 - add SQLite table explorer from table sync page
 - add paginated SQLite records view with delete actions for tables and records
+## 5.25.6
+- fix override service url
