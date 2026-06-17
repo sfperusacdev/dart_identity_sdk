@@ -136,6 +136,12 @@ class _ContentState<T extends SelectOption> extends State<_Content<T>> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
   void search(String value) {
     setState(() {
       _filteredOptions = widget.options.where((elm) {

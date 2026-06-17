@@ -10,3 +10,4 @@ export 'src/show_async_progress.dart';
 export 'src/show_basic_options.dart';
 export 'src/show_async_options.dart';
 export 'src/execute_async_with_error_dialog.dart';
+export 'src/about_dialog.dart';

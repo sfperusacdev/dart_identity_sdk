@@ -21,7 +21,7 @@ Future<bool> showBottomAlertKDialog(
     isDismissible: false,
     backgroundColor: Colors.transparent,
     useSafeArea: true,
-    enableDrag: true,
+    enableDrag: false,
     builder: (context) {
       return SafeArea(
         child: PopScope(

@@ -16,6 +16,7 @@ Future<T?> showKDialogContent<T>(
   TextButton? titleTextButton,
   String? title,
   String? saveBtnText,
+  T Function()? getSaveResult,
   FutureOr<bool> Function()? onSave, // ✅ Cambiado a Future<bool>
   bool closeOnOutsideTap = false,
   bool hideTitleBar = false,
@@ -65,12 +66,13 @@ Future<T?> showKDialogContent<T>(
               if (shouldClose && context.mounted) {
                 Navigator.of(
                   context,
-                ).pop(true); // ✅ Cierra el diálogo si onSave devuelve true
+                ).pop(getSaveResult?.call() ?? (true is T ? true as T : null));
               }
             },
             style: Theme.of(context).textButtonTheme.style,
             child: Text(saveBtnText),
           ),
+        if (titleTextButton != null) titleTextButton,
       ],
     );
   }

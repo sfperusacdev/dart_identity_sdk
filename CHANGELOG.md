@@ -503,3 +503,8 @@
 - add enabled flag to BarcodeScannerListener
 - align scanner listener docs and character filtering
 - require Flutter 3.22 or later
+
+## 5.25.8
+- add kdialogs documentation
+- add pre-validation support to async progress dialogs
+- fix kdialogs async options, loading, selection and content helpers

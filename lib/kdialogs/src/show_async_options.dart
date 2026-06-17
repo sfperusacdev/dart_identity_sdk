@@ -19,11 +19,12 @@ Future<List<T>?> showAsyncOptionsDialog<T extends SelectOption>(
     doProcess: getOptions,
   );
 
+  if (options == null) return null;
   if (!context.mounted) return null;
 
   return await showBasicOptionsKDialog(
     context,
-    options: options ?? [],
+    options: options,
     initialSelection: initialSelection,
     allowMultipleSelection: allowMultipleSelection,
     searchInput: searchInput,
