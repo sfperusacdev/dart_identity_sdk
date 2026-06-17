@@ -9,19 +9,20 @@ import 'package:flutter/services.dart';
 /// such as those found in industrial PDA devices.
 ///
 /// It listens to key events from `HardwareKeyboard.instance`, accumulates printable
-/// characters, and triggers the [onScanDetected] callback when a valid scan sequence
+/// characters, and triggers the [onBarcodeScanned] callback when a valid scan sequence
 /// is detected.
 ///
 /// ### Features:
 /// - Supports HID-mode scanners and physical keyboards.
+/// - Can be temporarily disabled with [enabled].
 /// - Optional alphanumeric-only filtering.
-/// - Configurable character delay ([interKeyDelay]) and scan finalization delay ([scanFinalizeDelay]).
+/// - Configurable character delay ([characterDelayThreshold]) and scan finalization delay ([finalizationDelay]).
 /// - Allows stopping key event propagation via [stopKeyEventPropagation].
 ///
 /// ### Typical usage:
 /// ```dart
 /// BarcodeScannerListener(
-///   onScanDetected: (value) => print('Scanned: $value'),
+///   onBarcodeScanned: (value) => print('Scanned: $value'),
 ///   child: MyApp(),
 /// )
 /// ```
@@ -38,6 +39,7 @@ class BarcodeScannerListener extends StatefulWidget {
     this.characterDelayThreshold = const Duration(milliseconds: 50),
     this.finalizationDelay = const Duration(milliseconds: 50),
     this.alphanumericOnly = false,
+    this.enabled = true,
     this.stopKeyEventPropagation = false,
   });
 
@@ -47,6 +49,7 @@ class BarcodeScannerListener extends StatefulWidget {
   final int minBarcodeLength;
   final Duration characterDelayThreshold;
   final Duration finalizationDelay;
+  final bool enabled;
   final bool stopKeyEventPropagation;
 
   @override
@@ -58,8 +61,8 @@ class _BarcodeScannerListenerState extends State<BarcodeScannerListener> {
   DateTime _lastCharacterTime = DateTime(0);
   Timer? _finalizationTimer;
 
-  final _alphanumericRegex = RegExp(r'[a-zA-Z0-9]');
-  final _printableCharRegex = RegExp(r'[\x20-\x7E]'); // incluye espacio
+  final _alphanumericRegex = RegExp(r'^[a-zA-Z0-9]$');
+  final _printableCharRegex = RegExp(r'^[\x20-\x7E]$'); // incluye espacio
 
   @override
   void initState() {
@@ -74,7 +77,17 @@ class _BarcodeScannerListenerState extends State<BarcodeScannerListener> {
     super.dispose();
   }
 
+  @override
+  void didUpdateWidget(covariant BarcodeScannerListener oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.enabled && !widget.enabled) {
+      _clearPendingScan();
+    }
+  }
+
   bool _onKeyEvent(KeyEvent event) {
+    if (!widget.enabled) return false;
+
     if (event is! KeyDownEvent && event is! KeyRepeatEvent) return false;
 
     final char = event.character;
@@ -103,10 +116,17 @@ class _BarcodeScannerListenerState extends State<BarcodeScannerListener> {
       if (barcode.length >= widget.minBarcodeLength) {
         widget.onBarcodeScanned?.call(barcode);
       }
-      _barcodeBuffer.clear();
+      _clearPendingScan(cancelTimer: false);
     });
 
     return widget.stopKeyEventPropagation;
+  }
+
+  void _clearPendingScan({bool cancelTimer = true}) {
+    if (cancelTimer) {
+      _finalizationTimer?.cancel();
+    }
+    _barcodeBuffer.clear();
   }
 
   @override

@@ -151,7 +151,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "5.25.4"
+    version: "5.25.7"
   dbus:
     dependency: transitive
     description:

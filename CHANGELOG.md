@@ -498,3 +498,8 @@
 - add paginated SQLite records view with delete actions for tables and records
 ## 5.25.6
 - fix override service url
+
+## 5.25.7
+- add enabled flag to BarcodeScannerListener
+- align scanner listener docs and character filtering
+- require Flutter 3.22 or later
