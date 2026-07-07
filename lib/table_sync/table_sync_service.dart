@@ -351,7 +351,7 @@ class TableSyncService {
   ) async {
     final batch = conn.batch();
     for (final item in data) {
-      batch.insert(tableName, item);
+      batch.insert(tableName, _sanitizeMap(item));
     }
     await batch.commit(noResult: true);
   }
@@ -362,21 +362,37 @@ class TableSyncService {
     List<String> identifiers,
     Map<String, Object?> data,
   ) async {
+    final sanitizedData = _sanitizeMap(data);
     final where =
         identifiers.map((identifier) => '$identifier = ?').join(' and ');
     final whereArgs =
-        identifiers.map((identifier) => data[identifier]).toList();
+        identifiers.map((identifier) => sanitizedData[identifier]).toList();
     final existing =
         await conn.query(tableName, where: where, whereArgs: whereArgs);
     if (existing.isEmpty) {
       await conn.insert(
         tableName,
-        data,
+        sanitizedData,
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
     } else {
-      await conn.update(tableName, data, where: where, whereArgs: whereArgs);
+      await conn.update(
+        tableName,
+        sanitizedData,
+        where: where,
+        whereArgs: whereArgs,
+      );
     }
+  }
+
+  Map<String, Object?> _sanitizeMap(Map<String, Object?> values) {
+    return values.map((key, value) {
+      if (value is bool) {
+        return MapEntry(key, value ? 1 : 0);
+      }
+
+      return MapEntry(key, value);
+    });
   }
 
   void _validateSqlIdentifier(String value, String label) {

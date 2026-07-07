@@ -508,3 +508,6 @@
 - add kdialogs documentation
 - add pre-validation support to async progress dialogs
 - fix kdialogs async options, loading, selection and content helpers
+
+## 5.25.9
+- fix: bool warning en sql con _sanitizeMap
