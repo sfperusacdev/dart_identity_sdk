@@ -35,6 +35,9 @@ class SelectOptionItem implements SelectOption {
 
   @override
   String getLabel() => label;
+
+  @override
+  String toString() => getLabel();
 }
 
 Future<List<T>?> showBasicOptionsKDialog<T extends SelectOption>(

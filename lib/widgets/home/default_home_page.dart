@@ -277,6 +277,7 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
     await showAsyncProgressKDialog<bool>(
       context,
       retryable: true,
+      loadingMessage: "Espere un momento, estamos preparando tu sesión...",
       doProcess: () async {
         await _prepareSession(context);
         return true;
@@ -318,6 +319,9 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
             );
           }
         }();
+        await Future.delayed(
+          const Duration(milliseconds: 100),
+        ); // Solo no lo muevas; aleja tus garras de ahi
       }
     } catch (err) {
       if (context.mounted) {

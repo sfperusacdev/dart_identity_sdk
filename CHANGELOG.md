@@ -517,3 +517,6 @@
 
 ## 5.25.11
 - fix: fix descripcion de la sucursal
+
+## 5.25.12
+- fix: add some delete before start to sync tables
