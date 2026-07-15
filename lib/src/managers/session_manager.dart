@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:dart_identity_sdk/dart_identity_sdk.dart';
+import 'package:dart_identity_sdk/kdialogs/src/show_basic_options.dart';
 import 'package:dart_identity_sdk/kdialogs/src/show_bottom_alert.dart';
 import 'package:dart_identity_sdk/src/entities/refresh_token_response.dart';
 import 'package:dart_identity_sdk/src/pages/login/login_page.dart';
@@ -84,10 +85,17 @@ class SessionManagerSDK {
     return locations[index].location;
   }
 
-  static List<String> findCompanyBranchs() {
+  static List<SelectOptionItem> findCompanyBranchs() {
     final session = getCurrentSession();
     final sucursales = session?.sucursales ?? [];
-    return sucursales.map((s) => s.code ?? "").toList();
+    return sucursales
+        .map(
+          (s) => SelectOptionItem(
+            s.code ?? "",
+            s.description ?? "",
+          ),
+        )
+        .toList();
   }
 
   static (List<String>, bool) checkDependencies(List<String> dependencies) {

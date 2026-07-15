@@ -111,7 +111,7 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(getSelectedBranch() ?? "no-ne"),
+            Text(getSelectedBranch()?.label ?? "no-ne"),
             Padding(padding: const EdgeInsets.all(24.0), child: Text(claims())),
             const SizedBox(height: 20.0),
             FilledButton(

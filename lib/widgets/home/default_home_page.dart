@@ -205,7 +205,7 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
                 ),
               ),
               Builder(builder: (context) {
-                final sucursal = getSelectedBranch() ?? "";
+                final sucursal = getSelectedBranch();
                 return Align(
                   alignment: Alignment.topCenter,
                   child: SafeArea(
@@ -219,7 +219,7 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
                               Padding(
                                 padding: const EdgeInsets.only(left: 8.0),
                                 child: Text(
-                                  "Sucursal: ${sucursal.split(".").last}",
+                                  "Sucursal: ${sucursal.toString()}",
                                   style: const BlodTextStyle(
                                     color: Colors.white,
                                     fontSize: 14,
@@ -344,18 +344,14 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
   void _showSelectSucursalDialog(BuildContext context) async {
     final initialSelection = <String>[];
     final current = getSelectedBranch();
-    if (current != null && current.isNotEmpty) {
-      initialSelection.add(current.split(".").last);
+    if (current != null && current.value.isEmpty) {
+      initialSelection.add(current.value);
     }
     final selected = await showBasicOptionsKDialog(
       context,
       initialSelection: initialSelection,
       title: "Sucursales",
-      options: stringOptionsAdapter(
-        SessionManagerSDK.findCompanyBranchs()
-            .map((elm) => elm.split(".").last)
-            .toList(),
-      ),
+      options: SessionManagerSDK.findCompanyBranchs(),
     );
     if (selected == null || selected.isEmpty) return;
     await setSelectedBranch(selected.first.value);

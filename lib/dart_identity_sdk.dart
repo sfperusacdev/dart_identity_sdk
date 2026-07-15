@@ -26,6 +26,7 @@ export 'table_sync/table_sync.dart';
 
 import 'package:dart_identity_sdk/dart_identity_sdk.dart';
 import 'package:dart_identity_sdk/kdialogs.dart';
+import 'package:dart_identity_sdk/kdialogs/src/show_basic_options.dart';
 import 'package:dart_identity_sdk/src/env/env.dart';
 import 'package:dart_identity_sdk/sqlite/connection.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -107,16 +108,17 @@ Future<bool> initializeIdentityDependencies({
 
 const _selectedBranchKey = "x_selected_branch";
 
-String? getSelectedBranch() {
-  final value = AppPreferences.private.getString(_selectedBranchKey);
-  if (value != null) {
-    return value;
+SelectOptionItem? getSelectedBranch() {
+  final branches = SessionManagerSDK.findCompanyBranchs();
+  final selectedValue = AppPreferences.private.getString(_selectedBranchKey);
+  if (selectedValue != null) {
+    final matches = branches.where(
+      (branch) => branch.value == selectedValue,
+    );
+
+    return matches.firstOrNull;
   }
-  final list = SessionManagerSDK.findCompanyBranchs();
-  if (list.isNotEmpty) {
-    return list.first;
-  }
-  return null;
+  return branches.firstOrNull;
 }
 
 Future<void> setSelectedBranch(String value) async {

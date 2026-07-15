@@ -514,3 +514,6 @@
 
 ## 5.25.10
 - fix: inicializa grupos de sincronizacion sin esperar
+
+## 5.25.11
+- fix: fix descripcion de la sucursal
