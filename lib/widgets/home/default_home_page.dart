@@ -306,9 +306,18 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
       if (context.mounted) {
         await widget.onSessionReady?.call(context);
       }
+
       if (context.mounted) {
         LOG.printInfo(['TABLE_SYNC', 'home startConfiguredGroups']);
-        await maybeTableSyncBloc(context)?.startConfiguredGroups();
+        () async {
+          try {
+            await maybeTableSyncBloc(context)?.startConfiguredGroups();
+          } catch (err) {
+            LOG.printError(
+              ['Error en startConfiguredGroups', "Error", err],
+            );
+          }
+        }();
       }
     } catch (err) {
       if (context.mounted) {

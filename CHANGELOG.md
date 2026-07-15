@@ -511,3 +511,6 @@
 
 ## 5.25.9
 - fix: bool warning en sql con _sanitizeMap
+
+## 5.25.10
+- fix: inicializa grupos de sincronizacion sin esperar
