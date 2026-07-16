@@ -520,3 +520,6 @@
 
 ## 5.25.12
 - fix: add some delete before start to sync tables
+
+## 5.25.13
+- fix: lista de sucursales
