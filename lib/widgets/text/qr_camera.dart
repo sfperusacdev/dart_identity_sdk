@@ -1,4 +1,7 @@
+import 'package:dart_identity_sdk/kdialogs/src/show_kdialog_content.dart';
+import 'package:dart_identity_sdk/src/bases/sound_service.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 class QrCardReader extends StatefulWidget {
@@ -87,4 +90,26 @@ class _QrCardReaderState extends State<QrCardReader> {
       ),
     );
   }
+}
+
+Future<String?> showQrDialogReader(BuildContext context) async {
+  final scannedValue = await showKDialogContent<String>(
+    context,
+    hideTitleBar: true,
+    closeOnOutsideTap: true,
+    contentPadding: EdgeInsetsGeometry.zero,
+    scrollPadding: EdgeInsetsGeometry.zero,
+    titlePadding: EdgeInsetsGeometry.zero,
+    backgroundColor: Colors.transparent,
+    builder: (context) {
+      return QrCardReader(
+        onScan: (code) {
+          if (context.mounted) context.pop(code.trim());
+          SoundService.cameraSound();
+        },
+      );
+    },
+  );
+  if (scannedValue == null || scannedValue.isEmpty) return null;
+  return scannedValue;
 }

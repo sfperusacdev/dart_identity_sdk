@@ -89,6 +89,7 @@ class SessionManagerSDK {
     final session = getCurrentSession();
     final sucursales = session?.sucursales ?? [];
     return sucursales
+        .where((s) => s.isDisabled == null || s.isDisabled == false)
         .map(
           (s) => SelectOptionItem(
             s.code ?? "",

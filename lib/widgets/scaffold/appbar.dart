@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dart_identity_sdk/widgets/text/qr_camera.dart';
 import 'package:flutter/material.dart';
 
 class AppBarBuilder extends StatelessWidget implements PreferredSizeWidget {
@@ -17,6 +18,7 @@ class AppBarBuilder extends StatelessWidget implements PreferredSizeWidget {
 class SearchAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
   final Duration debounce;
+  final bool enableQrCamera;
   final ValueChanged<String>? onChange;
 
   const SearchAppBar({
@@ -24,6 +26,7 @@ class SearchAppBar extends StatefulWidget implements PreferredSizeWidget {
     required this.title,
     this.onChange,
     this.debounce = const Duration(milliseconds: 300),
+    this.enableQrCamera = false,
   });
 
   @override
@@ -70,6 +73,17 @@ class _SearchAppBarState extends State<SearchAppBar> {
             )
           : Text(widget.title),
       actions: [
+        if (widget.enableQrCamera && !_isSearching)
+          IconButton(
+            icon: const Icon(Icons.camera),
+            onPressed: () async {
+              final scanned = await showQrDialogReader(context);
+              if (scanned == null) return;
+              _searchController.text = scanned;
+              _onSearchChanged(scanned);
+              _isSearching = true;
+            },
+          ),
         IconButton(
           icon: Icon(_isSearching ? Icons.close : Icons.search),
           onPressed: () {
