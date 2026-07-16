@@ -75,13 +75,14 @@ class _SearchAppBarState extends State<SearchAppBar> {
       actions: [
         if (widget.enableQrCamera && !_isSearching)
           IconButton(
-            icon: const Icon(Icons.camera),
+            icon: const Icon(Icons.camera_alt),
             onPressed: () async {
               final scanned = await showQrDialogReader(context);
               if (scanned == null) return;
               _searchController.text = scanned;
               _onSearchChanged(scanned);
               _isSearching = true;
+              setState(() {});
             },
           ),
         IconButton(

@@ -523,3 +523,6 @@
 
 ## 5.25.13
 - fix: lista de sucursales
+
+## 5.25.14
+- fix: fix SearchAppBar
