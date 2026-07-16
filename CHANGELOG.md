@@ -526,3 +526,6 @@
 
 ## 5.25.14
 - fix: fix SearchAppBar
+
+## 5.25.15
+- fix: fix loading message

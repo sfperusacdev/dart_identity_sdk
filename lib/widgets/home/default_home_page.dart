@@ -277,7 +277,6 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
     await showAsyncProgressKDialog<bool>(
       context,
       retryable: true,
-      loadingMessage: "Espere un momento, estamos preparando tu sesión...",
       doProcess: () async {
         await _prepareSession(context);
         return true;
