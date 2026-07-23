@@ -544,5 +544,8 @@
 - fix table sync
 
 ## 5.26.2
+- just update
+
+## 5.26.3
 
 - remove loading message
