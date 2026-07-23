@@ -549,3 +549,7 @@
 ## 5.26.3
 
 - remove loading message
+
+## 5.26.3
+
+- fix loading, en busqueda de actualizacion

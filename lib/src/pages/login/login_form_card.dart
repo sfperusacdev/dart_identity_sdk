@@ -35,9 +35,7 @@ class _LoginFromState extends State<LoginFrom> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback(
       (_) async {
-        await loadEmpresasLoginFrom(context);
-        if (!mounted) return;
-        await _checkInitialAppUpdate();
+        await loadEmpresasLoginFrom(context, checkForUpdate: true);
       },
     );
 
@@ -48,31 +46,6 @@ class _LoginFromState extends State<LoginFrom> {
       _memorize = true;
     }
     super.initState();
-  }
-
-  Future<void> _checkInitialAppUpdate() async {
-    if (!Platform.isAndroid) return;
-    final result = await showAsyncProgressKDialog<AppUpdateCheckResult>(
-      context,
-      doProcess: () => AppUpdateService().checkForUpdateSilently(),
-    );
-    if (!mounted) return;
-
-    if (result == null || !result.hasUpdate) return;
-
-    final release = result.release!;
-    final updateNow = await showConfirmationKDialog(
-      context,
-      title: 'Actualización disponible',
-      message: 'Versión actual: ${result.currentVersion}\n'
-          'Nueva versión: ${release.version}\n\n'
-          '¿Deseas actualizar ahora?',
-      acceptText: 'ACTUALIZAR AHORA',
-      cancelText: 'DESPUÉS',
-    );
-    if (updateNow && mounted) {
-      await context.push(AppUpdatePage.path);
-    }
   }
 
   @override
@@ -377,15 +350,44 @@ class _LoginFromState extends State<LoginFrom> {
   }
 }
 
-Future<void> loadEmpresasLoginFrom(BuildContext context) async {
-  await showAsyncProgressKDialog(
+Future<void> loadEmpresasLoginFrom(
+  BuildContext context, {
+  bool checkForUpdate = false,
+}) async {
+  final result = await showAsyncProgressKDialog<AppUpdateCheckResult?>(
     context,
     doProcess: () async {
       await Provider.of<EmpresaGrupoPrivider>(
         context,
         listen: false,
       ).loadEmpresasProfiles();
+
+      if (checkForUpdate && Platform.isAndroid) {
+        return AppUpdateService().checkForUpdateSilently();
+      }
+
+      return null;
     },
     retryable: true,
   );
+
+  if (!context.mounted) return;
+
+  if (result == null || !result.hasUpdate) return;
+
+  final release = result.release!;
+
+  final updateNow = await showConfirmationKDialog(
+    context,
+    title: 'Actualización disponible',
+    message: 'Versión actual: ${result.currentVersion}\n'
+        'Nueva versión: ${release.version}\n\n'
+        '¿Deseas actualizar ahora?',
+    acceptText: 'ACTUALIZAR AHORA',
+    cancelText: 'DESPUÉS',
+  );
+
+  if (updateNow && context.mounted) {
+    await context.push(AppUpdatePage.path);
+  }
 }
