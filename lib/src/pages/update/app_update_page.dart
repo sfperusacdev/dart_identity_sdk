@@ -66,7 +66,7 @@ class _AppUpdatePageState extends State<AppUpdatePage>
     });
 
     try {
-      final result = await _service.checkForUpdate();
+      final result = await _service.checkForUpdateSilently();
       if (!mounted) return;
       setState(() {
         _check = result;

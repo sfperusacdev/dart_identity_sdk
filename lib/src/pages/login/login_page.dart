@@ -83,8 +83,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       child: const Padding(
                         padding: EdgeInsets.all(8.0),
-                        child:
-                            Icon(Icons.system_update_alt, color: Colors.grey),
+                        child: Icon(Icons.download, color: Colors.grey),
                       ),
                     ),
                   );

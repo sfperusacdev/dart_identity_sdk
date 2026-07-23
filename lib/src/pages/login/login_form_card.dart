@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:dart_identity_sdk/src/entities/empresa_app_perfile.dart';
 import 'package:dart_identity_sdk/src/logs/log.dart';
 import 'package:dart_identity_sdk/src/pages/login/bloc/empresa_grupo_provider.dart';
 import 'package:dart_identity_sdk/src/pages/login/form_store_helper.dart';
 import 'package:dart_identity_sdk/src/security/settings/login_fields.dart';
 import 'package:dart_identity_sdk/src/services/login.dart';
+import 'package:dart_identity_sdk/src/services/app_update.dart';
+import 'package:dart_identity_sdk/src/pages/update/app_update_page.dart';
 import 'package:dart_identity_sdk/src/managers/device_info_manager.dart';
 import 'package:dart_identity_sdk/sqlite/connection.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +34,11 @@ class _LoginFromState extends State<LoginFrom> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback(
-      (_) async => await loadEmpresasLoginFrom(context),
+      (_) async {
+        await loadEmpresasLoginFrom(context);
+        if (!mounted) return;
+        await _checkInitialAppUpdate();
+      },
     );
 
     var storedState = LoginCredentialsStoreHelper.load();
@@ -40,6 +48,32 @@ class _LoginFromState extends State<LoginFrom> {
       _memorize = true;
     }
     super.initState();
+  }
+
+  Future<void> _checkInitialAppUpdate() async {
+    if (!Platform.isAndroid) return;
+    final result = await showAsyncProgressKDialog<AppUpdateCheckResult>(
+      context,
+      loadingMessage: 'Buscando actualizaciones...',
+      doProcess: () => AppUpdateService().checkForUpdateSilently(),
+    );
+    if (!mounted) return;
+
+    if (result == null || !result.hasUpdate) return;
+
+    final release = result.release!;
+    final updateNow = await showConfirmationKDialog(
+      context,
+      title: 'Actualización disponible',
+      message: 'Versión actual: ${result.currentVersion}\n'
+          'Nueva versión: ${release.version}\n\n'
+          '¿Deseas actualizar ahora?',
+      acceptText: 'ACTUALIZAR AHORA',
+      cancelText: 'DESPUÉS',
+    );
+    if (updateNow && mounted) {
+      await context.push(AppUpdatePage.path);
+    }
   }
 
   @override

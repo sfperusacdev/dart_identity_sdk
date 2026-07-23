@@ -133,6 +133,17 @@ class AppUpdateService {
     );
   }
 
+  Future<AppUpdateCheckResult> checkForUpdateSilently() async {
+    try {
+      return await checkForUpdate();
+    } catch (_) {
+      return AppUpdateCheckResult(
+        release: null,
+        currentVersion: ApplicationInfo.appVersion,
+      );
+    }
+  }
+
   Future<String> downloadApk(
     AppRelease release, {
     AppUpdateDownloadProgress? onProgress,

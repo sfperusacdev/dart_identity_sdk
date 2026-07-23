@@ -529,3 +529,12 @@
 
 ## 5.25.15
 - fix: fix loading message
+
+## 5.26.0
+
+- Agrega actualización de APK desde el login.
+- Consulta y comparación automática de versiones disponibles.
+- Nueva pantalla para descargar e instalar actualizaciones.
+- Muestra progreso de descarga y reutiliza APKs ya descargados.
+- Abre la configuración de permisos de instalación de Android automáticamente.
+- Permite configurar un instalador de APK personalizado mediante callback.
