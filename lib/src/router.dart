@@ -2,6 +2,7 @@ import 'package:dart_identity_sdk/dart_identity_sdk.dart';
 import 'package:dart_identity_sdk/src/pages/dbs/database_manager_page.dart';
 import 'package:dart_identity_sdk/src/pages/dbs/sqlite_tables_page.dart';
 import 'package:dart_identity_sdk/src/pages/login/login_page.dart';
+import 'package:dart_identity_sdk/src/pages/update/app_update_page.dart';
 import 'package:go_router/go_router.dart';
 
 abstract class IdentityRoutes {
@@ -29,6 +30,12 @@ class ApplicationRouterManager {
       GoRoute(
         path: TableSyncPage.path,
         builder: (context, state) => const TableSyncPage(),
+      ),
+    );
+    routes.add(
+      GoRoute(
+        path: AppUpdatePage.path,
+        builder: (context, state) => const AppUpdatePage(),
       ),
     );
     routes.add(

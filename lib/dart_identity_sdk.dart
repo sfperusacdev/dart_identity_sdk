@@ -16,6 +16,7 @@ export 'src/managers/licence_manager.dart';
 export 'src/managers/device_info_manager.dart';
 
 export 'src/services/empresa.dart';
+export 'src/services/app_update.dart';
 export 'src/services/login.dart';
 export 'src/services/pb_perfiles.dart';
 
@@ -45,6 +46,7 @@ Future<bool> initializeIdentityDependencies({
   List<String> minimumRequiredServices = const [],
   List<String> minimumRequiredPermissions = const [],
   LiteDatabaseConfig? database,
+  ApkInstaller? apkInstaller,
 }) async {
   if (envFileName.isNotEmpty) {
     try {
@@ -65,6 +67,7 @@ Future<bool> initializeIdentityDependencies({
     ApiService.setDefaultServiceID(defaultServiceID);
   }
   EnvConfig.setApplicationID(appID, name: appName);
+  AppUpdateService.setInstaller(apkInstaller);
 
   if (!_appInfoInited) {
     await ApplicationInfo.init();

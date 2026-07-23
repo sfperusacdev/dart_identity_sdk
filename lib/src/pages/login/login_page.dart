@@ -3,6 +3,7 @@ import 'package:dart_identity_sdk/dart_identity_sdk.dart';
 import 'package:dart_identity_sdk/src/pages/dbs/database_manager_page.dart';
 import 'package:dart_identity_sdk/src/pages/login/bloc/empresa_grupo_provider.dart';
 import 'package:dart_identity_sdk/src/pages/login/login_form_card.dart';
+import 'package:dart_identity_sdk/src/pages/update/app_update_page.dart';
 import 'package:flutter/material.dart';
 import 'package:dart_identity_sdk/kdialogs/kdialogs.dart';
 import 'package:go_router/go_router.dart';
@@ -53,7 +54,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ),
-            _refreshEmpresasIcon(),
+            _topRightActions(),
             _printInfoIcon(),
             _databaseManager(),
           ],
@@ -62,25 +63,49 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  SafeArea _refreshEmpresasIcon() {
+  SafeArea _topRightActions() {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Align(
           alignment: Alignment.topRight,
-          child: Builder(builder: (context) {
-            return InkWell(
-                borderRadius: BorderRadius.circular(20),
-                onTap: () => loadEmpresasLoginFrom(context),
-                child: Ink(
-                  decoration:
-                      BoxDecoration(borderRadius: BorderRadius.circular(20)),
-                  child: const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Icon(Icons.refresh, color: Colors.grey),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (Platform.isAndroid)
+                Builder(builder: (context) {
+                  return InkWell(
+                    borderRadius: BorderRadius.circular(20),
+                    onTap: () => context.push(AppUpdatePage.path),
+                    child: Ink(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child:
+                            Icon(Icons.system_update_alt, color: Colors.grey),
+                      ),
+                    ),
+                  );
+                }),
+              Builder(builder: (context) {
+                return InkWell(
+                  borderRadius: BorderRadius.circular(20),
+                  onTap: () => loadEmpresasLoginFrom(context),
+                  child: Ink(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Icon(Icons.refresh, color: Colors.grey),
+                    ),
                   ),
-                ));
-          }),
+                );
+              }),
+            ],
+          ),
         ),
       ),
     );
