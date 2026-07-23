@@ -77,6 +77,17 @@ class _LoginPageState extends State<LoginPage> {
                   return InkWell(
                     borderRadius: BorderRadius.circular(20),
                     onTap: () => context.push(AppUpdatePage.path),
+                    onLongPress: () async {
+                      try {
+                        await AppUpdateService()
+                            .openInstallPermissionSettings();
+                      } catch (err) {
+                        if (!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(err.toString())),
+                        );
+                      }
+                    },
                     child: Ink(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),

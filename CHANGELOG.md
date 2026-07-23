@@ -550,6 +550,9 @@
 
 - remove loading message
 
-## 5.26.3
+## 5.26.4
 
 - fix loading, en busqueda de actualizacion
+
+## 5.26.5
+- open install permission settion, on long press
