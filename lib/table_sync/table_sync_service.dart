@@ -28,7 +28,7 @@ class TableSyncService {
     final connected = await InternetService.hasInternet();
     if (!connected) {
       LOG.printWarn(['TABLE_SYNC_SERVICE', 'group skipped', 'no internet']);
-      return;
+      throw StateError('No hay conexión a internet.');
     }
 
     await ensureSyncInfoTable();

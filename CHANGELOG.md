@@ -538,3 +538,7 @@
 - Muestra progreso de descarga y reutiliza APKs ya descargados.
 - Abre la configuración de permisos de instalación de Android automáticamente.
 - Permite configurar un instalador de APK personalizado mediante callback.
+
+## 5.26.0
+
+- fix table sync
