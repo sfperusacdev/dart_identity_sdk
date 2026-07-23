@@ -54,7 +54,6 @@ class _LoginFromState extends State<LoginFrom> {
     if (!Platform.isAndroid) return;
     final result = await showAsyncProgressKDialog<AppUpdateCheckResult>(
       context,
-      loadingMessage: 'Buscando actualizaciones...',
       doProcess: () => AppUpdateService().checkForUpdateSilently(),
     );
     if (!mounted) return;
